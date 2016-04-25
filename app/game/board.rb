@@ -42,16 +42,16 @@ class Board
     while ! stone_file.empty?
       i, j = stone_file.pop
       @d4adj.each{|di,dj|
-	current_stone = access_board(i+di,j+dj)
-	current_pos = [i+di,j+dj]
-	if current_stone == first_stone and
-	     ! same_group.include?(current_pos)
-	  stone_file << current_pos
-	  same_group << current_pos
-	end
-	if current_stone != first_stone and current_stone != -1
-	  adj_group << current_pos
-	end
+        current_stone = access_board(i+di,j+dj)
+        current_pos = [i+di,j+dj]
+        if current_stone == first_stone and
+             ! same_group.include?(current_pos)
+          stone_file << current_pos
+          same_group << current_pos
+        end
+        if current_stone != first_stone and current_stone != -1
+          adj_group << current_pos
+        end
       }
     end
     return same_group, adj_group
@@ -62,13 +62,12 @@ class Board
     end
     # Add the stone
     @board_of_stone[i][j] = color
-    # Check if it kill an opponent 
+    # Check if it kill an opponent
     @d4adj.each{|di,dj|
-      if access_board(i+di,j+dj) > 0 and
-	 access_board(i+di,j+dj) != color
-	if is_dead?(i+di,j+dj)  
-	  kill_group(i+di,j+dj)
-	end
+      if access_board(i+di,j+dj) > 0 and access_board(i+di,j+dj) != color
+        if is_dead?(i+di,j+dj)
+          kill_group(i+di,j+dj)
+        end
       end
     }
     # Check if it's a suicide
@@ -77,5 +76,21 @@ class Board
       raise "Suicide"
     end
     return @board_of_stone # TODO : Return the number of capured stone
+  end
+  def display
+    @board_of_stone.each{|row|
+      row.each{|stone|
+        if stone == 0
+          print(".")
+        elsif stone == 1
+          print("X")
+        elsif stone == 2
+          print("O")
+        else
+          raise "Stone type not supported for display."
+        end
+      }
+      print("\n")
+    }
   end
 end
