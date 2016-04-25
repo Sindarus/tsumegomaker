@@ -26,7 +26,7 @@ class Board
     if access_board(i,j) != 0
       return false
     end
-    if [i,j] == @ko_move # TODO : Check the color of the Ko move
+    if [[i,j],color] == @ko_move # TODO : Check the color of the Ko move
       return false
     end
     @board_of_stone[i][j] = color
@@ -80,6 +80,18 @@ class Board
     end
     return same_group, adj_group
   end
+  def opponent(color)
+    if color <= 0
+      raise "Nope, it's not a player, its #{color}"
+    end
+    if color == 1
+      return 2
+    end
+    if color == 2
+      return 1
+    end
+    raise "What is that #{color} ?"
+  end
   def add_stone(i, j, color)
     if access_board(i,j) != 0
       raise "This place (#{i},#{j}) is already taken !"
@@ -97,13 +109,13 @@ class Board
     }
     @ko_move = []
     if captured.size == 1
-      @ko_move = captured[0]
+      @ko_move = [captured[0],opponent(color)]
     end
     return @board_of_stone # TODO : Return the number of capured stone
   end
   def rm_stone(i,j)
     if access_board(i,j) == -1
-      raise "This is not a valide position (#{i},#{j})"
+      raise "This is not a valid position (#{i},#{j})"
     end
     @board_of_stone[i][j] = 0
  end
