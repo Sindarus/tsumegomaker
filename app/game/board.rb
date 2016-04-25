@@ -26,7 +26,7 @@ class Board
     if access_board(i,j) != 0
       return false
     end
-    if [i,j] == @ko_move
+    if [i,j] == @ko_move # TODO : Check the color of the Ko move
       return false
     end
     @board_of_stone[i][j] = color
@@ -82,7 +82,7 @@ class Board
   end
   def add_stone(i, j, color)
     if access_board(i,j) != 0
-      raise "This place (#{i} ; #{j}) is already taken !"
+      raise "This place (#{i},#{j}) is already taken !"
     end
     # Add the stone
     @board_of_stone[i][j] = color
@@ -101,4 +101,10 @@ class Board
     end
     return @board_of_stone # TODO : Return the number of capured stone
   end
+  def rm_stone(i,j)
+    if access_board(i,j) == -1
+      raise "This is not a valide position (#{i},#{j})"
+    end
+    @board_of_stone[i][j] = 0
+ end
 end
