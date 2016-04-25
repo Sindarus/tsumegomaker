@@ -4,6 +4,7 @@ class Board
     @height = height
     @width = width
     @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
+    @ko_move = []
   end
   def access_board(i, j)
     if 0 <= i and i < @height and
@@ -21,16 +22,39 @@ class Board
     }
     return true
   end
+  def is_legal?(i,j,color)
+    if access_board(i,j) != 0
+      return false
+    end
+    if [i,j] == @ko_move
+      return false
+    end
+    @board_of_stone[i][j] = color
+    if is_dead?(i,j)
+       @d4adj.each{|di,dj|
+         if access_board(i+di,j+dj) > 0 and
+            access_board(i+di,j+dj)!= color
+           if is_dead?(i+di,j+dj)
+             @board_of_stone[i][j] = 0
+             return true
+           end
+         end
+       }
+       @board_of_stone[i][j] = 0
+       return false
+    end
+    @board_of_stone[i][j] = 0
+    return true
+  end
+  def get_legal(color)
+    Array.new(@height) {|i| Array.new(@width) {|j| is_legal?(i,j,color)}}
+  end
   def kill_group(i,j)
     group, adj = get_adj(i,j)
     group.each{|i,j|
       @board_of_stone[i][j] = 0
     }
-    adj.each{|i,j|
-      if is_dead?(i,j)
-        kill_group(i,j)
-      end
-    }
+    return group
   end
   def get_adj(i,j)
     # Return two lists the first is the pos of the stones of the same "group"
@@ -45,7 +69,7 @@ class Board
 	current_stone = access_board(i+di,j+dj)
 	current_pos = [i+di,j+dj]
 	if current_stone == first_stone and
-	     ! same_group.include?(current_pos)
+                ! same_group.include?(current_pos)
 	  stone_file << current_pos
 	  same_group << current_pos
 	end
@@ -62,19 +86,18 @@ class Board
     end
     # Add the stone
     @board_of_stone[i][j] = color
-    # Check if it kill an opponent 
+    # Check if it kills an opponent
+    captured = []
     @d4adj.each{|di,dj|
-      if access_board(i+di,j+dj) > 0 and
-	 access_board(i+di,j+dj) != color
+      if access_board(i+di,j+dj) > 0 and access_board(i+di,j+dj) != color
 	if is_dead?(i+di,j+dj)  
-	  kill_group(i+di,j+dj)
+	  captured += kill_group(i+di,j+dj)
 	end
       end
     }
-    # Check if it's a suicide
-    if is_dead?(i,j)
-      @board_of_stone[i][j] = 0
-      raise "Suicide"
+    @ko_move = []
+    if captured.size == 1
+      @ko_move = captured[0]
     end
     return @board_of_stone # TODO : Return the number of capured stone
   end
