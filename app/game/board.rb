@@ -5,6 +5,7 @@ class Board
     @width = width
     @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
     @ko_move = []
+    @nb_captured = 0
   end
   def access_board(i, j)
     if 0 <= i and i < @height and
@@ -26,7 +27,7 @@ class Board
     if access_board(i,j) != 0
       return false
     end
-    if [[i,j],color] == @ko_move # TODO : Check the color of the Ko move
+    if [[i,j],color] == @ko_move
       return false
     end
     @board_of_stone[i][j] = color
@@ -48,6 +49,9 @@ class Board
   end
   def get_legal(color)
     Array.new(@height) {|i| Array.new(@width) {|j| is_legal?(i,j,color)}}
+  end
+  def get_nb_captured
+    @nb_captured
   end
   def kill_group(i,j)
     group, adj = get_adj(i,j)
@@ -82,7 +86,7 @@ class Board
   end
   def opponent(color)
     if color <= 0
-      raise "Nope, it's not a player, its #{color}"
+      raise "Nope, it's not a player, it's #{color}"
     end
     if color == 1
       return 2
@@ -111,7 +115,8 @@ class Board
     if captured.size == 1
       @ko_move = [captured[0],opponent(color)]
     end
-    return @board_of_stone # TODO : Return the number of capured stone
+    @nb_captured = captured.size
+    return @board_of_stone
   end
   def rm_stone(i,j)
     if access_board(i,j) == -1
