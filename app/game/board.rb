@@ -4,7 +4,10 @@ class Board
     @height = height
     @width = width
     @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
+    @ko_move = []
+    @nb_captured = 0
   end
+
   def access_board(i, j)
     if 0 <= i and i < @height and
        0 <= j and j < @width
@@ -12,6 +15,7 @@ class Board
     end
     return -1
   end
+
   def is_dead?(i,j)
     group, adj = get_adj(i,j)
     adj.each{|i,j|
@@ -21,17 +25,48 @@ class Board
     }
     return true
   end
+
+  def is_legal?(i,j,color)
+    if access_board(i,j) != 0
+      return false
+    end
+    if [[i,j],color] == @ko_move
+      return false
+    end
+    @board_of_stone[i][j] = color
+    if is_dead?(i,j)
+       @d4adj.each{|di,dj|
+         if access_board(i+di,j+dj) > 0 and
+            access_board(i+di,j+dj)!= color
+           if is_dead?(i+di,j+dj)
+             @board_of_stone[i][j] = 0
+             return true
+           end
+         end
+       }
+       @board_of_stone[i][j] = 0
+       return false
+    end
+    @board_of_stone[i][j] = 0
+    return true
+  end
+
+  def get_legal(color)
+    Array.new(@height) {|i| Array.new(@width) {|j| is_legal?(i,j,color)}}
+  end
+
+  def get_nb_captured
+    @nb_captured
+  end
+
   def kill_group(i,j)
     group, adj = get_adj(i,j)
     group.each{|i,j|
       @board_of_stone[i][j] = 0
     }
-    adj.each{|i,j|
-      if is_dead?(i,j)
-        kill_group(i,j)
-      end
-    }
+    return group
   end
+
   def get_adj(i,j)
     # Return two lists the first is the pos of the stones of the same "group"
     # The second is the pos of the stones adjacent to that "group"
@@ -56,27 +91,44 @@ class Board
     end
     return same_group, adj_group
   end
+
+  def opponent(color)
+    if color <= 0
+      raise "Nope, it's not a player, it's #{color}"
+    end
+    if color == 1
+      return 2
+    end
+    if color == 2
+      return 1
+    end
+    raise "What is that #{color} ?"
+  end
+
   def add_stone(i, j, color)
     if access_board(i,j) != 0
-      raise "This place (#{i} ; #{j}) is already taken !"
+      raise "This place (#{i},#{j}) is already taken !"
     end
     # Add the stone
     @board_of_stone[i][j] = color
-    # Check if it kill an opponent
+
+    # Check if it kills an opponent
+    captured = []
     @d4adj.each{|di,dj|
       if access_board(i+di,j+dj) > 0 and access_board(i+di,j+dj) != color
         if is_dead?(i+di,j+dj)
-          kill_group(i+di,j+dj)
+          captured += kill_group(i+di,j+dj)
         end
       end
     }
-    # Check if it's a suicide
-    if is_dead?(i,j)
-      @board_of_stone[i][j] = 0
-      raise "Suicide"
+    @ko_move = []
+    if captured.size == 1
+      @ko_move = [captured[0],opponent(color)]
     end
-    return @board_of_stone # TODO : Return the number of capured stone
+    @nb_captured = captured.size
+    return @board_of_stone
   end
+
   def display
     @board_of_stone.each{|row|
       row.each{|stone|
@@ -92,5 +144,12 @@ class Board
       }
       print("\n")
     }
+  end
+
+  def rm_stone(i,j)
+    if access_board(i,j) == -1
+      raise "This is not a valid position (#{i},#{j})"
+    end
+    @board_of_stone[i][j] = 0
   end
 end
