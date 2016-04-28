@@ -8,7 +8,7 @@ class Board
     @ko_move = []
     @nb_captured = 0
   end
-  
+
   def access_board(i, j)
     if 0 <= i and i < @height and
        0 <= j and j < @width
@@ -82,16 +82,16 @@ class Board
     while ! stone_file.empty?
       i, j = stone_file.pop
       @d4adj.each{|di,dj|
-	current_stone = access_board(i+di,j+dj)
-	current_pos = [i+di,j+dj]
-	if current_stone == first_stone and
-                ! same_group.include?(current_pos)
-	  stone_file << current_pos
-	  same_group << current_pos
-	end
-	if current_stone != first_stone and current_stone != -1
-	  adj_group << current_pos
-	end
+        current_stone = access_board(i+di,j+dj)
+        current_pos = [i+di,j+dj]
+        if current_stone == first_stone and
+             ! same_group.include?(current_pos)
+          stone_file << current_pos
+          same_group << current_pos
+        end
+        if current_stone != first_stone and current_stone != -1
+          adj_group << current_pos
+        end
       }
     end
     return same_group, adj_group
@@ -116,13 +116,14 @@ class Board
     end
     # Add the stone
     @board_of_stone[i][j] = color
+
     # Check if it kills an opponent
     captured = []
     @d4adj.each{|di,dj|
       if access_board(i+di,j+dj) > 0 and access_board(i+di,j+dj) != color
-	if is_dead?(i+di,j+dj)  
-	  captured += kill_group(i+di,j+dj)
-	end
+        if is_dead?(i+di,j+dj)
+          captured += kill_group(i+di,j+dj)
+        end
       end
     }
     @ko_move = []
@@ -132,11 +133,28 @@ class Board
     @nb_captured = captured.size
   end
 
+  def display
+    @board_of_stone.each{|row|
+      row.each{|stone|
+        if stone == 0
+          print(".")
+        elsif stone == 1
+          print("X")
+        elsif stone == 2
+          print("O")
+        else
+          raise "Stone type not supported for display."
+        end
+      }
+      print("\n")
+    }
+  end
+
   def rm_stone(i,j)
     if access_board(i,j) == -1
       raise "This is not a valid position (#{i},#{j})"
     end
     @board_of_stone[i][j] = 0
- end
+  end
 
 end
