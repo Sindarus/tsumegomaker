@@ -1,6 +1,11 @@
-class iaRandom
+class IaRandom
 
-  def initialize
+  def initialize(color)
+    @color = color
+  end
+
+  def get_color
+    @color
   end
 
   def play(board, legal_move)
@@ -13,7 +18,7 @@ class iaRandom
       }
     }
     prng = Random.new
-    return choose_from[prng.range choose_from.size]
+    return choose_from[prng.rand choose_from.size]
   end
 
 end

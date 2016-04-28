@@ -1,4 +1,5 @@
 class Board
+
   def initialize(height, width)
     @board_of_stone = Array.new(height) {Array.new(width){0}}
     @height = height
@@ -7,6 +8,7 @@ class Board
     @ko_move = []
     @nb_captured = 0
   end
+  
   def access_board(i, j)
     if 0 <= i and i < @height and
        0 <= j and j < @width
@@ -14,6 +16,7 @@ class Board
     end
     return -1
   end
+
   def is_dead?(i,j)
     group, adj = get_adj(i,j)
     adj.each{|i,j|
@@ -23,6 +26,7 @@ class Board
     }
     return true
   end
+
   def is_legal?(i,j,color)
     if access_board(i,j) != 0
       return false
@@ -47,12 +51,19 @@ class Board
     @board_of_stone[i][j] = 0
     return true
   end
+
   def get_legal(color)
     Array.new(@height) {|i| Array.new(@width) {|j| is_legal?(i,j,color)}}
   end
+
   def get_nb_captured
     @nb_captured
   end
+
+  def get_board
+    @board_of_stone
+  end
+
   def kill_group(i,j)
     group, adj = get_adj(i,j)
     group.each{|i,j|
@@ -60,6 +71,7 @@ class Board
     }
     return group
   end
+
   def get_adj(i,j)
     # Return two lists the first is the pos of the stones of the same "group"
     # The second is the pos of the stones adjacent to that "group"
@@ -84,6 +96,7 @@ class Board
     end
     return same_group, adj_group
   end
+
   def opponent(color)
     if color <= 0
       raise "Nope, it's not a player, it's #{color}"
@@ -96,6 +109,7 @@ class Board
     end
     raise "What is that #{color} ?"
   end
+
   def add_stone(i, j, color)
     if access_board(i,j) != 0
       raise "This place (#{i},#{j}) is already taken !"
@@ -116,12 +130,13 @@ class Board
       @ko_move = [captured[0],opponent(color)]
     end
     @nb_captured = captured.size
-    return @board_of_stone
   end
+
   def rm_stone(i,j)
     if access_board(i,j) == -1
       raise "This is not a valid position (#{i},#{j})"
     end
     @board_of_stone[i][j] = 0
  end
+
 end

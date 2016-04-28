@@ -1,5 +1,5 @@
-load('board.rb')
 class Game
+
   def initialize
     @board = nil
     @players = [nil, nil]    # players[0] is the first to play (should be black)
@@ -14,12 +14,13 @@ class Game
 
   def set_player(player, number)
     @players[number] = player
+  end
 
   def launch_game
     if @board == nil
       raise "The board is not set"
     end
-    if @players.include(nil)
+    if @players.include?(nil)
       raise "One of the players is not set"
     end
     mainloop
@@ -27,11 +28,12 @@ class Game
 
   def mainloop
     @players.each{|player|
-      i,j = player.play(@board.get_board, @board.get_legal(@player.get_color))
-      @board.add_stone(i,j,@player.get_color)
+      i,j = player.play(@board.get_board, @board.get_legal(player.get_color))
+      @board.add_stone(i,j,player.get_color)
       @history << @board.get_board
-      turn += 1
+      @turn += 1
     }
   end
 
 end
+
