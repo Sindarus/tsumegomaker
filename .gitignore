@@ -1,3 +1,5 @@
+*.sw[a-z]
+.idea/*
 Documents/*
 *.rbc
 capybara-*.html
