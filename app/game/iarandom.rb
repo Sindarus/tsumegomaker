@@ -17,6 +17,9 @@ class IaRandom
         end
       }
     }
+    if choose_from.empty?
+      return [-1,-1]
+    end
     prng = Random.new
     return choose_from[prng.rand choose_from.size]
   end
