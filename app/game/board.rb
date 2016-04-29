@@ -1,4 +1,5 @@
 class Board
+
   def initialize(height, width)
     @board_of_stone = Array.new(height) {Array.new(width){0}}
     @height = height
@@ -57,6 +58,10 @@ class Board
 
   def get_nb_captured
     @nb_captured
+  end
+
+  def get_board
+    @board_of_stone
   end
 
   def kill_group(i,j)
@@ -126,7 +131,6 @@ class Board
       @ko_move = [captured[0],opponent(color)]
     end
     @nb_captured = captured.size
-    return @board_of_stone
   end
 
   def display
@@ -152,4 +156,5 @@ class Board
     end
     @board_of_stone[i][j] = 0
   end
+
 end
