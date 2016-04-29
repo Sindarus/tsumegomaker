@@ -10,19 +10,19 @@ $(document).ready(function(){
         $(".board").append("<br/>");
     }
 
+    function load_ev(){
     for(var i = 0; i<9; i++){
         for(var j = 0; j<9; j++){
             $("#" + i + "-" + j).on("click", function(){ clicked(this); })
         }
     }
-
-
+}
 })
 
 function clicked(obj){
     row = parseInt(obj.id[0]);
     column = parseInt(obj.id[2]);
-    alert("row : " + row);
+    alert("You have clicked. row : " + row);
     alert("column : " + column);
 }
 
@@ -30,13 +30,11 @@ function send_move(i, j){
     $.get("/move?i=" + i + "&j=" + j);
 }
 
-function get_board(){
-    return $.get("/board", function(){
-        return data
-    });
-}
-
-function load_board_state(){
+/**
+* \fn function load_board_state(create = false);
+* 
+*/
+function load_board_state(create = false){
     $.get("/board", function(){
         //'data' is automatically passed to the anonymous function
         var board_of_stones = [];
@@ -60,9 +58,13 @@ function load_board_state(){
             i++;
         }
 
+        // if(create){
+
+        // }
+
         //update html
-        for(var i = 0; i < board_of_stones.length){
-            for(var j = 0; j < board_of_stones[0].length){
+        for(var i = 0; i < board_of_stones.length; i++){
+            for(var j = 0; j < board_of_stones[0].length; j++){
                 if(board_of_stones[i][j] == 0){
                     $("#" + i + "-" + j).attr('class', '');
                 }
@@ -77,6 +79,6 @@ function load_board_state(){
     });
 }
 
-// function load_legal_moves(){
+// // function load_legal_moves(){
 
-// }
+// // }
