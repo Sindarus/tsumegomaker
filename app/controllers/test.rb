@@ -1,7 +1,7 @@
 load("game.rb")
 load("board.rb")
-load("playerconsole.rb")
-load("iarandom.rb")
+load("player_console.rb")
+load("ia_random.rb")
 
 b = Board.new(9,9)
 g = Game.new
