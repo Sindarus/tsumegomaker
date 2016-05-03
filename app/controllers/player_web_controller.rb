@@ -49,7 +49,7 @@ class PlayerWebController < ApplicationController
     }
   end
 
-  def play(board,legal_moves)
+  def play(board,legal_moves, last_move)
     set_board board
     set_legal legal_moves
     while ! @move_ready

@@ -8,7 +8,7 @@ class IaRandom
     @color
   end
 
-  def play(board, legal_move)
+  def play(board, legal_move, last_move)
     choose_from = []
     legal_move.each_index{|i|
       legal_move[i].each_index{|j|

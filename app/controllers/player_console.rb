@@ -8,7 +8,7 @@ class PlayerConsole
     @color
   end
 
-  def play(board, legal_moves)
+  def play(board, legal_moves, last_move)
     display board
     puts "Where do you want to play ?
 Enter the line then the columnn or -1 -1 to pass"
