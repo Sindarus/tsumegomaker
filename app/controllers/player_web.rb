@@ -1,4 +1,4 @@
-class PlayerWebController < ApplicationController
+class PlayerWebController
   def initialize()
     @color = 1
     @move_ready = false
