@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'welcome#main'
 
   get 'welcome/main' => "welcome#main"
+  get 'board' => "player_web#get_board"
 
 
   # The priority is based upon order of creation: first created -> highest priority.
