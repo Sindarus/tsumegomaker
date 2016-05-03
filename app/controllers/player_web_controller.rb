@@ -1,7 +1,6 @@
 class PlayerWebController < ApplicationController
-
-  def initialize(color)
-    @color = color
+  def initialize()
+    @color = 1
     @move_ready = false
     @move = []
     @board = nil
@@ -10,10 +9,6 @@ class PlayerWebController < ApplicationController
 
   def get_color
     @color
-  end
-
-  def get_board
-    @board
   end
 
   def get_legal
@@ -49,14 +44,17 @@ class PlayerWebController < ApplicationController
     }
   end
 
-  def play(board,legal_moves)
+  def play(board, legal_moves)
     set_board board
     set_legal legal_moves
     while ! @move_ready
-      sleep
+      sleep 0.1
     end
     @move_ready = false
     return @move
   end
-    
+
+  def get_board
+      @content = "0000\n0120\n0200\n0001"
+  end
 end
