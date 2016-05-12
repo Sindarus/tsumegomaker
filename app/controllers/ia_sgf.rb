@@ -40,11 +40,12 @@ class IaSgf
         break
       end
     }
+  end
+
   def play(board, legal, last_move)
     if last_move != []
       go_to_move(last_move, @other_color)
     end
-    
     if @current_node.children.size != 1
         raise "There is several way to respond"
     end
