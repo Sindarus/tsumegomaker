@@ -33,14 +33,16 @@ class IaSgf
     return [i,j]
   end
 
+  def go_to_move(move, color)
+    @current_node.children.each{|node|
+      if extract_move(node, color) == move
+        @current_node = node
+        break
+      end
+    }
   def play(board, legal, last_move)
     if last_move != []
-      @current_node.children.each{|node|
-        if extract_move(node,@other_color) == last_move
-          @current_node = node
-          break
-        end
-      }
+      go_to_move(last_move, @other_color)
     end
     
     if @current_node.children.size != 1
@@ -48,6 +50,13 @@ class IaSgf
     end
     @current_node = @current_node.children[0]
     return extract_move(@current_node, @color)
+  end
+
+  def catch_up(move_history)
+    my_turn = false
+    move_history.each{|move|
+      go_to_move(move, (my_turn ? @color : @other_color)
+    }
   end
 
 end

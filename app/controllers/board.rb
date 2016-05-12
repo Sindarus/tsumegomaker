@@ -17,6 +17,30 @@ class Board
     return -1
   end
 
+  def load_board(text_board)
+    i = 0
+    text_board.each_line{|line|
+      line.delete("\n")
+      j = 0
+      line.each_char{|stone|
+        @board_of_stone[i][j] = stone
+        j += 1
+      }
+      i += 1
+    }
+  end
+
+  def to_text
+    text = ""
+    @board_of_stone.each{|row|
+      row.each{|stone|
+        text << stone.to_s
+      }
+      text << "\n"
+    }
+    return text
+  end
+
   def is_dead?(i,j)
     group, adj = get_adj(i,j)
     adj.each{|i,j|
