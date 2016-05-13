@@ -1,4 +1,4 @@
-var id_gamestate;
+var gamestate_id;
 
 $(document).ready(function(){
     alert("Hello world2.");
@@ -10,28 +10,43 @@ $(document).ready(function(){
 function clicked(obj){
     row = parseInt(obj.id[0]);
     column = parseInt(obj.id[2]);
-    send_move(row, column);
-    // alert("You have clicked. row : " + row);
-    // alert("column : " + column);
+    //send_move(row, column);
+     alert("You have clicked. row : " + row);
+     alert("column : " + column);
 }
 
 function send_move(i, j){
-    if(id_gamestate == undefined || isNaN(id_gamestate) || id_gamestate == -1){
-        alert("id_gamestate not valid.");
+    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
+        alert("In send_move() : gamestate_id not valid.");
     }
-    $.get("/move?id=" + id_gamestate.toString() + "i=" + i.toString() + "&j=" + j.toString());
+    $.get("/move?id=" + gamestate_id.toString() + "i=" + i.toString() + "&j=" + j.toString());
 }
 
 function create_gamestate(problem_id){
-    $.get("/create_gamestate?id_problem=" + problem_id.toString(), null, function(data)){
-        id_gamestate = parseInt(data);
-        if (isNaN(id_gamestate)){
+    function get_gamestate_id(jqXHR, textStatus){
+        if(textStatus != "success"){
+            alert("get request failed");
+        }
+
+        data = jqXHR.responseText;
+        gamestate_id = parseInt(data);
+        if (gamestate_id == undefined){
+            alert("Something went wrong while retrieving gamestate_id");
+        }
+        else if (isNaN(gamestate_id)){
             alert("Server responded badly to /create_gamestate");
         }
-        else if(id_gamestate != -1){
+        else if(gamestate_id == -1){
             alert("Server could not generate a gamestate with the problem you asked for.");
         }
+        else{
+            //alert("successfully retrieved gamestate_id");
+        }
     }
+
+    $.get({url: "/create_game?problem_id=" + problem_id.toString(),
+           complete: get_gamestate_id,
+           async: false});
 }
 
 /**
@@ -39,7 +54,10 @@ function create_gamestate(problem_id){
 * if create is set to true, the function will create the html tags.
 */
 function load_board_state(create = false){
-    $.get("/board?id=" + id_gamestate.toString(), null, function(data){
+    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
+        alert("In load_board_state(): gamestate_id not valid. gamestate_id : " + gamestate_id);
+    }
+    $.get("/get_board?id=" + gamestate_id.toString(), null, function(data){
         //'data' is automatically passed to the anonymous function
 
         var board_of_stones = [];
@@ -58,16 +76,18 @@ function load_board_state(create = false){
                 cur_column++;
             }
             else if(data[i] == "\n"){
-                cur_row++;
-                board_of_stones[cur_row] = [];
-                cur_column = 0;
+                if(data[i+1] != "\n" && data[i+1] != undefined){
+                    cur_row++;
+                    board_of_stones[cur_row] = [];
+                    cur_column = 0;
+                }
             }
             else{
                 alert("Unvalid data recieved from the server ! Please retry.")
             }
             i++;
         }
-        var height = board_of_stones.length - 1;
+        var height = board_of_stones.length;
         var width = board_of_stones[0].length;
 
         //create html tags
