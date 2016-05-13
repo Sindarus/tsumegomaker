@@ -16,12 +16,10 @@ function clicked(obj){
 }
 
 function send_move(i, j){
-    alert("send move");
     if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
         alert("In send_move() : gamestate_id not valid.");
     }
 
-    alert("requete : /move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString());
     $.get("/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString(),
           null,
           function(data){ alert("send move went well"); load_board(data, false); });
