@@ -60,8 +60,8 @@ class GamesStateController < ApplicationController
 
   def move
     game_state_id = params[:id]
-    i = params[:i]
-    j = params[:j]
+    i = params[:i].to_i
+    j = params[:j].to_i
     load_state(game_state_id)
     player_move(i, j)
     ia_move = @ia_player.play(@board.get_board,
