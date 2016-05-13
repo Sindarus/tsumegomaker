@@ -7,7 +7,8 @@ class CreateGameStates < ActiveRecord::Migration
       t.text :move_history
       t.integer :width
       t.integer :height
-
+      t.integer :problem_id
+      
       t.timestamps null: false
     end
   end

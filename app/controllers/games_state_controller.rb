@@ -8,7 +8,8 @@ class GamesStateController < ApplicationController
 
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
-    @ia_player = IaSgf.new(@game_state.ia_color, @game_state.problem_file)
+    problem_file = Problem.find_by(id: @game_state.problem_id).problem_file
+    @ia_player = IaSgf.new(@game_state.ia_color, problem_file)
     load_move_history
     @ia_player.catch_up(@move_history)
     @board = Board.new(@game_state.height, @game_state.width)
@@ -20,6 +21,14 @@ class GamesStateController < ApplicationController
       @move_history << move.split
     }
     @move_history.reverse!
+  end
+
+  def save_move_history
+    move_history_text = ""
+    @move_history.reverse!
+    @move_history.each{|i,j|
+      move_history_text << i.to_str + " " + j.to_str + "\n"
+    }
   end
 
   def player_move(i,j)
@@ -36,12 +45,16 @@ class GamesStateController < ApplicationController
 
   def save_state(game_state_id)
     board_history = @board.to_text + @game_state.board_history
-    @game_state.board_history(board_history)
-    @game_state.move_history = @move_history
+    @game_state.board_history = board_history
+    save_move_history
   end
 
   def send_board
     @content = @board.to_text
+  end
+
+  def send_id
+    @content = @game_state.id
   end
 
   def move
@@ -61,6 +74,14 @@ class GamesStateController < ApplicationController
     game_state_id = params[:id]
     load_state(game_state_id)
     send_board
+  end
+
+  def create_game
+    problem_id = params[:problem_id]
+    @game_state = GameState.new
+    @game_state.setup(problem_id)
+    @game_state.save
+    send_id
   end
 
 end
