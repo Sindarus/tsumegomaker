@@ -1,18 +1,37 @@
+var id_gamestate;
+
 $(document).ready(function(){
     alert("Hello world2.");
 
+    create_gamestate(1);
     load_board_state(true);
 })
 
 function clicked(obj){
     row = parseInt(obj.id[0]);
     column = parseInt(obj.id[2]);
-    alert("You have clicked. row : " + row);
-    alert("column : " + column);
+    send_move(row, column);
+    // alert("You have clicked. row : " + row);
+    // alert("column : " + column);
 }
 
 function send_move(i, j){
-    $.get("/move?i=" + i + "&j=" + j);
+    if(id_gamestate == undefined || isNaN(id_gamestate) || id_gamestate == -1){
+        alert("id_gamestate not valid.");
+    }
+    $.get("/move?id=" + id_gamestate.toString() + "i=" + i.toString() + "&j=" + j.toString());
+}
+
+function create_gamestate(problem_id){
+    $.get("/create_gamestate?id_problem=" + problem_id.toString(), null, function(data)){
+        id_gamestate = parseInt(data);
+        if (isNaN(id_gamestate)){
+            alert("Server responded badly to /create_gamestate");
+        }
+        else if(id_gamestate != -1){
+            alert("Server could not generate a gamestate with the problem you asked for.");
+        }
+    }
 }
 
 /**
@@ -20,7 +39,7 @@ function send_move(i, j){
 * if create is set to true, the function will create the html tags.
 */
 function load_board_state(create = false){
-    $.get("/board", null, function(data){
+    $.get("/board?id=" + id_gamestate.toString(), null, function(data){
         //'data' is automatically passed to the anonymous function
 
         var board_of_stones = [];
