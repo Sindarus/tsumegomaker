@@ -2,7 +2,8 @@ Rails.application.routes.draw do
   root 'welcome#main'
 
   get 'welcome/main' => "welcome#main"
-  get 'board/:id' => "game_state#get_board"
+  get 'board' => "game_state#get_board"
+  get 'move' => "game_state#move"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

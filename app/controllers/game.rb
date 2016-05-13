@@ -46,7 +46,7 @@ class Game
       else
         @the_other_passed = false
         if ! legal[i][j]
-          raise "This move is unvalid"
+          raise "This move is invalid"
         end
         @board.add_stone(i,j,player.get_color)
       end

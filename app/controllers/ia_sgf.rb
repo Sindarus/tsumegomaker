@@ -23,7 +23,7 @@ class IaSgf
     end
     move_s = node[color_s]
     if move_s == nil
-      raise "There is no move of the right color in this node"
+      raise "There is no move of the right color in this node."
     end
     if move_s == ""
       return [-1,-1]
@@ -34,12 +34,17 @@ class IaSgf
   end
 
   def go_to_move(move, color)
+    ok = false
     @current_node.children.each{|node|
       if extract_move(node, color) == move
         @current_node = node
+        ok = true
         break
       end
     }
+    if not ok
+      raise "There is no registered reponse to that move."
+    end
   end
 
   def play(board, legal, last_move)
@@ -56,7 +61,7 @@ class IaSgf
   def catch_up(move_history)
     my_turn = false
     move_history.each{|move|
-      go_to_move(move, (my_turn ? @color : @other_color)
+      go_to_move(move, (my_turn ? @color : @other_color))
     }
   end
 
