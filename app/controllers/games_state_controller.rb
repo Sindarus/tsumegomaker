@@ -48,6 +48,7 @@ class GamesStateController < ApplicationController
     board_history = @board.to_text + @game_state.board_history
     @game_state.board_history = board_history
     save_move_history
+    @game_state.save
   end
 
   def send_board
@@ -64,9 +65,10 @@ class GamesStateController < ApplicationController
     j = params[:j].to_i
     load_state(game_state_id)
     player_move(i, j)
-    ia_move = @ia_player.play(@board.get_board,
+    ia_i, ia_j = @ia_player.play(@board.get_board,
                     @board.get_legal(@ia_player.get_color), [i,j])
-    @move_history = [ia_move] + @move_history
+    @board.add_stone(ia_i, ia_j, @game_state.ia_color)
+    @move_history = [[ia_i,ia_j]] + @move_history
     save_state(game_state_id)
     send_board
     render 'get_board'
