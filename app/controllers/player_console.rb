@@ -16,7 +16,7 @@ Enter the line then the columnn or -1 -1 to pass"
     j = gets
     return [i.to_i,j.to_i]
   end
-  
+
   def display(board)
     board.each{|row|
        row.each{|stone|
@@ -33,5 +33,4 @@ Enter the line then the columnn or -1 -1 to pass"
        print("\n")
     }
   end
-
 end

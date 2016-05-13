@@ -48,3 +48,4 @@ end
 
 gem 'haml'
 gem 'SgfParser'
+gem 'pry-rails'
