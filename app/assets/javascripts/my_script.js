@@ -20,10 +20,14 @@ function send_move(i, j){
         alert("In send_move() : gamestate_id not valid.");
     }
 
-    $.get("/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString(),
-          null,
-          function(data){ alert("send move went well"); load_board(data, false); });
-
+    var url = "/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString();
+    var request = $.get(url, null, function(data){
+        alert("send move went well");
+        load_board(data, false);
+    });
+    request.fail(function(){
+        alert("Get request to send move failed. Must be server side problem. Try running the request from a console for more info.");
+    });
 }
 
 function create_gamestate(problem_id){

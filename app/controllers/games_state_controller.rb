@@ -28,7 +28,7 @@ class GamesStateController < ApplicationController
     move_history_text = ""
     @move_history.reverse!
     @move_history.each{|i,j|
-      move_history_text << i.to_str + " " + j.to_str + "\n"
+      move_history_text << i.to_s + " " + j.to_s + "\n"
     }
   end
 
@@ -69,6 +69,7 @@ class GamesStateController < ApplicationController
     @move_history = [ia_move] + @move_history
     save_state(game_state_id)
     send_board
+    render 'get_board'
   end
 
   def get_board
