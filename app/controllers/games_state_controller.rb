@@ -14,7 +14,7 @@ class GamesStateController < ApplicationController
     load_move_history
     @ia_player.catch_up(@move_history)
     @board = Board.new(@game_state.height, @game_state.width)
-    @board.load_board(@game_state.board_history.split[0..@game_state.height-1].join)
+    @board.load_board(@game_state.board_history.split[0..@game_state.height-1].join("\n"))
   end
 
   def load_move_history

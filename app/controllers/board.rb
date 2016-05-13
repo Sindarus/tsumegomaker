@@ -20,10 +20,10 @@ class Board
   def load_board(text_board)
     i = 0
     text_board.each_line{|line|
-      line.delete("\n")
+      line.delete!("\n")
       j = 0
       line.each_char{|stone|
-        @board_of_stone[i][j] = stone
+        @board_of_stone[i][j] = stone.to_i
         j += 1
       }
       i += 1
