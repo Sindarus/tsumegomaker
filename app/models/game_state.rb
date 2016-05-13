@@ -9,6 +9,7 @@ class GameState < ActiveRecord::Base
     @width = problem.width
     @height = problem.height
     @problem_id = problem_id
+    save
   end
 
 end

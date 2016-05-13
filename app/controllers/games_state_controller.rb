@@ -8,7 +8,8 @@ class GamesStateController < ApplicationController
 
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
-    problem_file = Problem.find_by(id: @game_state.problem_id).problem_file
+    problem = Problem.find_by(id: @game_state.problem_id)
+    problem_file = problem.problem_file
     @ia_player = IaSgf.new(@game_state.ia_color, problem_file)
     load_move_history
     @ia_player.catch_up(@move_history)
@@ -79,7 +80,14 @@ class GamesStateController < ApplicationController
   def create_game
     problem_id = params[:problem_id]
     @game_state = GameState.new
-    @game_state.setup(problem_id)
+    problem = Problem.find_by(id: problem_id)
+    @game_state.player_color = problem.player_color
+    @game_state.ia_color = problem.ia_color
+    @game_state.board_history = problem.initial_board
+    @game_state.move_history = ""
+    @game_state.width = problem.width
+    @game_state.height = problem.height
+    @game_state.problem_id = problem_id
     @game_state.save
     send_id
   end

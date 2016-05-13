@@ -17,15 +17,26 @@ ActiveRecord::Schema.define(version: 20160511125414) do
   enable_extension "plpgsql"
 
   create_table "game_states", force: :cascade do |t|
+    t.integer  "player_color"
+    t.integer  "ia_color"
     t.text     "board_history"
     t.text     "move_history"
+    t.integer  "width"
+    t.integer  "height"
+    t.integer  "problem_id"
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false
   end
 
   create_table "problems", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "player_color"
+    t.integer  "ia_color"
+    t.integer  "width"
+    t.integer  "height"
+    t.text     "initial_board"
+    t.string   "problem_file"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
   end
 
 end

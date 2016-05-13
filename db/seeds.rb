@@ -10,4 +10,4 @@ Problem.create(player_color: 1,
                ia_color: 2,
                initial_board: "00000\n11110\n22211\n00221\n00021\n",
                width: 5, height: 5,
-               problem_file: "../app/assets/problems/example.sgf")
+               problem_file: "app/assets/problems/example.sgf")

@@ -4,7 +4,7 @@ class IaSgf
   def initialize(color,sgf_file)
     @color = color
     @other_color = (@color == 1 ? 2 : 1)
-    @collection = SGF::Parser.new.parse sgf_file
+    @collection = SGF::Parser.new.parse IO.read(sgf_file)
     if @collection.current_node.children.size != 1
       raise "There is several Gametrees in this file"
     end
