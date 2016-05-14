@@ -21,6 +21,11 @@ class GamesStateController < ApplicationController
     @game_state.move_history.each_line{|move|
       @move_history << move.split
     }
+    @move_history = @move_history.each.map{|move|
+      move.each.map{|c|
+        Integer(c)
+      }
+    }
     @move_history.reverse!
   end
 
@@ -32,16 +37,20 @@ class GamesStateController < ApplicationController
     }
     @game_state.move_history = move_history_text
   end
+  
+  def add_move_history(i,j)
+    @move_history << [i,j]
+  end
 
   def player_move(i,j)
     if [i,j] == [-1,-1]
-     @move_history = [[i,j]] + @move_history
-     return
+      add_move_history(i,j)
+      return
     end
     if ! @board.is_legal?(i,j,@game_state.player_color)
       raise "This move is illegal"
     end
-    @move_history = [[i,j]] + @move_history
+    add_move_history(i,j)
     @board.add_stone(i, j, @game_state.player_color)
   end
 
@@ -69,7 +78,7 @@ class GamesStateController < ApplicationController
     ia_i, ia_j = @ia_player.play(@board.get_board,
                     @board.get_legal(@ia_player.get_color), [i,j])
     @board.add_stone(ia_i, ia_j, @game_state.ia_color)
-    @move_history = [[ia_i,ia_j]] + @move_history
+    add_move_history(ia_i,ia_j)
     save_state(game_state_id)
     send_board
     render 'get_board'
