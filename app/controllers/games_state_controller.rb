@@ -30,6 +30,7 @@ class GamesStateController < ApplicationController
     @move_history.each{|i,j|
       move_history_text << i.to_s + " " + j.to_s + "\n"
     }
+    @game_state.move_history = move_history_text
   end
 
   def player_move(i,j)
