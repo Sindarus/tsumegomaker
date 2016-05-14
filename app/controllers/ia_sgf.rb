@@ -43,7 +43,7 @@ class IaSgf
       end
     }
     if not ok
-      raise "There is no registered reponse to that move."
+      raise "There is no registered reponse to that move : #{move}."
     end
   end
 
@@ -62,6 +62,7 @@ class IaSgf
     my_turn = false
     move_history.each{|move|
       go_to_move(move, (my_turn ? @color : @other_color))
+      my_turn = (my_turn ? false : true)
     }
   end
 
