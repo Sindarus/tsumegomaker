@@ -14,11 +14,30 @@
  *= require_self
  */
 
+table {
+    border-spacing: 0 0;
+}
 
 .white {
-    background-color: #CCCCCC;
+    display: inline-block;
+    height: 57px;
+    width: 57px;
+    background-image: url("white.png");
+    /*background-color: #CCCCCC;*/
 }
 
 .black {
-    background-color: #000000;
+    display: inline-block;
+    height: 57px;
+    width: 57px;
+    background-image: url("black.png");
+    /*background-color: #000000;*/
+}
+
+.empty {
+    display: inline-block;
+    height: 57px;
+    width: 57px;
+    background-image: url("empty.png");
+    /*background-color: #000000;*/
 }

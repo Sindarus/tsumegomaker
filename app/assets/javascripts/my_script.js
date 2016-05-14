@@ -22,7 +22,7 @@ function send_move(i, j){
 
     var url = "/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString();
     var request = $.get(url, null, function(data){
-        alert("send move went well");
+        //alert("send move went well");
         load_board(data, false);
     });
     request.fail(function(){
@@ -101,13 +101,17 @@ function load_board(data, create = false){
 
     //create html tags
     if(create){
+        $(".board").append("<table/>");
+
         for(var i = 0; i<height; i++){
+            var table_row = $("<tr>", {id: i});
+            table_row.appendTo("table");
+
             for(var j = 0; j<width; j++){
-                var span = $("<span/>", {id: i + "-" + j, text: "__"});
-                span.appendTo(".board");
-                $(".board").append(".");
+                var table_data = $("<td/>", {id: i + "-" + j, text: ""});
+                table_data.appendTo("tr#" + i);
+                //$(".board").append(".");
             }
-            $(".board").append("<br/>");
         }
 
         for(var i = 0; i<height; i++){
@@ -121,7 +125,7 @@ function load_board(data, create = false){
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
             if(board_of_stones[i][j] == 0){
-                $("#" + i + "-" + j).attr('class', '');
+                $("#" + i + "-" + j).attr('class', 'empty');
             }
             else if(board_of_stones[i][j] == 1){
                 $("#" + i + "-" + j).attr('class', 'black');
