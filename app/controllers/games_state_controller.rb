@@ -37,7 +37,7 @@ class GamesStateController < ApplicationController
     }
     @game_state.move_history = move_history_text
   end
-  
+
   def add_move_history(i,j)
     @move_history << [i,j]
   end
@@ -76,7 +76,8 @@ class GamesStateController < ApplicationController
     load_state(game_state_id)
     player_move(i, j)
     ia_i, ia_j = @ia_player.play(@board.get_board,
-                    @board.get_legal(@ia_player.get_color), [i,j])
+                                 @board.get_legal(@ia_player.get_color),
+                                 [i,j])
     @board.add_stone(ia_i, ia_j, @game_state.ia_color)
     add_move_history(ia_i,ia_j)
     save_state(game_state_id)

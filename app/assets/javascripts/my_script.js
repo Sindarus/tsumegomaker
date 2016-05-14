@@ -55,6 +55,8 @@ function create_gamestate(problem_id){
     $.get({url: "/create_game?problem_id=" + problem_id.toString(),
            complete: get_gamestate_id,
            async: false});
+
+    $("body").append("<br/>Your game has id : " + gamestate_id.toString());
 }
 
 

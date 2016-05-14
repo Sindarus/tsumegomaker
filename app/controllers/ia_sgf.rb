@@ -43,7 +43,7 @@ class IaSgf
       end
     }
     if not ok
-      raise "There is no registered reponse to that move : #{move}."
+      raise "The move #{move} is not registered in the sgf."
     end
   end
 

@@ -136,7 +136,7 @@ class Board
 
   def add_stone(i, j, color)
     if access_board(i,j) != 0
-      raise "This place (#{i},#{j}) is already taken !"
+      raise "The spot (#{i}, #{j}) is already taken, cannot add a stone of color #{color} !"
     end
     # Add the stone
     @board_of_stone[i][j] = color
