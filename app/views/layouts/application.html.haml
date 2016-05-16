@@ -7,5 +7,24 @@
     = csrf_meta_tags
     
   %body
-    =yield
+    %header
+      %nav
+        .nav-wrapper
+          %a.brand-logo{:href =>'#'}
+            TsumegoMaker
+          %ul#nav-mobile.right
+            %li
+              %a{:href =>'#'}
+                Jouer
+            %li
+              %a{:href =>'#'}
+                À propos
+    %main
+      =yield
+    %footer.page-footer
+      .footer-copyright
+        .container
+          Ce site a été fait en 2016 à l'ENSIIE Strasbourg par Clément Saintier et Stéphane Kastenbaum
+          %a.right.grey-text.text-lighten-4{:href =>'https://github.com/Sindarus/tsumegomaker'}
+            Lien GitHub du projet
   
