@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   root 'welcome#main'
 
   get 'welcome/main' => "welcome#main"
+  get 'play' => "play#play"
   get 'get_board' => "games_state#get_board"
   get 'move' => "games_state#move"
   get 'create_game' => "games_state#create_game"
