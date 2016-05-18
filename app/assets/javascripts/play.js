@@ -68,6 +68,7 @@ function create_gamestate(problem_id){
 * \brief From a given board string, this function will load the board on screen. It will update the html.
 */
 function load_board(data, create = false){
+    console.log("Successfully received board data : " + data);
     //'data' is automatically passed to the anonymous function
 
     var board_of_stones = [];
@@ -93,12 +94,13 @@ function load_board(data, create = false){
             }
         }
         else{
-            alert("Unvalid data recieved from the server ! Please retry.")
+            console.log("Unvalid data recieved from the server ! Please retry.")
         }
         i++;
     }
     var height = board_of_stones.length;
     var width = board_of_stones[0].length;
+    console.log("Loaded board into an array. height : " + height.toString() + " width : " + width.toString());
 
     //create html tags
     if(create){
@@ -120,6 +122,7 @@ function load_board(data, create = false){
                 $("#" + i + "-" + j).on("click", function(){ clicked(this); })
             }
         }
+        console.log("Created html tags.");
     }
 
     //update html
@@ -136,6 +139,7 @@ function load_board(data, create = false){
             }
         }
     }
+    console.log("Updated html according to the board we just recieved.");
 }
 
 /**
