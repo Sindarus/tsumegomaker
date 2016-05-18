@@ -61,14 +61,6 @@ class GamesStateController < ApplicationController
     @game_state.save
   end
 
-  def send_board
-    @content = @board.to_text
-  end
-
-  def send_id
-    @content = @game_state.id
-  end
-
   def move
     game_state_id = params[:id]
     i = params[:i].to_i
@@ -81,20 +73,29 @@ class GamesStateController < ApplicationController
     @board.add_stone(ia_i, ia_j, @problem.ia_color)
     add_move_history(ia_i,ia_j)
     save_state(game_state_id)
-    send_board
-    render 'get_board'
+    @content = @board.to_text
+    render 'show_content'
   end
 
   def get_board
     game_state_id = params[:id]
     load_state(game_state_id)
-    send_board
+    @content = @board.to_text
+    render 'show_content'
   end
 
   def get_legal
     game_state_id = params[:id]
     load_state(game_state_id)
     @content = @board.get_legal_as_text(@problem.player_color)
+    render 'show_content'
+  end
+
+  def get_color
+    game_state_id = params[:id]
+    load_state(game_state_id)
+    @content = @problem.player_color.to_s
+    render 'show_content'
   end
 
   def create_game
@@ -107,7 +108,8 @@ class GamesStateController < ApplicationController
     @game_state.height = @problem.height
     @game_state.problem_id = problem_id
     @game_state.save
-    send_id
+    @content = @game_state.id
+    render 'show_content'
   end
 
 end
