@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   get 'play' => "play#play"
   get 'get_board' => "games_state#get_board"
   get 'get_legal' => "games_state#get_legal"
+  get 'get_color' => "games_state#get_color"
   get 'move' => "games_state#move"
   get 'create_game' => "games_state#create_game"
   get ':controller(/:action(/:id))(.:format)'
