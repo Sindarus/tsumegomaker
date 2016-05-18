@@ -1,0 +1,13 @@
+- @page_title = "Connexion"
+.Sign_Form
+  .row
+    %h1.center Connexion
+    =form_tag 'login_attempt', :class => "col s4 offset-s4" do
+      .row
+        .input_field.col.s12
+          = label_tag :username_or_email
+          = text_field_tag :username_or_email
+        .input_field.col.s12
+          = label_tag :password
+          = password_field_tag :password
+        = submit_tag "Se connecter", :class => "btn"
