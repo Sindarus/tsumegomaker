@@ -4,8 +4,11 @@ var legal_moves;        //2D array of same size as board
 
 $(document).ready(function(){
     console.log("Started script.");
-
-    create_gamestate(1);
+    var problem_id = parseInt($("#problem_id").text());
+    if(problem_id == undefined || isNaN(problem_id)){
+      console.log("Main function : could not parsed problem_id : " + problem_id.toString());
+    }
+    create_gamestate(problem_id);
     get_and_load_board(true);
     update_legal_moves();
 })

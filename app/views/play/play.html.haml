@@ -1,10 +1,11 @@
 = javascript_include_tag 'play.js'
 .container#main_container
-  .container#board_container
-    %br
-    #board
-    #board_info
-
-  .container#error_container
+  .row
+    %h1
+      Problème n°
+      %span#problem_id=@problem_id
+    .col
+      #board
+      #board_info
     #error
 
