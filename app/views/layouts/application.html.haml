@@ -9,29 +9,36 @@
   %body
     %header
       %nav
-        .nav-wrapper
-          %a.brand-logo{:href =>'/'}
-            TsumegoMaker
-          %ul#nav-mobile.right
-            %li
-              %a{:href =>'/problem/list'}
-                Jouer
-            %li
-              %a{:href =>'#'}
-                À propos
-            - if @current_user
+        .top-nav
+          .container
+            %a.brand-logo{:href =>'/'}
+              TsumegoMaker
+            %ul#nav-mobile.right
               %li
-                = @current_user.username
+                %a{:href =>'/problem/list'}
+                  Jouer
               %li
-                %a.btn{:href => '/sessions/logout'}
-                  Se déconnecter
-            - else
-              %li
-                %a.btn{:href => '/users/new'}
-                  S'inscrire
-              %li
-                %a.btn{:href =>'/sessions/login'}
-                  Se connecter
+                %a{:href =>'#'}
+                  À propos
+              - if @current_user
+                %li
+                  = @current_user.username
+                %li
+                  %a.btn{:href => '/sessions/logout'}
+                    Se déconnecter
+              - else
+                %li
+                  %a.btn{:href => '/users/new'}
+                    S'inscrire
+                %li
+                  %a.btn{:href =>'/sessions/login'}
+                    Se connecter
+      - if flash[:notice]
+        .container
+          //=".notice."+(flash[:color] == "valid" ? "teal-accent-3" : "red-accent-4")
+          .notice.red.lighten-2.white-text
+            .center
+              %b=flash[:notice]
     %main
       =yield
     %footer.page-footer

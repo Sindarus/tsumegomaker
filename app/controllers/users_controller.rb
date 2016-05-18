@@ -12,10 +12,11 @@ class UsersController < ApplicationController
     if @user.save
       flash[:notice] = "Vous êtes enregistré"
       flash[:color] = "valid"
+      redirect_to :action => 'login', :controller => 'sessions'
     else
       flash[:notice] = "Il y a une erreur dans le formulaire"
       flash[:color] = "invalid"
+      render "new"
     end
-    render "new"
   end
 end
