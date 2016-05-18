@@ -1,13 +1,14 @@
 var gamestate_id;
 
 $(document).ready(function(){
-    alert("Hello world2.");
+    console.log("Started script.");
 
     create_gamestate(1);
     get_and_load_board(true);
 })
 
 function clicked(obj){
+    console.log("Clicked.");
     row = parseInt(obj.id[0]);
     column = parseInt(obj.id[2]);
     send_move(row, column);
@@ -17,38 +18,38 @@ function clicked(obj){
 
 function send_move(i, j){
     if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
-        alert("In send_move() : gamestate_id not valid.");
+        console.log("In send_move() : gamestate_id not valid. gamestate_id : " + gamestate_id.toString());
     }
 
     var url = "/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString();
     var request = $.get(url, null, function(data){
-        //alert("send move went well");
+        console.log("successfully sent move (" + i.toString() + ", " + j.toString() + ")");
         load_board(data, false);
     });
-    request.fail(function(){
-        alert("Get request to send move failed. Must be server side problem. Try running the request from a console for more info.");
+    request.fail(function(jqXHR){
+        console.log("Get request to send move failed. Data : " + jqXHR.responseText());
     });
 }
 
 function create_gamestate(problem_id){
     function get_gamestate_id(jqXHR, textStatus){
         if(textStatus != "success"){
-            alert("get request failed");
+            alert("Get request to create gamestate failed. data : " + jqXHR.responseText);
         }
 
         data = jqXHR.responseText;
         gamestate_id = parseInt(data);
         if (gamestate_id == undefined){
-            alert("Something went wrong while retrieving gamestate_id");
+            console.log("Something went wrong while retrieving gamestate_id");
         }
         else if (isNaN(gamestate_id)){
-            alert("Server responded badly to /create_gamestate");
+            console.log("Server responded badly to /create_gamestate");
         }
         else if(gamestate_id == -1){
-            alert("Server could not generate a gamestate with the problem you asked for.");
+            console.log("Server could not generate a gamestate with the problem you asked for.");
         }
         else{
-            //alert("successfully retrieved gamestate_id");
+            console.log("Successfully retrieved gamestate_id : " + gamestate_id.toString());
         }
     }
 
@@ -56,7 +57,7 @@ function create_gamestate(problem_id){
            complete: get_gamestate_id,
            async: false});
 
-    $("body").append("<br/>Your game has id : " + gamestate_id.toString());
+    $("#board_info").append("<br/>Your game has id : " + gamestate_id.toString());
 }
 
 
@@ -101,7 +102,7 @@ function load_board(data, create = false){
 
     //create html tags
     if(create){
-        $(".board").append("<table/>");
+        $("#board").append("<table/>");
 
         for(var i = 0; i<height; i++){
             var table_row = $("<tr>", {id: i});
@@ -110,7 +111,7 @@ function load_board(data, create = false){
             for(var j = 0; j<width; j++){
                 var table_data = $("<td/>", {id: i + "-" + j, text: ""});
                 table_data.appendTo("tr#" + i);
-                //$(".board").append(".");
+                //$("#board").append(".");
             }
         }
 
@@ -145,9 +146,18 @@ function get_and_load_board(create = false){
     if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
         alert("In get_and_load_board(): gamestate_id not valid. gamestate_id : " + gamestate_id);
     }
-    $.get("/get_board?id=" + gamestate_id.toString(), null, function(data){ load_board(data, create) });
+    var req = $.get("/get_board?id=" + gamestate_id.toString(), null, function(data){ load_board(data, create) });
+    req.fail(function(jqXHR){
+        console.log("get_and_load_board : Get request to get board failed. Data : " + jqXHR.responseText);
+        display_rails_error(jqXHR);
+    });
 }
 
 // // function load_legal_moves(){
 
 // // }
+
+
+function display_rails_error(jqXHR){
+    $("#error").append(jqXHR.responseText);
+}
