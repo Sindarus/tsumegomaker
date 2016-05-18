@@ -5,7 +5,7 @@ class UsersController < ApplicationController
   
   def create
     permitted = params.require(:user).permit(:username, :email, :password, :password_confirmation)
-    @user = User.new(permitted[:user])
+    @user = User.new(permitted)
     if @user.save
       flash[:notice] = "Vous êtes enregistré"
       flash[:color] = "valid"
