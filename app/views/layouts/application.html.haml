@@ -19,12 +19,19 @@
             %li
               %a{:href =>'#'}
                 À propos
-            %li
-              %a.btn{:href => '/users/new'}
-                S'inscrire
-            %li
-              %a.btn{:href =>'/sessions/login'}
-                Se connecter
+            - if @current_user
+              %li
+                = @current_user.username
+              %li
+                %a.btn{:href => '/sessions/logout'}
+                  Se déconnecter
+            - else
+              %li
+                %a.btn{:href => '/users/new'}
+                  S'inscrire
+              %li
+                %a.btn{:href =>'/sessions/login'}
+                  Se connecter
     %main
       =yield
     %footer.page-footer
