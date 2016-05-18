@@ -1,4 +1,5 @@
 var gamestate_id;
+var player_color
 var board;              //2D array
 var legal_moves;        //2D array of same size as board
 
@@ -18,6 +19,15 @@ function clicked(obj){
     row = parseInt(obj.id[0]);
     column = parseInt(obj.id[2]);
     if(legal_moves[row][column]){
+        if(player_color == 1){
+            $("#" + row + "-" + column).attr('class', 'black');
+        }
+        if(player_color == 2){
+            $("#" + row + "-" + column).attr('class', 'white');
+        }
+
+        //window.requestAnimationFrame(function(){ });
+        //setTimeout(send_move, 1000, row, column);
         send_move(row, column);
     }
     else{
@@ -133,7 +143,7 @@ function create_gamestate(problem_id){
             display_rails_error(jqXHR);
         }
 
-        data = jqXHR.responseText;
+        var data = jqXHR.responseText;
         gamestate_id = parseInt(data);
         if (gamestate_id == undefined){
             console.log("Something went wrong while retrieving gamestate_id");
@@ -215,6 +225,31 @@ function update_legal_moves(){
         }
         legal_moves = legal_moves_temp; //update global variable
     }
+}
+
+function update_player_color(){
+    console.log("Updating player's color.");
+    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
+        console.log("In update_legal_moves(): gamestate_id not valid. gamestate_id : " + gamestate_id);
+    }
+
+    var req = $.get("/get_color?id=" + gamestate_id.toString(), null, after_get_color);
+    req.fail(function(jqXHR){
+        console.log("update_player_color() : Get request to get player color failed.");
+        display_rails_error(jqXHR);
+    });
+
+    //FUNCTION CALLED AFTER THE GET REQUEST
+    function after_get_color(data){
+        console.log("after_get_color() : successfully received player color : " + data);
+
+        legal_moves = legal_moves_temp; //update global variable
+    }
+}
+
+function sleep(milliSeconds){
+        var startTime = new Date().getTime();
+        while (new Date().getTime() < startTime + milliSeconds);
 }
 
 function display_rails_error(jqXHR){
