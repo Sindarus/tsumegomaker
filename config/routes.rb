@@ -5,10 +5,12 @@ Rails.application.routes.draw do
   get 'welcome/main' => "welcome#main"
   get 'play' => "play#play"
   get 'get_board' => "games_state#get_board"
+  get 'get_legal' => "games_state#get_legal"
   get 'move' => "games_state#move"
   get 'create_game' => "games_state#create_game"
   get ':controller(/:action(/:id))(.:format)'
   post ':controller(/:action)(.:format)'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

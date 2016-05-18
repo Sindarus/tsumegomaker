@@ -8,9 +8,9 @@ class GamesStateController < ApplicationController
 
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
-    problem = Problem.find_by(id: @game_state.problem_id)
-    problem_file = problem.problem_file
-    @ia_player = IaSgf.new(@game_state.ia_color, problem_file)
+    @problem = Problem.find_by(id: @game_state.problem_id)
+    problem_file = @problem.problem_file
+    @ia_player = IaSgf.new(@problem.ia_color, problem_file)
     load_move_history
     @ia_player.catch_up(@move_history)
     @board = Board.new(@game_state.height, @game_state.width)
@@ -47,11 +47,11 @@ class GamesStateController < ApplicationController
       add_move_history(i,j)
       return
     end
-    if ! @board.is_legal?(i,j,@game_state.player_color)
+    if ! @board.is_legal?(i,j,@problem.player_color)
       raise "This move is illegal"
     end
     add_move_history(i,j)
-    @board.add_stone(i, j, @game_state.player_color)
+    @board.add_stone(i, j, @problem.player_color)
   end
 
   def save_state(game_state_id)
@@ -78,7 +78,7 @@ class GamesStateController < ApplicationController
     ia_i, ia_j = @ia_player.play(@board.get_board,
                                  @board.get_legal(@ia_player.get_color),
                                  [i,j])
-    @board.add_stone(ia_i, ia_j, @game_state.ia_color)
+    @board.add_stone(ia_i, ia_j, @problem.ia_color)
     add_move_history(ia_i,ia_j)
     save_state(game_state_id)
     send_board
@@ -91,16 +91,20 @@ class GamesStateController < ApplicationController
     send_board
   end
 
+  def get_legal
+    game_state_id = params[:id]
+    load_state(game_state_id)
+    @content = @board.get_legal_as_text(@problem.player_color)
+  end
+
   def create_game
     problem_id = params[:problem_id]
     @game_state = GameState.new
-    problem = Problem.find_by(id: problem_id)
-    @game_state.player_color = problem.player_color
-    @game_state.ia_color = problem.ia_color
-    @game_state.board_history = problem.initial_board
+    @problem = Problem.find_by(id: problem_id)
+    @game_state.board_history = @problem.initial_board
     @game_state.move_history = ""
-    @game_state.width = problem.width
-    @game_state.height = problem.height
+    @game_state.width = @problem.width
+    @game_state.height = @problem.height
     @game_state.problem_id = problem_id
     @game_state.save
     send_id

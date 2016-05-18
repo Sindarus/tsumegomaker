@@ -77,7 +77,22 @@ class Board
   end
 
   def get_legal(color)
+    if color == nil
+      raise "get_legal : color provided is nil"
+    end
     Array.new(@height) {|i| Array.new(@width) {|j| is_legal?(i,j,color)}}
+  end
+
+  def get_legal_as_text(color)
+    legal = get_legal(color)
+    text = ""
+    legal.each{|row|
+      row.each{|stone|
+        text << (stone.to_s == "true" ? "1" : "0")
+      }
+      text << "\n"
+    }
+    return text
   end
 
   def get_nb_captured
