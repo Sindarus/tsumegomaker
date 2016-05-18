@@ -10,13 +10,28 @@ class GamesStateController < ApplicationController
     @game_state = GameState.find_by(id: game_state_id)
     @problem = Problem.find_by(id: @game_state.problem_id)
     problem_file = @problem.problem_file
-    @ia_player = IaSgf.new(@problem.ia_color, problem_file)
+    begin
+      @ia_player = IaSgf.new(@problem.ia_color, problem_file)
+    rescue MyError::IaInitError
+      send_code("E00")
+      return
+    end
     load_move_history
-    @ia_player.catch_up(@move_history)
+    begin
+      @ia_player.catch_up(@move_history)
+    rescue MyError::MoveError
+      send_code("E01")
+      return
+    end
     @board = Board.new(@game_state.height, @game_state.width)
     @board.load_board(@game_state.board_history.split[0..@game_state.height-1].join("\n"))
   end
 
+  def send_code(string)
+    @content = string
+    render("show_content")
+  end
+  
   def load_move_history
     @game_state.move_history.each_line{|move|
       @move_history << move.split
@@ -48,7 +63,8 @@ class GamesStateController < ApplicationController
       return
     end
     if ! @board.is_legal?(i,j,@problem.player_color)
-      raise "This move is illegal"
+      send_code("E10")
+      return
     end
     add_move_history(i,j)
     @board.add_stone(i, j, @problem.player_color)
@@ -67,9 +83,14 @@ class GamesStateController < ApplicationController
     j = params[:j].to_i
     load_state(game_state_id)
     player_move(i, j)
-    ia_i, ia_j = @ia_player.play(@board.get_board,
-                                 @board.get_legal(@ia_player.get_color),
-                                 [i,j])
+    begin
+      ia_i, ia_j = @ia_player.play(@board.get_board,
+                                   @board.get_legal(@ia_player.get_color),
+                                   [i,j])
+    rescue
+      send_code("E02")
+      return
+    end
     @board.add_stone(ia_i, ia_j, @problem.ia_color)
     add_move_history(ia_i,ia_j)
     save_state(game_state_id)

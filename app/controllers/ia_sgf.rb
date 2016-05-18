@@ -1,4 +1,5 @@
 require 'sgf'
+load("my_error.rb")
 class IaSgf
 
   def initialize(color,sgf_file)
@@ -6,7 +7,7 @@ class IaSgf
     @other_color = (@color == 1 ? 2 : 1)
     @collection = SGF::Parser.new.parse IO.read(sgf_file)
     if @collection.current_node.children.size != 1
-      raise "There is several Gametrees in this file"
+      raise IaInitError.new "There is several Gametrees in this file"
     end
     @current_node = @collection.current_node.children[0]
   end
@@ -23,7 +24,7 @@ class IaSgf
     end
     move_s = node[color_s]
     if move_s == nil
-      raise "There is no move of the right color in this node."
+      raise MyError::ColorError.new "There is no move of the right color in this node."
     end
     if move_s == ""
       return [-1,-1]
@@ -43,7 +44,7 @@ class IaSgf
       end
     }
     if not ok
-      raise "The move #{move} is not registered in the sgf."
+      raise MyError::MoveError.new "The move #{move} is not registered in the sgf."
     end
   end
 
@@ -52,7 +53,7 @@ class IaSgf
       go_to_move(last_move, @other_color)
     end
     if @current_node.children.size != 1
-        raise "There is several way to respond"
+        raise MyError::MoveError.new "There is several way to respond"
     end
     @current_node = @current_node.children[0]
     return extract_move(@current_node, @color)
