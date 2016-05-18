@@ -1,0 +1,26 @@
+- @page_title = "UserAuth | Signup"
+.Sign_Form
+  .row
+    %h1.center Inscription
+    =form_for(:user, :html => {:class => "col s4 offset-s4"}, :url => {:controller =>'users', :action =>'create'}) do |f|
+      .row
+        .input_field.col.s12
+          = f.label :username
+          = f.text_field :username,  :class => "validate"
+        .input_field.col.s12
+          = f.label :email
+          = f.text_field :email, :html => {:class => "validate"}
+        .input_field.col.s12
+          = f.label :paswword
+          = f.password_field :password, :html => {:class => "validate"}
+        .input_field.col.s12
+          = f.label :password_confirmation
+          = f.password_field :password_confirmation, :html => {:class => "validate"}
+        = f.submit :Signup, :class => "btn"
+    - if @user.errors.any?
+      .col.s4
+        %ul.Signup_Errors
+          -  @user.errors.full_messages.each do |message_error|
+            %li
+              = message_error
+

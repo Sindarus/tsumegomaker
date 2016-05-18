@@ -14,11 +14,14 @@
             TsumegoMaker
           %ul#nav-mobile.right
             %li
-              %a{:href =>'play'}
+              %a{:href =>'/play'}
                 Jouer
             %li
               %a{:href =>'#'}
                 À propos
+            %li
+              %a.btn{:href => '/users/new'}
+                S'inscrire
     %main
       =yield
     %footer.page-footer
