@@ -17,7 +17,7 @@ function init_hover(){
     console.log("Init hover. height : " + height);
     for(var i = 0; i<height; i++){
         for(var j = 0; j<width; j++){
-            $("#" + i + "-" + j).addClass("move_legal");
+            $("#" + i + "-" + j + " div").addClass("legal_move");
         }
     }
 }
@@ -67,9 +67,9 @@ function update_display_board(){
 
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
-            var elt = $("#" + i + "-" + j);
+            var elt = $("#" + i + "-" + j + " div");
             if(board[i][j] == 0){
-                elt.attr('class', 'empty_stone');
+                elt.attr('class', 'legal_move');
             }
             else if(board[i][j] == 1){
                 elt.attr('class', 'black_stone');
@@ -138,6 +138,7 @@ function create_html_board(width, height){
 
         for(j = 0; j<width; j++){
             var table_data = $("<td/>", {id: i + "-" + j, text: ""});
+            table_data.append("<div>");
             table_data.appendTo("tr#" + i);
         }
     }
@@ -146,7 +147,7 @@ function create_html_board(width, height){
         for(j = 0; j<width; j++){
             var elt = $("#" + i + "-" + j);
             elt.on("click", function(){ clicked(this); });
-            elt.attr('class', 'empty_stone');
+            elt.attr('class', 'board_square');
         }
     }
     console.log("Created html tags.");
@@ -159,7 +160,7 @@ function clicked(obj){
 
     board[i][j] = paint;
 
-    var elt = $("#" + i + "-" + j);
+    var elt = $("#" + i + "-" + j + " div");
     if(paint == 1){
         elt.attr("class", "black_stone");
         elt.removeClass("legal_move");

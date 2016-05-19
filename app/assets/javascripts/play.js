@@ -46,12 +46,11 @@ function clicked(obj){
     }
     if(legal_moves[row][column]){
         if(player_color == 1){
-            $("#" + row + "-" + column).attr('class', 'black_stone');
+            $("#" + row + "-" + column + " div").attr('class', 'black_stone');
         }
         if(player_color == 2){
-            $("#" + row + "-" + column).attr('class', 'white_stone');
+            $("#" + row + "-" + column + " div").attr('class', 'white_stone');
         }
-
         //window.requestAnimationFrame(function(){ });
         setTimeout(send_move, 100, row, column);
         //send_move(row, column);
@@ -182,6 +181,7 @@ function create_html_board(){
 
         for(j = 0; j<width; j++){
             var table_data = $("<td/>", {id: i + "-" + j, text: ""});
+            table_data.append("<div>");
             table_data.appendTo("tr#" + i);
         }
     }
@@ -190,7 +190,7 @@ function create_html_board(){
         for(j = 0; j<width; j++){
             var elt = $("#" + i + "-" + j);
             elt.on("click", function(){ clicked(this); });
-            elt.attr('class', 'empty_stone');
+            elt.attr('class', 'board_square');
         }
     }
 
@@ -221,9 +221,10 @@ function update_display_board(){
 
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
-            var elt = $("#" + i + "-" + j);
+            var elt = $("#" + i + "-" + j + " div");
             if(board[i][j] == 0){
-                elt.attr('class', 'empty_stone');
+                elt.removeClass('black_stone');
+                elt.removeClass('white_stone');
             }
             else if(board[i][j] == 1){
                 elt.attr('class', 'black_stone');
@@ -348,10 +349,10 @@ function update_hover_moves(){
     for(var i = 0; i<height; i++){
         for(var j = 0; j<width; j++){
             if(legal_moves[i][j] == 1){
-                $("#" + i + "-" + j).addClass("legal_move");
+                $("#" + i + "-" + j + " div").addClass("legal_move");
             }
             else{
-                $("#" + i + "-" + j).removeClass("legal_move");
+                $("#" + i + "-" + j + " div").removeClass("legal_move");
             }
         }
     }

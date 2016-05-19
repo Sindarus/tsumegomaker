@@ -28,32 +28,39 @@ table {
     color: red;
 }
 
-.legal_move {
-
-}
-
-.white_stone {
+.board_square {
     border-radius: 0px;
     display: inline-block;
-    height: 59px;
-    width: 59px;
-    background-image: url("white.png");
-}
-
-.black_stone {
-    border-radius: 0px;
-    display: inline-block;
-    height: 59px;
-    width: 59px;
-    background-image: url("black.png");
-}
-
-.empty_stone {
-    border-radius: 0px;
-    display: inline-block;
+    padding: 0px;
     height: 59px;
     width: 59px;
     background-image: url("empty.png");
+}
+
+.board_square div {
+    height: 59px;
+    width: 59px;
+}
+  
+
+.player_black .legal_move:hover {
+  background-image : url("black.png");
+  opacity: 0.5;
+}
+
+.player_white .legal_move:hover {
+  background-image : url("white.png");
+  opacity: 0.5;
+}
+
+.white_stone {
+    background-image: url("white.png");
+    opacity: 1;
+}
+
+.black_stone {
+    background-image: url("black.png");
+    opacity: 1;
 }
 
 body {
