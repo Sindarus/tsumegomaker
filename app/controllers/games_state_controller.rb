@@ -31,7 +31,7 @@ class GamesStateController < ApplicationController
     @content = string
     render("show_content")
   end
-  
+
   def load_move_history
     @game_state.move_history.each_line{|move|
       @move_history << move.split
