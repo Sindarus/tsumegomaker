@@ -6,8 +6,6 @@ var height;             //of board
 var legal_moves;        //2D array of same size as board
 var end;                //true when the user wins or loses
 
-var board_tag = $("#board");
-
 //functions in this file :
 //function clicked(obj);
 //function send_move(i, j);
@@ -16,6 +14,7 @@ var board_tag = $("#board");
 //function update_display_board();
 //function create_gamestate(problem_id);
 //function update_legal_moves();
+//function update_hover_moves();
 
 $(document).ready(function(){
     console.log("Started script.");
@@ -31,6 +30,7 @@ $(document).ready(function(){
     create_html_board();
     update_display_board();
     update_legal_moves();
+    update_hover_moves();
 });
 
 /**
@@ -86,6 +86,7 @@ function send_move(i, j){
         update_board();
         update_display_board();
         update_legal_moves();
+        update_hover_moves();
     }
 }
 
@@ -161,6 +162,7 @@ function create_html_board(){
         return;
     }
 
+    var board_tag = $("#board");
     if(board_tag.html() != undefined) {
         if (board_tag.html().search("<table>") >= 0) {
             console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
@@ -169,6 +171,7 @@ function create_html_board(){
     }
 
     var i, j;
+
     board_tag.append("<table/>");
     for(i = 0; i<height; i++){
         var table_row = $("<tr>", {id: i});
@@ -187,6 +190,10 @@ function create_html_board(){
             elt.attr('class', 'empty_stone');
         }
     }
+
+    if(board_tag.html() == undefined){
+        console.log("something went wrong creating html tags, because board_tag.html() is undefined");
+    }
     console.log("Created html tags.");
 }
 
@@ -199,6 +206,7 @@ function update_display_board(){
         return;
     }
 
+    var board_tag = $("#board");
     if(board_tag.html() == undefined){
         console.log("update_display_board : cannot update display because the html was not created. See #board : " + board_tag.html());
         return;
@@ -318,6 +326,35 @@ function update_legal_moves(){
     }
 }
 
+function update_hover_moves(){
+    if(legal_moves == undefined){
+        console.log("update_hover_moves() : cannot update html because legal_moves was not initialized");
+        return;
+    }
+
+    var board_tag = $("#board");
+    if(board_tag.html() == undefined){
+        console.log("update_hover_moves() : cannot update display because the html was not created. See #board : " + board_tag.html());
+        return;
+    }
+    if(board_tag.html().search("<table>") < 0){
+        console.log("update_hover_moves() : cannot update display because the html does not contain a table. See #board : " + board_tag.html());
+        return;
+    }
+
+    for(var i = 0; i<height; i++){
+        for(var j = 0; j<width; j++){
+            if(legal_moves[i][j] == 1){
+                $("#" + i + "-" + j).addClass("legal_move");
+            }
+            else{
+                $("#" + i + "-" + j).removeClass("legal_move");
+            }
+        }
+    }
+    console.log("updated hover moves");
+}
+
 /**
 * \brief Asks the server for the player's color and updates the global variable player_color
 */
@@ -343,8 +380,16 @@ function update_player_color(){
 
         player_color = parseInt(data); //update global variable
 
-        if(player_color == undefined || isNaN(player_color)){
-            console.log("after_get_color() : Could not parse player_color");
+        if(player_color == undefined || isNaN(player_color || (player_color != 1 && player_color !=2))){
+            console.log("after_get_color() : Could not parse player_color : " + player_color);
+            return;
+        }
+
+        if(player_color == 1){
+            $("#board").addClass("player_black");
+        }
+        else if(player_color == 2){
+            $("#board").addClass("player_white");
         }
     }
 }
@@ -368,19 +413,19 @@ function display_custom_error(data){
         console.log("display_custom_error() : not an error.");
     }
 
-    if(data.search("E00")){
+    if(data.search("E00") >= 0){
         console.log("E00 recieved");
         $("#error").append("<p>Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
     }
-    if(data.search("E01")){
+    if(data.search("E01") >= 0){
         console.log("E01 recieved");
         $("#error").append("<p>L'IA n'a pas réussi a retrouver l'état de la partie</p>");
     }
-    if(data.search("E02")){
+    if(data.search("E02") >= 0){
         console.log("E02 recieved");
         $("#error").append("<p>Erreur IA move</p>");
     }
-    if(data.search("E10")){
+    if(data.search("E10") >= 0){
         console.log("E10 recieved");
         $("#error").append("<p>Le coup que vous avez joué est illégal.</p>");
     }
@@ -391,13 +436,13 @@ function handle_custom_message(data){
         console.log("handle_custom_message() : not a message.");
     }
 
-    $("messages").empty();
-    if(data.search("M20")){
+    $("#messages").empty();
+    if(data.search("M20") >= 0){
         console.log("M20 recieved");
         $("#messages").append("<h4 class='win_msg'>Vous avez gagné !</h4>");
         end = true;
     }
-    if(data.search("M21")){
+    if(data.search("M21") >= 0){
         console.log("M21 recieved");
         $("#messages").append("<h4 class='loose_msg'>Vous avez perdu.</h4>");
         end = true;

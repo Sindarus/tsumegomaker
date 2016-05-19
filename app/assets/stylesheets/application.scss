@@ -28,13 +28,16 @@ table {
     color: red;
 }
 
+.legal_move {
+
+}
+
 .white_stone {
     border-radius: 0px;
     display: inline-block;
     height: 59px;
     width: 59px;
     background-image: url("white.png");
-    /*background-color: #CCCCCC;*/
 }
 
 .black_stone {
@@ -43,7 +46,6 @@ table {
     height: 59px;
     width: 59px;
     background-image: url("black.png");
-    /*background-color: #000000;*/
 }
 
 .empty_stone {
@@ -52,7 +54,6 @@ table {
     height: 59px;
     width: 59px;
     background-image: url("empty.png");
-    /*background-color: #000000;*/
 }
 
 body {
