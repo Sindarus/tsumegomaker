@@ -173,6 +173,7 @@ function create_html_board(){
     for(var i = 0; i<height; i++){
         for(var j = 0; j<width; j++){
             $("#" + i + "-" + j).on("click", function(){ clicked(this); });
+            $("#" + i + "-" + j).attr('class', 'empty');
         }
     }
     console.log("Created html tags.");
