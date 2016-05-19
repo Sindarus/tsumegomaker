@@ -7,13 +7,28 @@ $(document).ready(function(){
     console.log("Started create.js");
 
     paint = 1;
+    update_hover();
 
     $("#create_board").on("click", create_board);
-    $("#black_paint").on("click", function(){ paint = 1; });
-    $("#white_paint").on("click", function(){ paint = 2; });
-    $("#empty_paint").on("click", function(){ paint = 0; });
+    $("#black_paint").on("click", function(){ paint = 1; update_hover(); });
+    $("#white_paint").on("click", function(){ paint = 2; update_hover(); });
+    $("#empty_paint").on("click", function(){ paint = 0; update_hover(); });
     $("#clear_board").on("click", function(){ clear_board(); update_display_board(); })
 });
+
+function update_hover(){
+    var board_tag = $("#board");
+    board_tag.removeClass("paint_black paint_white paint_empty");
+    if(paint == 1){
+        board_tag.addClass("paint_black");
+    }
+    else if(paint == 2){
+        board_tag.addClass("paint_white");
+    }
+    else if(paint == 0){
+        board_tag.addClass("paint_empty");
+    }
+}
 
 function clear_board(){
     console.log("clearing board");

@@ -79,10 +79,10 @@ function send_move(i, j){
             display_custom_error(data);
             return;
         }
-        if(is_message_code(data)){
+        console.log("after_send() : successfully sent move (" + i.toString() + ", " + j.toString() + ")");
+        if(is_message_code(data)) {
             handle_custom_message(data);
         }
-        console.log("after_send() : successfully sent move (" + i.toString() + ", " + j.toString() + ")");
         update_board();
         update_display_board();
         update_legal_moves();
