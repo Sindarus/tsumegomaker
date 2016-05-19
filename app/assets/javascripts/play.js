@@ -40,10 +40,10 @@ function clicked(obj){
     column = parseInt(obj.id[2]);
     if(legal_moves[row][column]){
         if(player_color == 1){
-            $("#" + row + "-" + column).attr('class', 'black');
+            $("#" + row + "-" + column).attr('class', 'black_stone');
         }
         if(player_color == 2){
-            $("#" + row + "-" + column).attr('class', 'white');
+            $("#" + row + "-" + column).attr('class', 'white_stone');
         }
 
         //window.requestAnimationFrame(function(){ });
@@ -173,7 +173,7 @@ function create_html_board(){
     for(var i = 0; i<height; i++){
         for(var j = 0; j<width; j++){
             $("#" + i + "-" + j).on("click", function(){ clicked(this); });
-            $("#" + i + "-" + j).attr('class', 'empty');
+            $("#" + i + "-" + j).attr('class', 'empty_stone');
         }
     }
     console.log("Created html tags.");
@@ -197,13 +197,13 @@ function update_display_board(){
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
             if(board[i][j] == 0){
-                $("#" + i + "-" + j).attr('class', 'empty');
+                $("#" + i + "-" + j).attr('class', 'empty_stone');
             }
             else if(board[i][j] == 1){
-                $("#" + i + "-" + j).attr('class', 'black');
+                $("#" + i + "-" + j).attr('class', 'black_stone');
             }
             else if(board[i][j] == 2){
-                $("#" + i + "-" + j).attr('class', 'white');
+                $("#" + i + "-" + j).attr('class', 'white_stone');
             }
         }
     }

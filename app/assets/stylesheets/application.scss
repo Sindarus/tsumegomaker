@@ -20,7 +20,7 @@ table {
     border-spacing: 0 0;
 }
 
-.white {
+.white_stone {
     border-radius: 0px;
     display: inline-block;
     height: 59px;
@@ -29,7 +29,7 @@ table {
     /*background-color: #CCCCCC;*/
 }
 
-.black {
+.black_stone {
     border-radius: 0px;
     display: inline-block;
     height: 59px;
@@ -38,7 +38,7 @@ table {
     /*background-color: #000000;*/
 }
 
-.empty {
+.empty_stone {
     border-radius: 0px;
     display: inline-block;
     height: 59px;
