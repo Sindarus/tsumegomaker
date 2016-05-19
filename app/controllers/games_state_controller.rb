@@ -84,14 +84,14 @@ class GamesStateController < ApplicationController
     load_state(game_state_id)
     player_move(i, j)
     begin
-      ia_i, ia_j = @ia_player.play(@board.get_board,
+      ia_move, ia_msg = @ia_player.play(@board.get_board,
                                    @board.get_legal(@ia_player.get_color),
                                    [i,j])
     rescue
       send_code("E02")
       return
     end
-    if [ia_i, ia_j] == [-2, -2]
+    if ia_msg = "M20"
       if @current_user
         if GameHistory.exists?(:user => @current_user, :problem => @problem)
           game_history = GameHistory.find_by(:user => @current_user, :problem => @problem)
@@ -103,13 +103,12 @@ class GamesStateController < ApplicationController
         game_history.success = true
         game_history.save
       end
-      flash[:notice] = "Vous avez gagné"
-    else  
-      @board.add_stone(ia_i, ia_j, @problem.ia_color)
-      add_move_history(ia_i,ia_j)
     end
+    ia_i, ia_j = ia_move
+    @board.add_stone(ia_i, ia_j, @problem.ia_color)
+    add_move_history(ia_i,ia_j)
     save_state(game_state_id)
-    @content = @board.to_text
+    @content = ia_msg
     render 'show_content'
   end
 

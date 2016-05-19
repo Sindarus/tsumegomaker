@@ -53,13 +53,13 @@ class IaSgf
       go_to_move(last_move, @other_color)
     end
     if @current_node["N"] == "Win"
-      return [-2,-2]
+      return [-1,-1],"M20"
     end
     if @current_node.children.size != 1
         raise MyError::MoveError.new "There is several way to respond"
     end
     @current_node = @current_node.children[0]
-    return extract_move(@current_node, @color)
+    return extract_move(@current_node, @color),""
   end
 
   def catch_up(move_history)

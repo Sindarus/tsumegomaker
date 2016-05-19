@@ -150,6 +150,9 @@ class Board
   end
 
   def add_stone(i, j, color)
+    if [i,j] == [-1,-1]
+      return 0
+    end
     if access_board(i,j) != 0
       raise "The spot (#{i}, #{j}) is already taken, cannot add a stone of color #{color} !"
     end
