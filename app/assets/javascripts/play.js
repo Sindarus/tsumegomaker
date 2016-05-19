@@ -199,14 +199,15 @@ function update_display_board(){
 
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
+            var elt = $("#" + i + "-" + j);
             if(board[i][j] == 0){
-                $("#" + i + "-" + j).attr('class', 'empty_stone');
+                elt.attr('class', 'empty_stone');
             }
             else if(board[i][j] == 1){
-                $("#" + i + "-" + j).attr('class', 'black_stone');
+                elt.attr('class', 'black_stone');
             }
             else if(board[i][j] == 2){
-                $("#" + i + "-" + j).attr('class', 'white_stone');
+                elt.attr('class', 'white_stone');
             }
         }
     }
