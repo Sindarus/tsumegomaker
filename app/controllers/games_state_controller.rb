@@ -91,7 +91,7 @@ class GamesStateController < ApplicationController
       send_code("E02")
       return
     end
-    if ia_msg = "M20"
+    if ia_msg == "M20"
       if @current_user
         if GameHistory.exists?(:user => @current_user, :problem => @problem)
           game_history = GameHistory.find_by(:user => @current_user, :problem => @problem)
