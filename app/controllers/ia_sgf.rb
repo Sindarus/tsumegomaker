@@ -35,6 +35,9 @@ class IaSgf
   end
 
   def go_to_move(move, color)
+    if move == [-1,-1]
+      return
+    end
     ok = false
     @current_node.children.each{|node|
       if extract_move(node, color) == move
@@ -52,14 +55,16 @@ class IaSgf
     if last_move != []
       go_to_move(last_move, @other_color)
     end
-    if @current_node["N"] == "Win"
-      return [-1,-1],"M20"
-    end
-    if @current_node.children.size != 1
+    if @current_node.children.size > 1
         raise MyError::MoveError.new "There is several way to respond"
     end
-    @current_node = @current_node.children[0]
-    return extract_move(@current_node, @color),""
+    if @current_node.children.size == 1
+      @current_node = @current_node.children[0]
+      move = extract_move(@current_node, @color)
+    else
+      move = [-1, -1]
+    end
+    return move,@current_node["N"]
   end
 
   def catch_up(move_history)
