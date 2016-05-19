@@ -1,2 +1,7 @@
 Code : Mean :
-E00    IA
+E00    IA init
+E01    IA Catch Up
+E02    IA Move
+E10    Illegal Move
+
+M20    The user won
