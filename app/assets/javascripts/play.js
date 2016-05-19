@@ -4,7 +4,7 @@ var board;              //2D array
 var width;              //of board
 var height;             //of board
 var legal_moves;        //2D array of same size as board
-var end;                //true when the user wins or loses
+var end = false;        //true when the user wins or loses
 
 //functions in this file :
 //function clicked(obj);
@@ -41,6 +41,9 @@ function clicked(obj){
     console.log("User clicked.");
     var row = parseInt(obj.id[0]);
     var column = parseInt(obj.id[2]);
+    if(end == true){
+        return;
+    }
     if(legal_moves[row][column]){
         if(player_color == 1){
             $("#" + row + "-" + column).attr('class', 'black_stone');
