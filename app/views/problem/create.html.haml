@@ -1,0 +1,18 @@
+= javascript_include_tag 'create.js'
+.container
+  %h1 Sur cette page, vous pouvez déposer un problème sur le site
+
+  .row#board_size_form
+    %form.col.s8
+      .row
+        .input-field.col.s4
+          %input.validate#board_width{:value => 9, :type => "number"}
+          %label{:for => "board_width"} largeur du plateau
+        .input-field.col.s4
+          %input.validate#board_height{:value => 9, :type => "number"}
+          %label{:for => "board_height"} hauteur du plateau
+        .input-field.col.s4
+          %a.waves-effect.waves-light.btn#create_board
+            create board
+
+  #board

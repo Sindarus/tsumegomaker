@@ -6,7 +6,7 @@
     %link{:href=>"https://fonts.googleapis.com/icon?family=Material+Icons", :rel=>"stylesheet"}
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     = csrf_meta_tags
-    
+
   %body
     %header
       %nav
@@ -18,6 +18,9 @@
               %li
                 %a{:href =>'/problem/list'}
                   Jouer
+              %li
+                %a{:href =>'/problem/create'}
+                  Déposer un problème
               %li
                 %a{:href =>'#'}
                   À propos

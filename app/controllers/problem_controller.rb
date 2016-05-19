@@ -9,4 +9,8 @@ class ProblemController < ApplicationController
     end
   end
 
+  def create
+
+  end
+
 end
