@@ -4,6 +4,7 @@ var board;              //2D array
 var width;              //of board
 var height;             //of board
 var legal_moves;        //2D array of same size as board
+var end;                //true when the user wins or loses
 
 var board_tag = $("#board");
 
@@ -76,6 +77,10 @@ function send_move(i, j){
     function after_send(data){
         if(is_error_code(data)){
             display_custom_error(data);
+            return;
+        }
+        if(is_message_code(data)){
+            handle_custom_message(data);
         }
         console.log("after_send() : successfully sent move (" + i.toString() + ", " + j.toString() + ")");
         update_board();
@@ -156,9 +161,11 @@ function create_html_board(){
         return;
     }
 
-    if(board_tag.html().search("<table>") >= 0){
-        console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
-        return;
+    if(board_tag.html() != undefined) {
+        if (board_tag.html().search("<table>") >= 0) {
+            console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
+            return;
+        }
     }
 
     var i, j;
@@ -192,8 +199,12 @@ function update_display_board(){
         return;
     }
 
-    if(board_tag.html().search("<table>") < 0){
+    if(board_tag.html() == undefined){
         console.log("update_display_board : cannot update display because the html was not created. See #board : " + board_tag.html());
+        return;
+    }
+    if(board_tag.html().search("<table>") < 0){
+        console.log("update_display_board : cannot update display because the html does not contain a table. See #board : " + board_tag.html());
         return;
     }
 
@@ -348,24 +359,47 @@ function is_error_code(data){
     return data[0] == "E";
 }
 
+function is_message_code(data){
+    return data[0] == "M";
+}
+
 function display_custom_error(data){
     if(! is_error_code(data)){
         console.log("display_custom_error() : not an error.");
     }
 
     if(data.search("E00")){
-        console.log("Erreur 00");
+        console.log("E00 recieved");
+        $("#error").append("<p>Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
     }
     if(data.search("E01")){
-        console.log("Erreur 00");
+        console.log("E01 recieved");
+        $("#error").append("<p>L'IA n'a pas réussi a retrouver l'état de la partie</p>");
     }
     if(data.search("E02")){
-        console.log("Erreur 00");
+        console.log("E02 recieved");
+        $("#error").append("<p>Erreur IA move</p>");
     }
-    if(data.search("E03")){
-        console.log("Erreur 00");
+    if(data.search("E10")){
+        console.log("E10 recieved");
+        $("#error").append("<p>Le coup que vous avez joué est illégal.</p>");
     }
-    if(data.search("E04")){
-        console.log("Erreur 00");
+}
+
+function handle_custom_message(data){
+    if(! is_message_code(data)){
+        console.log("handle_custom_message() : not a message.");
+    }
+
+    $("messages").empty();
+    if(data.search("M20")){
+        console.log("M20 recieved");
+        $("#messages").append("<h4 class='win_msg'>Vous avez gagné !</h4>");
+        end = true;
+    }
+    if(data.search("M21")){
+        console.log("M21 recieved");
+        $("#messages").append("<h4 class='loose_msg'>Vous avez perdu.</h4>");
+        end = true;
     }
 }

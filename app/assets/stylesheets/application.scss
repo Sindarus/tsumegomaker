@@ -20,6 +20,14 @@ table {
     border-spacing: 0 0;
 }
 
+.win_msg {
+    color: green;
+}
+
+.loose_msg {
+    color: red;
+}
+
 .white_stone {
     border-radius: 0px;
     display: inline-block;
@@ -46,6 +54,7 @@ table {
     background-image: url("empty.png");
     /*background-color: #000000;*/
 }
+
 body {
   display: flex;
   min-height: 100vh;
