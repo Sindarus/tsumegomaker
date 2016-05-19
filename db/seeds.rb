@@ -10,4 +10,9 @@ Problem.create(player_color: 1,
                ia_color: 2,
                initial_board: "000000000\n000000000\n000000000\n000000000\n000000000\n111100000\n222110000\n002210000\n000210000\n",
                width: 9, height: 9,
-               problem_file: "app/assets/problems/example.sgf")
+               problem_file: "app/assets/problems/example1.sgf")
+Problem.create(player_color: 1,
+               ia_color: 2,
+               initial_board: "02220\n22222\n22222\n11112\n00012\n",
+               width: 5, height: 5,
+               problem_file: "app/assets/problems/example2.sgf")
