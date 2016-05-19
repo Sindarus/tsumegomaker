@@ -6,9 +6,6 @@ var paint;              //color of the stone to add when you click
 $(document).ready(function(){
     console.log("Started create.js");
 
-    paint = 1;
-    update_hover();
-
     $("#create_board").on("click", create_board);
     $("#black_paint").on("click", function(){ paint = 1; update_hover(); });
     $("#white_paint").on("click", function(){ paint = 2; update_hover(); });
@@ -16,17 +13,27 @@ $(document).ready(function(){
     $("#clear_board").on("click", function(){ clear_board(); update_display_board(); })
 });
 
+function init_hover(){
+    console.log("Init hover. height : " + height);
+    for(var i = 0; i<height; i++){
+        for(var j = 0; j<width; j++){
+            $("#" + i + "-" + j).addClass("move_legal");
+        }
+    }
+}
+
 function update_hover(){
+    console.log("Update hover");
     var board_tag = $("#board");
-    board_tag.removeClass("paint_black paint_white paint_empty");
+    board_tag.removeClass("player_black player_white player_empty");
     if(paint == 1){
-        board_tag.addClass("paint_black");
+        board_tag.addClass("player_black");
     }
     else if(paint == 2){
-        board_tag.addClass("paint_white");
+        board_tag.addClass("player_white");
     }
     else if(paint == 0){
-        board_tag.addClass("paint_empty");
+        board_tag.addClass("player_empty");
     }
 }
 
@@ -85,8 +92,11 @@ function create_board(){
     }
     console.log("will be creating a board " + height.toString() + "x" + width.toString());
 
+    paint = 1;
     init_board();
     create_html_board(width, height);
+    init_hover();
+    update_hover();
 
     $("#board_size_form").remove();
 }
@@ -149,14 +159,18 @@ function clicked(obj){
 
     board[i][j] = paint;
 
+    var elt = $("#" + i + "-" + j);
     if(paint == 1){
-        $("#" + i + "-" + j).attr("class", "black_stone");
+        elt.attr("class", "black_stone");
+        elt.removeClass("legal_move");
     }
     else if(paint == 2){
-        $("#" + i + "-" + j).attr("class", "white_stone");
+        elt.attr("class", "white_stone");
+        elt.removeClass("legal_move");
     }
     else if(paint == 0){
-        $("#" + i + "-" + j).attr("class", "empty_stone");
+        elt.attr("class", "empty_stone");
+        elt.addClass("legal_move");
     }
     else{
         console.log("User clicked to add a stone but 'paint' is wrong.");
