@@ -14,7 +14,9 @@
           .container
             %a.brand-logo{:href =>'/'}
               TsumegoMaker
-            %ul#nav-mobile.right
+            %a.button-collapse.right{:href=>"#", "data-activates" =>"mobile-demo"}
+              %i.material-icons menu
+            %ul#nav-mobile.right.hide-on-med-and-down
               %li
                 %a{:href =>'/problem/list'}
                   Jouer
@@ -26,7 +28,8 @@
                   À propos
               - if @current_user
                 %li
-                  = @current_user.username
+                  %div{:style => "padding-left : 15px;padding-right : 15px;"}
+                    .chip= @current_user.username
                 %li
                   %a.btn{:href => '/sessions/logout'}
                     Se déconnecter
@@ -37,6 +40,31 @@
                 %li
                   %a.btn{:href =>'/sessions/login'}
                     Se connecter
+            %ul#mobile-demo.side-nav.right
+              %li
+                %a{:href =>'/problem/list'}
+                  Jouer
+              %li
+                %a{:href =>'/problem/create'}
+                  Déposer un problème
+              %li
+                %a{:href =>'#'}
+                  À propos
+              - if @current_user
+                %li
+                  .container
+                    .chip= @current_user.username
+                %li
+                  %a.btn{:href => '/sessions/logout'}
+                    Se déconnecter
+              - else
+                %li
+                  %a.btn{:href => '/users/new'}
+                    S'inscrire
+                %li
+                  %a.btn{:href =>'/sessions/login'}
+                    Se connecter
+
       - if flash[:notice]
         .container
           //=".notice."+(flash[:color] == "valid" ? "teal-accent-3" : "red-accent-4")

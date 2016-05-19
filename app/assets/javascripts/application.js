@@ -12,5 +12,10 @@
 //
 //= require jquery
 //= require jquery_ujs
-//= require turbolinks
 //= require materialize-sprockets
+//
+$(document).ready(function(){
+  $(".button-collapse").sideNav({
+    edge: 'right',
+  });
+});

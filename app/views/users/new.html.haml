@@ -2,21 +2,21 @@
 .Sign_Form
   .row
     %h1.center Inscription
-    =form_for(:user, :html => {:class => "col s4 offset-s4"}, :url => {:controller =>'users', :action =>'create'}) do |f|
+    =form_for(:user, :html => {:class => "col s12 m6 offset-m3"}, :url => {:controller =>'users', :action =>'create'}) do |f|
       .row
-        .input_field.col.s12
-          = f.label :username
-          = f.text_field :username,  :class => "validate"
-        .input_field.col.s12
+        .input-field.col.s12
+          = f.label :username, "Pseudo"
+          = f.text_field :username
+        .input-field.col.s12
           = f.label :email
-          = f.text_field :email, :html => {:class => "validate"}
-        .input_field.col.s12
-          = f.label :paswword
-          = f.password_field :password, :html => {:class => "validate"}
-        .input_field.col.s12
-          = f.label :password_confirmation
-          = f.password_field :password_confirmation, :html => {:class => "validate"}
-        = f.submit :Signup, :class => "btn"
+          = f.text_field :email
+        .input-field.col.s12
+          = f.label :paswword, "Mot de passe"
+          = f.password_field :password
+        .input-field.col.s12
+          = f.label :password_confirmation, "Confirmation du mot de passe"
+          = f.password_field :password_confirmation
+        = f.submit "S'inscire", :class => "btn"
     - if @user.errors.any?
       .col.s4
         %ul.Signup_Errors
