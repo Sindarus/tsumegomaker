@@ -35,6 +35,9 @@ class IaSgf
   end
 
   def go_to_move(move, color)
+    if move == [-1,-1]
+      return
+    end
     ok = false
     @current_node.children.each{|node|
       if extract_move(node, color) == move
