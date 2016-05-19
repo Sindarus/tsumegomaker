@@ -21,25 +21,28 @@ table {
 }
 
 .white {
+    border-radius: 0px;
     display: inline-block;
-    height: 57px;
-    width: 57px;
+    height: 59px;
+    width: 59px;
     background-image: url("white.png");
     /*background-color: #CCCCCC;*/
 }
 
 .black {
+    border-radius: 0px;
     display: inline-block;
-    height: 57px;
-    width: 57px;
+    height: 59px;
+    width: 59px;
     background-image: url("black.png");
     /*background-color: #000000;*/
 }
 
 .empty {
+    border-radius: 0px;
     display: inline-block;
-    height: 57px;
-    width: 57px;
+    height: 59px;
+    width: 59px;
     background-image: url("empty.png");
     /*background-color: #000000;*/
 }
