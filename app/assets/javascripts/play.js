@@ -1,9 +1,11 @@
 var gamestate_id;
-var player_color
+var player_color;
 var board;              //2D array
 var width;              //of board
 var height;             //of board
 var legal_moves;        //2D array of same size as board
+
+var board_tag = $("#board");
 
 //functions in this file :
 //function clicked(obj);
@@ -28,7 +30,7 @@ $(document).ready(function(){
     create_html_board();
     update_display_board();
     update_legal_moves();
-})
+});
 
 /**
 * \brief function called when a user clicks a square on the board.
@@ -36,8 +38,8 @@ $(document).ready(function(){
 */
 function clicked(obj){
     console.log("User clicked.");
-    row = parseInt(obj.id[0]);
-    column = parseInt(obj.id[2]);
+    var row = parseInt(obj.id[0]);
+    var column = parseInt(obj.id[2]);
     if(legal_moves[row][column]){
         if(player_color == 1){
             $("#" + row + "-" + column).attr('class', 'black_stone');
@@ -154,26 +156,28 @@ function create_html_board(){
         return;
     }
 
-    if($("#board").html().search("<table>") >= 0){
+    if(board_tag.html().search("<table>") >= 0){
         console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
         return;
     }
 
-    $("#board").append("<table/>");
-    for(var i = 0; i<height; i++){
+    var i, j;
+    board_tag.append("<table/>");
+    for(i = 0; i<height; i++){
         var table_row = $("<tr>", {id: i});
         table_row.appendTo("table");
 
-        for(var j = 0; j<width; j++){
+        for(j = 0; j<width; j++){
             var table_data = $("<td/>", {id: i + "-" + j, text: ""});
             table_data.appendTo("tr#" + i);
         }
     }
 
-    for(var i = 0; i<height; i++){
-        for(var j = 0; j<width; j++){
-            $("#" + i + "-" + j).on("click", function(){ clicked(this); });
-            $("#" + i + "-" + j).attr('class', 'empty_stone');
+    for(i = 0; i<height; i++){
+        for(j = 0; j<width; j++){
+            var elt = $("#" + i + "-" + j);
+            elt.on("click", function(){ clicked(this); });
+            elt.attr('class', 'empty_stone');
         }
     }
     console.log("Created html tags.");
@@ -188,9 +192,8 @@ function update_display_board(){
         return;
     }
 
-    if($("#board").html().search("<table>") < 0){
-        console.log("update_display_board : The html was not created. See #board : " + $("#board").html());
-        console.log("$('#board').html().search('<table>') = " + $("#board").html().search("<table>"));
+    if(board_tag.html().search("<table>") < 0){
+        console.log("update_display_board : cannot update display because the html was not created. See #board : " + board_tag.html());
         return;
     }
 
@@ -335,11 +338,6 @@ function update_player_color(){
 }
 
 
-
-function sleep(milliSeconds){
-        var startTime = new Date().getTime();
-        while (new Date().getTime() < startTime + milliSeconds);
-}
 
 function display_rails_error(jqXHR){
     $("#error").append(jqXHR.responseText);
