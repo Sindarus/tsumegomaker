@@ -91,8 +91,23 @@ class GamesStateController < ApplicationController
       send_code("E02")
       return
     end
-    @board.add_stone(ia_i, ia_j, @problem.ia_color)
-    add_move_history(ia_i,ia_j)
+    if [ia_i, ia_j] == [-2, -2]
+      if @current_user
+        if GameHistory.exists?(:user => @current_user, :problem => @problem)
+          game_history = GameHistory.find_by(:user => @current_user, :problem => @problem)
+        else
+          game_history = GameHistory.new
+          game_history.user = @current_user
+          game_history.problem = @problem
+        end
+        game_history.success = true
+        game_history.save
+      end
+      flash[:notice] = "Vous avez gagné"
+    else  
+      @board.add_stone(ia_i, ia_j, @problem.ia_color)
+      add_move_history(ia_i,ia_j)
+    end
     save_state(game_state_id)
     @content = @board.to_text
     render 'show_content'

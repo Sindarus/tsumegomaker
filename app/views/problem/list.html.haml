@@ -5,12 +5,19 @@
       %th ID
       %th Largeur
       %th Hauteur
+      %th Réussi
     %tbody
-      - @problems.each do |problem|
+      - @problem_list.each do |problem, game_history|
         %tr
           %td=problem.id
           %td=problem.width
           %td=problem.height
+          %td
+            - if game_history
+              - if game_history.success
+                %i.material-icons done
+              - else
+                %i.material-icons not_interested
           %td
             %a.btn{:href => "/play/play?problem_id="+problem.id.to_s}
               Jouer

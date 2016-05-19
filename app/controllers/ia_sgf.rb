@@ -52,6 +52,9 @@ class IaSgf
     if last_move != []
       go_to_move(last_move, @other_color)
     end
+    if @current_node["N"] == "Win"
+      return [-2,-2]
+    end
     if @current_node.children.size != 1
         raise MyError::MoveError.new "There is several way to respond"
     end
