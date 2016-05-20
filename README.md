@@ -2,6 +2,13 @@
 
 With this project, we'll be trying to create a advanced copycat of "goproblems.com", using ruby on rails.
 
+### How to test the website
+* pull the code
+* run bundle exec
+* create a pgsql user called "rubypg" that has password "rubypg" and that can create databases
+* run rake db:create db:migrate db:seed
+* run the server and it should work
+
 ### Things we shall do:
 * a web interface that allows one to play on a go board.
 * the actual go game engine
