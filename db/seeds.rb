@@ -21,3 +21,8 @@ Problem.create(player_color: 1,
                initial_board: "001220\n000120\n011120\n022220\n020000\n000000",
                width: 6, height: 6,
                problem_file: "app/assets/problems/example3.sgf")
+Problem.create(player_color: 1,
+               ia_color: 2,
+               initial_board: "0200010\n2202210\n0102110\n0111000\n0000000\n0000000\n0000000\n",
+               width: 7, height: 7,
+               problem_file: "app/assets/problems/example4.sgf")
