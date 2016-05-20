@@ -8,6 +8,14 @@ With this project, we'll be trying to create a advanced copycat of "goproblems.c
 * create a pgsql user called "rubypg" that has password "rubypg" and that can create databases
 * run rake db:create db:migrate db:seed
 * run the server and it should work
+* to test the go game-engine, it is recommended that you play the problem #2 : the winning move is in the middle, anywhere else is wrong.
+
+### Avancement au 20/05/2016
+* Il est possible d'acceder a la liste des problèmes disponible en cliquant sur "jouer"
+* Il est possible de résoudre un problème en cliquant sur le bouton "jouer" a coté du problème en question.
+* lorsque le problème est réussi ou raté, un message apparait a droite.
+* Il est possible de créer un compte et de se connecter : les problèmes réussis ou ratés sont sauvegardés, pour afficher un indicateur dans la liste des problèmes.
+* Nous avons commencé a implémenter la possibilité d'ajouter des problèmes au site, mais cette fonctionnalité n'est pas terminée. Pour l'instant, sur la page "déposer un problème", on peut créer un problème en local (en javascript), mais ce dernier n'est pas envoyé au serveur.
 
 ### Things we shall do:
 * a web interface that allows one to play on a go board.
