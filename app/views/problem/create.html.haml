@@ -20,9 +20,11 @@
     .col#tool_box
       .fixed-action-btn.horizontal.click-to-toggle
         %a.btn-floating.btn-large.red
-          %i.material-icons menu
+          %i.material-icons mode_edit
         %ul
-          %li.btn-floating.black#black_paint
+          %li.btn-floating.transparent#black_paint
+            %img.responsive-img{:src =>image_path('black.png')}
           %li.btn-floating.white#white_paint
+            %img.responsive-img{:src =>image_path('white.png')}
           %li.btn-floating.grey#empty_paint
           %li.btn-floating.red#clear_board
