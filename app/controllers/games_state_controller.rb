@@ -91,16 +91,14 @@ class GamesStateController < ApplicationController
       send_code("E02")
       return
     end
-    if ia_msg == "M20"
+    if ia_msg == "M20" or ia_msg == "M21"
       if @current_user
-        if GameHistory.exists?(:user => @current_user, :problem => @problem)
-          game_history = GameHistory.find_by(:user => @current_user, :problem => @problem)
+        game_history = GameHistory.find_or_create_by(:user => @current_user, :problem => @problem)
+        if not game_history.success and ia_msg == "M21"
+          game_history.success = false
         else
-          game_history = GameHistory.new
-          game_history.user = @current_user
-          game_history.problem = @problem
+          game_history.success = true
         end
-        game_history.success = true
         game_history.save
       end
     end
