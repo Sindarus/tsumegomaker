@@ -16,6 +16,7 @@ With this project, we'll be trying to create a advanced copycat of "goproblems.c
 * lorsque le problème est réussi ou raté, un message apparait a droite.
 * Il est possible de créer un compte et de se connecter : les problèmes réussis ou ratés sont sauvegardés, pour afficher un indicateur dans la liste des problèmes.
 * Nous avons commencé a implémenter la possibilité d'ajouter des problèmes au site, mais cette fonctionnalité n'est pas terminée. Pour l'instant, sur la page "déposer un problème", on peut créer un problème en local (en javascript), mais ce dernier n'est pas envoyé au serveur.
+* Le site a été déployé sur une raspberry pi a l'adresse http://89.84.22.24
 
 ### Things we shall do:
 * a web interface that allows one to play on a go board.
