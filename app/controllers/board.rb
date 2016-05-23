@@ -30,6 +30,40 @@ class Board
     }
   end
 
+  def set_stone(i, j, stone)
+    @board_of_stone[i][j] = stone
+  end
+  protected :set_stone
+
+  def set_ko_move(ko_move)
+    @ko_move = ko_move
+  end
+  protected :set_ko_move
+
+  def set_nb_captured(nb_captured)
+    @nb_captured = nb_captured
+  end
+  protected :set_nb_captured
+
+  def get_copy
+    board_copy = Board.new(@height, @width)
+    board_copy.set_ko_move(@ko_move)
+    board_copy.set_nb_captured(@nb_captured)
+
+    i = 0
+    @board_of_stone.each{|row|
+        j = 0
+      row.each{|stone|
+        if(stone == 1 || stone == 2)
+            board_copy.set_stone(i, j, stone)
+        end
+        j += 1
+      }
+      i += 1
+    }
+    return board_copy
+  end
+
   def to_text
     text = ""
     @board_of_stone.each{|row|
