@@ -21,14 +21,15 @@ class Minimax
     board = prev_board.get_copy
     i,j = extract_move(node,color)
     board.add_stone(i,j,color)
+    puts "Profondeur #{node.depth}\nCoup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
     board.display
     puts "\n"
     if final_node(node)
       return count_score(board),[node]
     end
-    create_children(node, board, color)
     final_nodes = []
     if color == @player_color
+      create_children(node, board, @ia_color)
       max = -1
       node.children.each do |node_children|
         t,f = minimax(node_children, board, @ia_color)
@@ -41,6 +42,7 @@ class Minimax
       end
       return max,final_nodes
     else
+      create_children(node, board, @player_color)
       min = @board_width * @board_height
       min_node = nil
       node.children.each do |node_children|
@@ -63,7 +65,7 @@ class Minimax
   end
 
   def create_children(node, board, color)
-    color_s = @color_s[(color == 1 ? 2 : 1)]
+    color_s = @color_s[color]
     n = SGF::Node.new(:parent => node)
     n[color_s] = ""
     legal_board = board.get_legal(color)
