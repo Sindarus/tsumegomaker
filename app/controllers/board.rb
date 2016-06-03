@@ -4,7 +4,6 @@ class Board
   #                  1 means "black stone" and 2 means "white stone"
   # ko_move        : when needed, this contains [[i, j], color], where (i, j) is
   #                  an illegal move for 'color' because of the simple ko rule.
-  # nb_captured    : number of stones that were captured so far, whatever the color.
 
   def initialize(height, width)
     @board_of_stone = Array.new(height) {Array.new(width){0}}
@@ -12,11 +11,6 @@ class Board
     @width = width
     @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
     @ko_move = []
-    @nb_captured = 0
-  end
-
-  def get_nb_captured
-    @nb_captured
   end
 
   def get_board
@@ -32,11 +26,6 @@ class Board
     @ko_move = ko_move
   end
   protected :set_ko_move
-
-  def set_nb_captured(nb_captured)
-    @nb_captured = nb_captured
-  end
-  protected :set_nb_captured
 
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   def access_board(i, j)
@@ -65,7 +54,6 @@ class Board
   def get_copy
     board_copy = Board.new(@height, @width)
     board_copy.set_ko_move(@ko_move)
-    board_copy.set_nb_captured(@nb_captured)
 
     i = 0
     @board_of_stone.each{|row|
@@ -237,7 +225,6 @@ class Board
         @ko_move = [captured[0],opponent(color)]
       end
     end
-    @nb_captured = captured.size
   end
 
   # displays the board in the console.
