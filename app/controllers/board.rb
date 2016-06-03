@@ -228,9 +228,14 @@ class Board
         end
       end
     }
+
+    # handle simple ko rule
     @ko_move = []
-    if captured.size == 1
-      @ko_move = [captured[0],opponent(color)]
+    if captured.size == 1         # if the move allowed to capture 1 stone
+      group, adj = get_adj(i, j)
+      if(group.size == 1)         # if the move does not form a "group"
+        @ko_move = [captured[0],opponent(color)]
+      end
     end
     @nb_captured = captured.size
   end
