@@ -28,8 +28,7 @@ class GamesStateController < ApplicationController
   end
 
   def send_code(string)
-    @content = string
-    render("show_content")
+    render plain: string
   end
 
   def load_move_history
@@ -106,30 +105,26 @@ class GamesStateController < ApplicationController
     @board.add_stone(ia_i, ia_j, @problem.ia_color)
     add_move_history(ia_i,ia_j)
     save_state(game_state_id)
-    @content = ia_msg
-    render 'show_content'
+    render plain: ia_msg
   end
 
   def get_board
     game_state_id = params[:id]
     load_state(game_state_id)
-    @content = @board.to_text
-    render 'show_content'
+    render plain: @board.to_text
     # render :json => @board
   end
 
   def get_legal
     game_state_id = params[:id]
     load_state(game_state_id)
-    @content = @board.get_legal_as_text(@problem.player_color)
-    render 'show_content'
+    render plain: @board.get_legal_as_text(@problem.player_color)
   end
 
   def get_color
     game_state_id = params[:id]
     load_state(game_state_id)
-    @content = @problem.player_color.to_s
-    render 'show_content'
+    render plain: @problem.player_color.to_s
   end
 
   def create_game
@@ -142,8 +137,7 @@ class GamesStateController < ApplicationController
     @game_state.height = @problem.height
     @game_state.problem_id = problem_id
     @game_state.save
-    @content = @game_state.id
-    render 'show_content'
+    render plain: @game_state.id.to_s
   end
 
 end
