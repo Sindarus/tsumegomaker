@@ -73,14 +73,10 @@ function send_move(i, j){
 
     //FUNCTION THAT IS CALLED AFTER THE MOVE IS SENT :
     function after_send(data){
-        if(is_error_code(data)){
-            handle_custom_error(data);
-            return;
-        }
+        if(filter_error(data)) return;
+
         console.log("after_send() : successfully sent move (" + i.toString() + ", " + j.toString() + ")");
-        if(is_message_code(data)) {
-            handle_custom_message(data);
-        }
+        filter_message(data);
         update_board();
         update_display_board();
         update_legal_moves();
@@ -106,10 +102,7 @@ function update_board(){
         var data = jqXHR.responseText;
         console.log("Successfully recieved board data : " + data);
 
-        if(is_error_code(data)){
-            handle_custom_error(data);
-            return;
-        }
+        if(filter_error(data)) return;
 
         //update global variable
         try{
@@ -226,10 +219,7 @@ function update_display_board(){
 function create_gamestate(problem_id){
     function after_create_game(jqXHR){
         var data = jqXHR.responseText;
-        if(is_error_code(data)){
-            handle_custom_error(data);
-            return;
-        }
+        if(filter_error(data)) return;
     }
 
     var req = $.get({url: "/create_game?problem_id=" + problem_id.toString(),
@@ -258,10 +248,7 @@ function update_legal_moves(){
     function after_get_legal(jqXHR){
         var data = jqXHR.responseText;
 
-        if(is_error_code(data)){
-            handle_custom_error(data);
-            return;
-        }
+        if(filter_error(data)) return;
         console.log("after_get_legal() : successfully received legal moves : " + data);
 
         //update global variable
@@ -324,10 +311,7 @@ function update_player_color(){
 
     //FUNCTION CALLED AFTER THE GET REQUEST
     function after_get_color(data){
-        if(is_error_code(data)){
-            handle_custom_error(data);
-            return;
-        }
+        if(filter_error(data)) return;
         console.log("after_get_color() : successfully received player color : " + data);
 
         player_color = parseInt(data); //update global variable
@@ -360,9 +344,9 @@ function is_message_code(data){
     return data[0] == "M";
 }
 
-function handle_custom_error(data){
+function filter_error(data){
     if(! is_error_code(data)){
-        console.log("handle_custom_error() : not an error.");
+        return false;
     }
 
     if(data.search("E00") >= 0){
@@ -385,11 +369,12 @@ function handle_custom_error(data){
         console.log("Unknown error recieved");
         $("#error").append("<p>Une erreur coté serveur est survenue.</p>");
     }
+    return true;
 }
 
-function handle_custom_message(data){
+function filter_message(data){
     if(! is_message_code(data)){
-        console.log("handle_custom_message() : not a message.");
+        return false;
     }
 
     $("#messages").empty();
@@ -408,6 +393,7 @@ function handle_custom_message(data){
         console.log("Unknown message recieved");
         $("#messages").append("<h4 class='loose_msg'>Le serveur a envoyé un message inconnu.</h4>");
     }
+    return true;
 }
 
 function display_error(error_string){
