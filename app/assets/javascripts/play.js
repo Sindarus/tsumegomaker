@@ -361,6 +361,14 @@ function filter_error(data){
         console.log("E02 recieved");
         $("#error").append("<p>Erreur IA move</p>");
     }
+    else if(data.search("E03") >= 0){
+        console.log("E03 recieved");
+        $("#error").append("<p>Vous n'avez pas de game_state_id.</p>");
+    }
+    else if(data.search("E04") >= 0){
+        console.log("E04 recieved");
+        $("#error").append("<p>Le serveur n'a pas pu trouver de problème avec cet id.</p>");
+    }
     else if(data.search("E10") >= 0){
         console.log("E10 recieved");
         $("#error").append("<p>Le coup que vous avez joué est illégal.</p>");

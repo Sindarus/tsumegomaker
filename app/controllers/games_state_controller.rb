@@ -142,6 +142,11 @@ class GamesStateController < ApplicationController
     problem_id = params[:problem_id]
     @game_state = GameState.new
     @problem = Problem.find_by(id: problem_id)
+    if @problem == nil
+      session[:game_state_id] = nil
+      send_code("E04")
+      return
+    end
     @game_state.board_history = @problem.initial_board
     @game_state.move_history = ""
     @game_state.width = @problem.width
