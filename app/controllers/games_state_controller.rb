@@ -77,10 +77,13 @@ class GamesStateController < ApplicationController
   end
 
   def move
-    game_state_id = params[:id]
+    if session[:game_state_id] == nil
+        send_code("E03")
+        return
+    end
+    load_state(session[:game_state_id])
     i = params[:i].to_i
     j = params[:j].to_i
-    load_state(game_state_id)
     player_move(i, j)
     begin
       ia_move, ia_msg = @ia_player.play(@board.get_board,
@@ -104,26 +107,35 @@ class GamesStateController < ApplicationController
     ia_i, ia_j = ia_move
     @board.add_stone(ia_i, ia_j, @problem.ia_color)
     add_move_history(ia_i,ia_j)
-    save_state(game_state_id)
+    save_state(session[:game_state_id])
     render plain: ia_msg
   end
 
   def get_board
-    game_state_id = params[:id]
-    load_state(game_state_id)
+    if session[:game_state_id] == nil
+        send_code("E03")
+        return
+    end
+    load_state(session[:game_state_id])
     render plain: @board.to_text
     # render :json => @board
   end
 
   def get_legal
-    game_state_id = params[:id]
-    load_state(game_state_id)
+    if session[:game_state_id] == nil
+        send_code("E03")
+        return
+    end
+    load_state(session[:game_state_id])
     render plain: @board.get_legal_as_text(@problem.player_color)
   end
 
   def get_color
-    game_state_id = params[:id]
-    load_state(game_state_id)
+    if session[:game_state_id] == nil
+        send_code("E03")
+        return
+    end
+    load_state(session[:game_state_id])
     render plain: @problem.player_color.to_s
   end
 
@@ -137,7 +149,8 @@ class GamesStateController < ApplicationController
     @game_state.height = @problem.height
     @game_state.problem_id = problem_id
     @game_state.save
-    render plain: @game_state.id.to_s
+    session[:game_state_id] = @game_state.id
+    render nothing: true
   end
 
 end

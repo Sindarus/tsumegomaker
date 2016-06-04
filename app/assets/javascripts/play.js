@@ -1,4 +1,3 @@
-var gamestate_id;
 var player_color;
 var board;              //2D array
 var width;              //of board
@@ -64,11 +63,7 @@ function clicked(obj){
 * \brief sends move to server and updates board and its display afterwards, as well as legal moves.
 */
 function send_move(i, j){
-    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
-        console.log("In send_move() : gamestate_id not valid. gamestate_id : " + gamestate_id.toString());
-    }
-
-    var url = "/move?id=" + gamestate_id.toString() + "&i=" + i.toString() + "&j=" + j.toString();
+    var url = "/move?i=" + i.toString() + "&j=" + j.toString();
     var request = $.get(url, null, after_send);
     request.fail(function(jqXHR){
         console.log("Get request to send move failed.");
@@ -98,11 +93,7 @@ function send_move(i, j){
 function update_board(){
     console.log("Updating board.");
 
-    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
-        console.log("update_board(): gamestate_id not valid. gamestate_id : " + gamestate_id);
-    }
-
-    var req = $.get({url : "/get_board?id=" + gamestate_id.toString(),
+    var req = $.get({url : "/get_board",
                      complete : after_get_board,
                      async : false});
     req.fail(function(jqXHR){
@@ -238,7 +229,7 @@ function update_display_board(){
 }
 
 /**
-* \brief Asks the server to create a gamestate, and then retrieves the gamestate id
+* \brief Asks the server to create a gamestate
 */
 function create_gamestate(problem_id){
     function after_create_game(jqXHR){
@@ -246,20 +237,6 @@ function create_gamestate(problem_id){
         if(is_error_code(data)){
             display_custom_error(data);
             return;
-        }
-
-        gamestate_id = parseInt(data);
-        if (gamestate_id == undefined){
-            console.log("Something went wrong while retrieving gamestate_id");
-        }
-        else if (isNaN(gamestate_id)){
-            console.log("Server responded badly to /create_gamestate");
-        }
-        else if(gamestate_id == -1){
-            console.log("Server could not generate a gamestate with the problem you asked for.");
-        }
-        else{
-            console.log("Successfully retrieved gamestate_id : " + gamestate_id.toString());
         }
     }
 
@@ -270,8 +247,6 @@ function create_gamestate(problem_id){
         console.log("Get request to create gamestate failed.");
         display_rails_error(jqXHR);
     });
-
-    $("#board_info").append("<br/>Your game has id : " + gamestate_id.toString());
 }
 
 /**
@@ -279,11 +254,7 @@ function create_gamestate(problem_id){
 */
 function update_legal_moves(){
     console.log("Updating legal moves.");
-    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
-        console.log("In update_legal_moves(): gamestate_id not valid. gamestate_id : " + gamestate_id);
-    }
-
-    var req = $.get({url : "/get_legal?id=" + gamestate_id.toString(),
+    var req = $.get({url : "/get_legal",
                      complete : after_get_legal,
                      async : false});
     req.fail(function(jqXHR){
@@ -364,11 +335,8 @@ function update_hover_moves(){
 */
 function update_player_color(){
     console.log("Updating player's color.");
-    if(gamestate_id == undefined || isNaN(gamestate_id) || gamestate_id == -1){
-        console.log("In update_legal_moves(): gamestate_id not valid. gamestate_id : " + gamestate_id);
-    }
 
-    var req = $.get("/get_color?id=" + gamestate_id.toString(), null, after_get_color);
+    var req = $.get("/get_color", null, after_get_color);
     req.fail(function(jqXHR){
         console.log("update_player_color() : Get request to get player color failed.");
         display_rails_error(jqXHR);
