@@ -1,8 +1,6 @@
 var player_color;
-var board;              //2D array
-var width;              //of board
-var height;             //of board
-var legal_moves;        //2D array of same size as board
+var b;                  //board object retrieved from the server
+var legal_moves;        //legal moves array retrieved from the server
 var end = false;        //true when the user wins or loses
 
 //functions in this file :
@@ -38,21 +36,23 @@ $(document).ready(function(){
 */
 function clicked(obj){
     console.log("User clicked.");
-    var row = parseInt(obj.id[0]);
-    var column = parseInt(obj.id[2]);
-    if(end == true){
+    if(end == true){    //if this is the end of the game, do nothing
         return;
     }
+    var row = parseInt(obj.id[0]);
+    var column = parseInt(obj.id[2]);
+
     if(legal_moves[row][column]){
+        //display player's move temporarily, before recieving server's response
         if(player_color == 1){
             $("#" + row + "-" + column + " div").attr('class', 'black_stone');
         }
         if(player_color == 2){
             $("#" + row + "-" + column + " div").attr('class', 'white_stone');
         }
-        //window.requestAnimationFrame(function(){ });
+
+        //send move to the server
         setTimeout(send_move, 100, row, column);
-        //send_move(row, column);
     }
     else{
         console.log("But the move is not legal.");
@@ -60,7 +60,8 @@ function clicked(obj){
 }
 
 /**
-* \brief sends move to server and updates board and its display afterwards, as well as legal moves.
+* \brief sends a move to the server and updates the board and its display afterwards,
+*        updates legal moves as well.
 */
 function send_move(i, j){
     var url = "/move?i=" + i.toString() + "&j=" + j.toString();
@@ -73,7 +74,7 @@ function send_move(i, j){
     //FUNCTION THAT IS CALLED AFTER THE MOVE IS SENT :
     function after_send(data){
         if(is_error_code(data)){
-            display_custom_error(data);
+            handle_custom_error(data);
             return;
         }
         console.log("after_send() : successfully sent move (" + i.toString() + ", " + j.toString() + ")");
@@ -88,7 +89,7 @@ function send_move(i, j){
 }
 
 /**
-* \brief Asks the server for the board, and updates the global variable "board".
+* \brief Asks the server for the board, and updates the global variable "b".
 */
 function update_board(){
     console.log("Updating board.");
@@ -106,43 +107,20 @@ function update_board(){
         console.log("Successfully recieved board data : " + data);
 
         if(is_error_code(data)){
-            display_custom_error(data);
+            handle_custom_error(data);
             return;
         }
 
-        var board_of_stones = [];
-        board_of_stones[0] = [];
-        var i = 0;
-        var cur_row = 0, cur_column = 0;
-
-        //load board_of_stones
-        while(1){
-            if(data[i] == undefined){
-                break;
-            }
-            else if("012".search(data[i]) > -1){
-                board_of_stones[cur_row][cur_column] = parseInt(data[i]);
-                cur_column++;
-            }
-            else if(data[i] == "\n"){
-                if(data[i+1] != "\n" && data[i+1] != undefined){
-                    cur_row++;
-                    board_of_stones[cur_row] = [];
-                    cur_column = 0;
-                }
-            }
-            else{
-                console.log("after_get_board() : Unvalid data recieved from the server !");
-            }
-            i++;
+        //update global variable
+        try{
+            b = jqXHR.responseJSON;
+        }
+        catch(e){
+            console.log("In after_get_board() : ");
+            console.log(e.message);
         }
 
-        //update global variables
-        height = board_of_stones.length;
-        width = board_of_stones[0].length;
-        board = board_of_stones;
-
-        console.log("Updated board into array. height : " + height.toString() + " width : " + width.toString());
+        console.log("Updated board into array. height : " + b.height.toString() + " width : " + b.width.toString());
     }
 }
 
@@ -150,11 +128,15 @@ function update_board(){
 * \brief Builds the HTML code needed to display the board given in the global variable
 */
 function create_html_board(){
-    if(board == undefined || width == undefined || height == undefined){
+    console.log("Creating html tags.");
+
+    //checking if b is defined
+    if(b == undefined){
         console.log("create_html_board() : cannot build html because board was not initialized");
         return;
     }
 
+    //checking whether the html of the board has already been created
     var board_tag = $("#board");
     if(board_tag.html() != undefined) {
         if (board_tag.html().search("<table>") >= 0) {
@@ -163,43 +145,48 @@ function create_html_board(){
         }
     }
 
+    //creating the html
     var i, j;
-
     board_tag.append("<table/>");
-    for(i = 0; i<height; i++){
+    for(i = 0; i<b.height; i++){
         var table_row = $("<tr>", {id: i});
         table_row.appendTo("table");
 
-        for(j = 0; j<width; j++){
-            var table_data = $("<td/>", {id: i + "-" + j, text: ""});
+        for(j = 0; j<b.width; j++){
+            var table_data = $("<td/>", {id: i + "-" + j, text: "", class: "board_square"});
             table_data.append("<div>");
             table_data.appendTo("tr#" + i);
         }
     }
 
-    for(i = 0; i<height; i++){
-        for(j = 0; j<width; j++){
+    //adding events on every square
+    for(i = 0; i<b.height; i++){
+        for(j = 0; j<b.width; j++){
             var elt = $("#" + i + "-" + j);
             elt.on("click", function(){ clicked(this); });
-            elt.attr('class', 'board_square');
         }
     }
 
+    //checking if the function worked
     if(board_tag.html() == undefined){
         console.log("something went wrong creating html tags, because board_tag.html() is undefined");
     }
-    console.log("Created html tags.");
 }
 
 /**
-* \brief updates the display of the board. The global variable 'board' has to be set, and the html tags have to be there.
+* \brief updates the display of the board according to 'b'. The global variable 'b'
+*        has to be set, and the html tags have to be there.
 */
 function update_display_board(){
-    if(board == undefined || width == undefined || height == undefined){
+    console.log("Updating html according to the board global variable.");
+
+    //cheking if 'b' is set
+    if(b == undefined){
         console.log("update_display_board() : cannot build html because board was not initialized");
         return;
     }
 
+    //checking if the board html is there
     var board_tag = $("#board");
     if(board_tag.html() == undefined){
         console.log("update_display_board : cannot update display because the html was not created. See #board : " + board_tag.html());
@@ -210,22 +197,23 @@ function update_display_board(){
         return;
     }
 
-    for(var i = 0; i < height; i++){
-        for(var j = 0; j < width; j++){
+    //updating display
+    for(var i = 0; i < b.height; i++){
+        for(var j = 0; j < b.width; j++){
             var elt = $("#" + i + "-" + j + " div");
-            if(board[i][j] == 0){
-                elt.removeClass('black_stone');
-                elt.removeClass('white_stone');
-            }
-            else if(board[i][j] == 1){
-                elt.attr('class', 'black_stone');
-            }
-            else if(board[i][j] == 2){
-                elt.attr('class', 'white_stone');
+            switch(b.board_of_stone[i][j]){
+                case 0:
+                    elt.attr('class', '');
+                    break;
+                case 1:
+                    elt.attr('class', 'black_stone');
+                    break;
+                case 2:
+                    elt.attr('class', 'white_stone');
+                    break;
             }
         }
     }
-    console.log("Updated html according to the board global variable.");
 }
 
 /**
@@ -235,7 +223,7 @@ function create_gamestate(problem_id){
     function after_create_game(jqXHR){
         var data = jqXHR.responseText;
         if(is_error_code(data)){
-            display_custom_error(data);
+            handle_custom_error(data);
             return;
         }
     }
@@ -265,48 +253,35 @@ function update_legal_moves(){
     //FUNCTION CALLED AFTER THE GET REQUEST
     function after_get_legal(jqXHR){
         var data = jqXHR.responseText;
+
         if(is_error_code(data)){
-            display_custom_error(data);
+            handle_custom_error(data);
             return;
         }
         console.log("after_get_legal() : successfully received legal moves : " + data);
 
-        var legal_moves_temp = [];
-        legal_moves_temp[0] = [];
-        var cur_row = 0;
-        var cur_column = 0;
-        var i = 0;
-
-        while(1){
-            if(data[i] == undefined){
-                break;
-            }
-            else if("01".search(data[i]) > -1){
-                legal_moves_temp[cur_row][cur_column] = parseInt(data[i]);
-                cur_column++;
-            }
-            else if(data[i] == "\n"){
-                if(data[i+1] != "\n" && data[i+1] != undefined){
-                    cur_row++;
-                    legal_moves_temp[cur_row] = [];
-                    cur_column = 0;
-                }
-            }
-            else{
-                console.log("after_get_legal() : Unvalid data recieved from the server.")
-            }
-            i++;
+        //update global variable
+        try{
+            legal_moves = jqXHR.responseJSON;
         }
-        legal_moves = legal_moves_temp; //update global variable
+        catch(e){
+            console.log("In after_get_legal() : ");
+            console.log(e.message);
+        }
     }
 }
-
+/**
+* \brief Updates html tags according to 'legal_moves', so that every legal moves has
+*        the class "legal_move".
+*/
 function update_hover_moves(){
+    //check if legal_move is set
     if(legal_moves == undefined){
         console.log("update_hover_moves() : cannot update html because legal_moves was not initialized");
         return;
     }
 
+    //check if the html tags for the board are there
     var board_tag = $("#board");
     if(board_tag.html() == undefined){
         console.log("update_hover_moves() : cannot update display because the html was not created. See #board : " + board_tag.html());
@@ -317,8 +292,9 @@ function update_hover_moves(){
         return;
     }
 
-    for(var i = 0; i<height; i++){
-        for(var j = 0; j<width; j++){
+    //update html
+    for(var i = 0; i<b.height; i++){
+        for(var j = 0; j<b.width; j++){
             if(legal_moves[i][j] == 1){
                 $("#" + i + "-" + j + " div").addClass("legal_move");
             }
@@ -345,7 +321,7 @@ function update_player_color(){
     //FUNCTION CALLED AFTER THE GET REQUEST
     function after_get_color(data){
         if(is_error_code(data)){
-            display_custom_error(data);
+            handle_custom_error(data);
             return;
         }
         console.log("after_get_color() : successfully received player color : " + data);
@@ -380,9 +356,9 @@ function is_message_code(data){
     return data[0] == "M";
 }
 
-function display_custom_error(data){
+function handle_custom_error(data){
     if(! is_error_code(data)){
-        console.log("display_custom_error() : not an error.");
+        console.log("handle_custom_error() : not an error.");
     }
 
     if(data.search("E00") >= 0){
@@ -428,4 +404,8 @@ function handle_custom_message(data){
         console.log("Unknown message recieved");
         $("#messages").append("<h4 class='loose_msg'>Le serveur a envoyé un message inconnu.</h4>");
     }
+}
+
+function display_error(error_string){
+    $("#error").append("<p>" + error_string + "</p>");
 }

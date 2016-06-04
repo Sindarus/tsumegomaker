@@ -117,8 +117,7 @@ class GamesStateController < ApplicationController
         return
     end
     load_state(session[:game_state_id])
-    render plain: @board.to_text
-    # render :json => @board
+    render json: @board
   end
 
   def get_legal
@@ -127,7 +126,7 @@ class GamesStateController < ApplicationController
         return
     end
     load_state(session[:game_state_id])
-    render plain: @board.get_legal_as_text(@problem.player_color)
+    render json: @board.get_legal(@problem.player_color)
   end
 
   def get_color

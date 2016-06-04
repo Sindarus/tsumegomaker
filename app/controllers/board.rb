@@ -2,6 +2,9 @@ class Board
   # This class represents a board.
   # board_of_stone : a 2D array of integers. 0 means that the spot is empty,
   #                  1 means "black stone" and 2 means "white stone"
+  # height
+  # width
+  # d4adj          : Constant used by some methods to make the code prettier.
   # ko_move        : when needed, this contains [[i, j], color], where (i, j) is
   #                  an illegal move for 'color' because of the simple ko rule.
 
