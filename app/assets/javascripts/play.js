@@ -214,6 +214,10 @@ function update_display_board(){
             }
         }
     }
+
+    //updating captured stone counter
+    //$("#captured_stones_black").html("<p>White has " + b.nb_captured[0].toString() + " black prisoner stones.");
+    //$("#captured_stones_white").html("<p>Black has " + b.nb_captured[1].toString() + " white prisoner stones.");
 }
 
 /**

@@ -7,6 +7,9 @@ class Board
   # d4adj          : Constant used by some methods to make the code prettier.
   # ko_move        : when needed, this contains [[i, j], color], where (i, j) is
   #                  an illegal move for 'color' because of the simple ko rule.
+  # nb_captured    : [number of stones captured by black, by white].
+
+  attr_reader :nb_captured
 
   def initialize(height, width)
     @board_of_stone = Array.new(height) {Array.new(width){0}}
@@ -14,6 +17,7 @@ class Board
     @width = width
     @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
     @ko_move = []
+    @nb_captured = [0, 0]
   end
 
   def get_board
@@ -148,8 +152,8 @@ class Board
     return true
   end
 
-  #returns a 2D array of booleans that has the same shape as 'board_of_stones'.
-  #All spots that have 'true' are legal to play for 'color'.
+  # returns a 2D array of booleans that has the same shape as 'board_of_stones'.
+  # All spots that have 'true' are legal to play for 'color'.
   def get_legal(color)
     if color == nil
       raise "get_legal : color provided is nil"
@@ -201,9 +205,16 @@ class Board
   # makes 'color' play at (i, j) !
   # If (i, j) == (-1, -1), this is a "pass".
   def add_stone(i, j, color)
-    if [i,j] == [-1,-1]
+    if color != 1 and color != 2
+      raise "In add_stone() : Not a color."
+    end
+
+    if [i,j] == [-1,-1]                     #player passes
+      #add one captured stone to its opponent (AGA rules)
+      add_captured_stones(1, opponent(color))
       return 0
     end
+
     if not is_legal?(i, j, color)
       raise "The move (#{i}, #{j}) is illegal for player #{color} !"
     end
@@ -219,6 +230,8 @@ class Board
         end
       end
     }
+
+    add_captured_stones(captured.size, color)
 
     # handle simple ko rule
     @ko_move = []
@@ -254,6 +267,19 @@ class Board
       raise "This is not a valid position (#{i},#{j})"
     end
     @board_of_stone[i][j] = 0
+  end
+
+  # adds 'nb' captured stones to 'color'
+  def add_captured_stones(nb, color)
+    if nb < 0
+      raise "In add_captured_stones() : cannot capture a negative amount of stones."
+    end
+    if color != 1 and color != 2
+      raise "In add_captured_stones() : " + color.to_s + " is not a valid color."
+    end
+    @nb_captured[color - 1] = @nb_captured[color - 1] + nb
+    # -1 because black player is 1 and his captured stones are counted
+    # by nb_captured[0]
   end
 
 end
