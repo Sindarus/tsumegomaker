@@ -8,9 +8,11 @@ class UsersController < ApplicationController
 
   def create
     permitted = params.require(:user).permit(:username, :email, :password, :password_confirmation)
+    permitted[:username].downcase!
+    permitted[:email].downcase!
     @user = User.new(permitted)
     if @user.save
-      flash[:notice] = "Vous êtes enregistré"
+      flash[:notice] = "Vous êtes enregistré(e)"
       flash[:color] = "valid"
       redirect_to :action => 'login', :controller => 'sessions'
     else
