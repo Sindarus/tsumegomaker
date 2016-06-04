@@ -1,7 +1,8 @@
 Code : Mean :
-E00    IA init
-E01    IA Catch Up
+E00    IA could not init sgf file
+E01    IA could not catch up with the state of the game
 E02    IA Move
-E10    Illegal Move
+E10    Player tried to play an illegal move
 
-M20    The user won
+M20    The user has resolved the problem
+M21    The user has failed the problem
