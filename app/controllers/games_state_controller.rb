@@ -115,6 +115,7 @@ class GamesStateController < ApplicationController
     load_state(game_state_id)
     @content = @board.to_text
     render 'show_content'
+    # render :json => @board
   end
 
   def get_legal
