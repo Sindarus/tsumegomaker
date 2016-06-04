@@ -421,17 +421,21 @@ function display_custom_error(data){
         console.log("E00 recieved");
         $("#error").append("<p>Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
     }
-    if(data.search("E01") >= 0){
+    else if(data.search("E01") >= 0){
         console.log("E01 recieved");
         $("#error").append("<p>L'IA n'a pas réussi a retrouver l'état de la partie</p>");
     }
-    if(data.search("E02") >= 0){
+    else if(data.search("E02") >= 0){
         console.log("E02 recieved");
         $("#error").append("<p>Erreur IA move</p>");
     }
-    if(data.search("E10") >= 0){
+    else if(data.search("E10") >= 0){
         console.log("E10 recieved");
         $("#error").append("<p>Le coup que vous avez joué est illégal.</p>");
+    }
+    else {
+        console.log("Unknown error recieved");
+        $("#error").append("<p>Une erreur coté serveur est survenue.</p>");
     }
 }
 
@@ -441,14 +445,19 @@ function handle_custom_message(data){
     }
 
     $("#messages").empty();
+
     if(data.search("M20") >= 0){
         console.log("M20 recieved");
         $("#messages").append("<h4 class='win_msg'>Vous avez gagné !</h4>");
         end = true;
     }
-    if(data.search("M21") >= 0){
+    else if(data.search("M21") >= 0){
         console.log("M21 recieved");
         $("#messages").append("<h4 class='loose_msg'>Vous avez perdu.</h4>");
         end = true;
+    }
+    else{
+        console.log("Unknown message recieved");
+        $("#messages").append("<h4 class='loose_msg'>Le serveur a envoyé un message inconnu.</h4>");
     }
 }
