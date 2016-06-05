@@ -191,6 +191,7 @@ class Board
     }
     return group
   end
+  protected :kill_group
 
   # returns the color number of the opponent of 'color'.
   def opponent(color)
@@ -273,6 +274,7 @@ class Board
     end
     @board_of_stone[i][j] = 0
   end
+  protected :rm_stone
 
   # adds 'nb' captured stones to 'color'
   def add_captured_stones(nb, color)
@@ -286,6 +288,7 @@ class Board
     # -1 because black player is 1 and his captured stones are counted
     # by nb_captured[0]
   end
+  protected :add_captured_stones
 
   # returns [score of black, score of white]
   def get_score
