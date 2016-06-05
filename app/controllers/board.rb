@@ -12,6 +12,9 @@ class Board
   attr_reader :nb_captured
 
   def initialize(height, width)
+    if(height <= 1 || width <= 1)
+      raise "Cannot create a board with size " + height.to_s + "x" + width.to_s + "."
+    end
     @board_of_stone = Array.new(height) {Array.new(width){0}}
     @height = height
     @width = width
@@ -91,6 +94,7 @@ class Board
   # Returns two lists. The first contains the position of every stone that
   # belong to the same "group" as the stone at (i, j).
   # The second contains the pos of the stones adjacent to that "group".
+  # (i, j) can be empty, 'empty' is then considered as a color.
   def get_adj(i,j)
     same_group = [[i,j]]
     adj_group = []
@@ -259,6 +263,7 @@ class Board
       }
       print("\n")
     }
+    return nil
   end
 
   # sets the spot (i, j) at '0'.
@@ -277,9 +282,72 @@ class Board
     if color != 1 and color != 2
       raise "In add_captured_stones() : " + color.to_s + " is not a valid color."
     end
-    @nb_captured[color - 1] = @nb_captured[color - 1] + nb
+    @nb_captured[color - 1] += nb
     # -1 because black player is 1 and his captured stones are counted
     # by nb_captured[0]
+  end
+
+  # returns [score of black, score of white]
+  def get_score
+    empty_squares = []   # lists of empty squares we have already counted
+    score = [0, 0]       # [score of black, score of white]
+
+    #for each stone of the board
+    @board_of_stone.each_with_index do |row, i|
+      row.each_with_index do |stone, j|
+        # if the spot is empty and we've not counted it yet
+        if stone == 0 && !empty_squares.include?([i, j])
+          # get the group of empty spots and its adjacents
+          group, adj = get_adj(i, j)
+          # the player who gets the points depend on the color of the adjacents
+          cur_adj_color = group_color(adj)
+          # if the group of adj is all black or all white
+          if(cur_adj_color > 0)
+            score[cur_adj_color-1] += group.size    # count score
+            empty_squares += group                  # save empty spots that have been counted
+          end
+        end
+      end
+    end
+
+    #add captured stones
+    for i in [0, 1] do
+      score[i] += nb_captured[i]
+    end
+
+    return score
+  end
+
+  # returns 0 if the group is a group of empty spots
+  # returns 1 if the group is a group of black stones
+  # returns 2 if the group is a group of white stones
+  # returns -1 if the group is a mix of multiple color
+  # returns -2 if no valid color was found
+  #group should be [[i, j], [i, j], ...]
+  def group_color(group)
+    found = [0, 0, 0]   # found[0] = 1 if empty spot was found
+
+    # for each pos in the group
+    group.each do |i, j|
+      cur_color = access_board(i, j)
+      if cur_color != -1
+        found[cur_color] = 1
+        if found.reduce(:+) > 1      # if the sum of "found" > 1
+          return -1                  # it means more than 1 color was found
+        end
+      end
+    end
+
+    #at this point, we know we haven't found more than 1 color
+    if found.reduce(:+) == 0
+      return -2
+    end
+
+    found.each_with_index do |was_found, color|
+      if was_found == 1
+        return color
+      end
+    end
   end
 
 end
