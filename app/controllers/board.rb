@@ -170,7 +170,7 @@ class Board
   end
 
   # returns a copy (separate instance) of the current instance
-  def get_copy
+  def clone
     # This is an easy fix to ruby's shameful lack of deep_copy.
     # Marshall.dump transforms any object in a string that can later be decoded to
     # yield the object back. This way, you get a deepcopy of the given object.

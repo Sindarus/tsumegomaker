@@ -18,7 +18,7 @@ class Minimax
   end
 
   def minimax(node, prev_board, color)
-    board = prev_board.get_copy
+    board = prev_board.clone
     i,j = extract_move(node,color)
     board.add_stone(i,j,color)
     puts "Profondeur #{node.depth}\nCoup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
