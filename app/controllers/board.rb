@@ -13,6 +13,10 @@ class Board
   #                  the list. A move is described like : [i, j, color]
   #                  To access the coordinates of the i'th move, use :
   #                  i, j = move_history[i][0]
+  # board_history  : history of boards. If stones are added on the
+  #                  board without going through 'add_stone', the board won't be
+  #                  saved, because the board only saves when one plays a legitimate
+  #                  move, using 'add_stone()'.
   #
   # border numbers
   #  _______
@@ -24,8 +28,10 @@ class Board
   # a border is called "not-border" to symbolize the fact that there is the rest
   # of the board behind it, i.e. empty spots.
 
-  attr_reader :nb_captured  # creates a getter for nb_captured
+  attr_reader :board_of_stone    # makes board_of_stone readable from anyone
+  attr_reader :nb_captured
   attr_reader :move_history
+  attr_reader :board_history
 
   def initialize(height, width, not_border = [false, false, false, false])
     # checking parameter's integrity
@@ -49,16 +55,8 @@ class Board
     @nb_captured = [0, 0]
     @not_border = not_border
     @move_history = []
+    @board_history = []
   end
-
-  def get_board
-    @board_of_stone
-  end
-
-  def set_ko_move(ko_move)
-    @ko_move = ko_move
-  end
-  protected :set_ko_move
 
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
@@ -169,21 +167,11 @@ class Board
 
   # returns a copy (separate instance) of the current instance
   def get_copy
-    board_copy = Board.new(@height, @width, @not_border)
-    board_copy.set_ko_move(@ko_move)
-
-    i = 0
-    @board_of_stone.each{|row|
-        j = 0
-      row.each{|stone|
-        if(stone == 1 || stone == 2)
-            board_copy.set_stone_at(i, j, stone)
-        end
-        j += 1
-      }
-      i += 1
-    }
-    return board_copy
+    # This is an easy fix to ruby's shameful lack of deep_copy.
+    # Marshall.dump transforms any object in a string that can later be decoded to
+    # yield the object back. This way, you get a deepcopy of the given object.
+    # Easy but dirty.
+    return Marshal.load( Marshal.dump(self) )
   end
 
   # returns a string representing the board
@@ -271,7 +259,7 @@ class Board
     return true
   end
 
-  # returns a 2D array of booleans that has the same shape as 'board_of_stones'.
+  # returns a 2D array of booleans that has the same shape as 'board_of_stone'.
   # All spots that have 'true' are legal to play for 'color'.
   def get_legal(color)
     if color == nil
@@ -332,9 +320,11 @@ class Board
       raise "The move (#{i}, #{j}) is illegal for player #{color} !"
     end
 
-    move_history << [i, j, color]
+    # save old board, and save move
+    @board_history << b = Marshal.load(Marshal.dump(@board_of_stone))
+    @move_history << [i, j, color]
 
-    if [i,j] == [-1,-1]                     #player passes
+    if [i,j] == [-1,-1]                     # player passes
       #add one captured stone to its opponent (AGA rules)
       add_captured_stones(1, opponent(color))
       return
@@ -366,7 +356,7 @@ class Board
   end
 
   # displays the board in the console.
-  def display
+  def display(board = @board_of_stone)
     #first line
     if @not_border[1]
       print("--")
@@ -381,7 +371,7 @@ class Board
     end
     print("\n")
 
-    @board_of_stone.each{|row|
+    board.each{|row|
       if @not_border[1]
         print("--")
       end
@@ -415,6 +405,14 @@ class Board
       print("--")
     end
     print("\n")
+    return nil
+  end
+
+  def display_board_history
+    for board in board_history
+      display(board)
+      sleep(1)
+    end
     return nil
   end
 
