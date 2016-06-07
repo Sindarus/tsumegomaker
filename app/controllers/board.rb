@@ -55,32 +55,40 @@ class Board
   protected :set_ko_move
 
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
+  # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
+  # avoid get_adj to loop forever
   def access_board(i, j)
+    ret_zero = false  # should we return 0 because (i, j) is out of bounds but not too far ?
     if i < 0
-      if ! @not_border[0]
+      if ! @not_border[0] || i < -1
         return -1
       end
-      return 0
+      rret_zero = true
     end
 
-    if i > @height
-      if ! @not_border[3]
+    if i >= @height
+      if ! @not_border[3] || i >= @height + 1
         return -1
       end
-      return 0
+      ret_zero = true
     end
 
     if j < 0
-      if ! @not_border[1]
+      if ! @not_border[1] || j < -1
         return -1
       end
-      return 0
+      ret_zero = true
     end
 
-    if j > @width
-      if ! @not_border[2]
+    if j >= @width
+      if ! @not_border[2] || j >= @width + 1
         return -1
       end
+      ret_zero = true
+    end
+
+    # we return zero after all the previous check because returning -1 has priority
+    if ret_zero
       return 0
     end
 
@@ -103,7 +111,7 @@ class Board
       return # do nothing
     end
 
-    if i > @height
+    if i >= @height
       if ! @not_border[3]
         raise "In set_stone_at() : this spot is out of the board downwards."
       end
@@ -123,7 +131,7 @@ class Board
       return # do nothing
     end
 
-    if j > @width
+    if j >= @width
       if ! @not_border[2]
         raise "In set_stone_at() : this spot is out of the board rightwards."
       end
@@ -133,7 +141,7 @@ class Board
       return # do nothing
     end
 
-    @board_of_color[i][j] = color
+    @board_of_stone[i][j] = color
   end
   protected :set_stone_at
 
@@ -227,7 +235,7 @@ class Board
 
   # returns true if the move (i, j) is legal for the player that plays 'color'
   def is_legal?(i,j,color)
-    if i<0 or i>@height or j<0 or j>@width
+    if i<0 or i>=@height or j<0 or j>=@width
       return false    # spot is not inside the (not-)borders
     end
     if access_board(i,j) != 0
@@ -347,7 +355,24 @@ class Board
 
   # displays the board in the console.
   def display
+    #first line
+    if @not_border[1]
+      print("--")
+    end
+    if @not_border[0]
+      @width.times do
+        print("|")
+      end
+    end
+    if @not_border[2]
+      print("--")
+    end
+    print("\n")
+
     @board_of_stone.each{|row|
+      if @not_border[1]
+        print("--")
+      end
       row.each{|stone|
         if stone == 0
           print(".")
@@ -359,8 +384,25 @@ class Board
           raise "Stone type not supported for display."
         end
       }
+      if @not_border[2]
+        print("--")
+      end
       print("\n")
     }
+
+    #last line
+    if @not_border[1]
+      print("--")
+    end
+    if @not_border[3]
+      @width.times do
+        print("|")
+      end
+    end
+    if @not_border[2]
+      print("--")
+    end
+    print("\n")
     return nil
   end
 
