@@ -9,6 +9,10 @@ class Board
   #                  an illegal move for 'color' because of the simple ko rule.
   # nb_captured    : [number of stones captured by black, by white].
   # not_border     : [true if border #0 is not a border, #1, #2, #3]
+  # move_history   : history of moves that were played. First moves are first in
+  #                  the list. A move is described like : [i, j, color]
+  #                  To access the coordinates of the i'th move, use :
+  #                  i, j = move_history[i][0]
   #
   # border numbers
   #  _______
@@ -21,6 +25,7 @@ class Board
   # of the board behind it, i.e. empty spots.
 
   attr_reader :nb_captured  # creates a getter for nb_captured
+  attr_reader :move_history
 
   def initialize(height, width, not_border = [false, false, false, false])
     # checking parameter's integrity
@@ -43,6 +48,7 @@ class Board
     @ko_move = []
     @nb_captured = [0, 0]
     @not_border = not_border
+    @move_history = []
   end
 
   def get_board
@@ -235,6 +241,10 @@ class Board
 
   # returns true if the move (i, j) is legal for the player that plays 'color'
   def is_legal?(i,j,color)
+    if i == -1 && j == -1
+      return true     # passing is always legal
+    end
+
     if i<0 or i>=@height or j<0 or j>=@width
       return false    # spot is not inside the (not-)borders
     end
@@ -318,16 +328,18 @@ class Board
     if color != 1 and color != 2
       raise "In add_stone() : Not a color."
     end
+    if not is_legal?(i, j, color)
+      raise "The move (#{i}, #{j}) is illegal for player #{color} !"
+    end
+
+    move_history << [i, j, color]
 
     if [i,j] == [-1,-1]                     #player passes
       #add one captured stone to its opponent (AGA rules)
       add_captured_stones(1, opponent(color))
-      return 0
+      return
     end
 
-    if not is_legal?(i, j, color)
-      raise "The move (#{i}, #{j}) is illegal for player #{color} !"
-    end
     # Add the stone
     set_stone_at(i, j, color)
 
