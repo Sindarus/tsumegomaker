@@ -58,6 +58,10 @@ class Board
     @board_history = []
   end
 
+  def get_board
+    return @board_of_stone
+  end
+
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
   # avoid get_adj to loop forever
