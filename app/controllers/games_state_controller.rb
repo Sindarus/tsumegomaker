@@ -1,14 +1,19 @@
 class GamesStateController < ApplicationController
 
   def initialize
+    # please set this to true when you use "render", and when you "render", wheck this
+    # variable, because if you use "render" twice in a single request response cycle,
+    # it will cause a rails error.
+    @rendered = false
     @board = nil
-    @move_history = []
     @ia_player = nil
   end
 
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
     @problem = Problem.find_by(id: @game_state.problem_id)
+    @board = Board.new
+    @board.load_from_hash(JSON.parse(@game_state.json_board))
     problem_file = @problem.problem_file
     begin
       @ia_player = IaSgf.new(@problem.ia_color, problem_file)
@@ -16,63 +21,38 @@ class GamesStateController < ApplicationController
       send_code("E00")
       return
     end
-    load_move_history
     begin
-      @ia_player.catch_up(@move_history)
-    rescue MyError::MoveError
+      @ia_player.catch_up(@board.move_history)
+    rescue MyError::MoveError => e
+      puts "ERREUR ==============================================="
+      puts e.message
+      puts e.backtrace
+      puts "======================================================"
       send_code("E01")
       return
     end
-    @board = Board.new(@game_state.height, @game_state.width)
-    @board.load_board(@game_state.board_history.split[0..@game_state.height-1].join("\n"))
   end
 
   def send_code(string)
-    render plain: string
-  end
-
-  def load_move_history
-    @game_state.move_history.each_line{|move|
-      @move_history << move.split
-    }
-    @move_history = @move_history.each.map{|move|
-      move.each.map{|c|
-        Integer(c)
-      }
-    }
-    @move_history.reverse!
-  end
-
-  def save_move_history
-    move_history_text = ""
-    @move_history.reverse!
-    @move_history.each{|i,j|
-      move_history_text << i.to_s + " " + j.to_s + "\n"
-    }
-    @game_state.move_history = move_history_text
-  end
-
-  def add_move_history(i,j)
-    @move_history << [i,j]
+    if not @rendered
+      render plain: string
+      @rendered = true
+    end
   end
 
   def player_move(i,j)
     if [i,j] == [-1,-1]
-      add_move_history(i,j)
       return
     end
     if ! @board.is_legal?(i,j,@problem.player_color)
       send_code("E10")
       return
     end
-    add_move_history(i,j)
     @board.add_stone(i, j, @problem.player_color)
   end
 
-  def save_state(game_state_id)
-    board_history = @board.to_text + @game_state.board_history
-    @game_state.board_history = board_history
-    save_move_history
+  def save_state
+    @game_state.json_board = @board.to_json
     @game_state.save
   end
 
@@ -106,9 +86,11 @@ class GamesStateController < ApplicationController
     end
     ia_i, ia_j = ia_move
     @board.add_stone(ia_i, ia_j, @problem.ia_color)
-    add_move_history(ia_i,ia_j)
-    save_state(session[:game_state_id])
-    render plain: ia_msg
+    save_state
+    if not @rendered
+      render plain: ia_msg
+      @rendered = true
+    end
   end
 
   def get_board
@@ -117,7 +99,10 @@ class GamesStateController < ApplicationController
         return
     end
     load_state(session[:game_state_id])
-    render json: @board
+    if not @rendered
+      render json: @board
+      @rendered = true
+    end
   end
 
   def get_legal
@@ -126,7 +111,10 @@ class GamesStateController < ApplicationController
         return
     end
     load_state(session[:game_state_id])
-    render json: @board.get_legal(@problem.player_color)
+    if not @rendered
+      render json: @board.get_legal(@problem.player_color)
+      @rendered = true
+    end
   end
 
   def get_color
@@ -135,26 +123,30 @@ class GamesStateController < ApplicationController
         return
     end
     load_state(session[:game_state_id])
-    render plain: @problem.player_color.to_s
+    if not @rendered
+      render plain: @problem.player_color.to_s
+      @rendered = true
+    end
   end
 
   def create_game
     problem_id = params[:problem_id]
-    @game_state = GameState.new
     @problem = Problem.find_by(id: problem_id)
     if @problem == nil
       session[:game_state_id] = nil
       send_code("E04")
       return
     end
-    @game_state.board_history = @problem.initial_board
-    @game_state.move_history = ""
-    @game_state.width = @problem.width
-    @game_state.height = @problem.height
+    @game_state = GameState.new
     @game_state.problem_id = problem_id
-    @game_state.save
+    @board = Board.new(@problem.height, @problem.width)
+    @board.load_board(@problem.initial_board)
+    save_state
     session[:game_state_id] = @game_state.id
-    render nothing: true
+    if not @rendered
+      render nothing: true
+      @rendered = true
+    end
   end
 
 end

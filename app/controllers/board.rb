@@ -10,7 +10,7 @@ class Board
   # nb_captured    : [number of stones captured by black, by white].
   # not_border     : [true if border #0 is not a border, #1, #2, #3]
   # move_history   : history of moves that were played. First moves are first in
-  #                  the list. A move is described like : [i, j, color]
+  #                  the list. A move is described like : [i, j]
   #                  To access the coordinates of the i'th move, use :
   #                  i, j = move_history[i][0]
   # board_history  : history of boards. If stones are added on the
@@ -33,7 +33,7 @@ class Board
   attr_reader :move_history
   attr_reader :board_history
 
-  def initialize(height, width, not_border = [false, false, false, false])
+  def initialize(height = 5, width = 5, not_border = [false, false, false, false])
     # checking parameter's integrity
     if(height <= 1 || width <= 1)
       raise "In Board.initialize() : Cannot create a board with size " + height.to_s + "x" + width.to_s + "."
@@ -60,6 +60,18 @@ class Board
 
   def get_board
     return @board_of_stone
+  end
+
+  def load_from_hash(hash)
+    @board_of_stone = hash["board_of_stone"]
+    @height = hash["height"]
+    @width = hash["width"]
+    @d4adj = hash["d4adj"]
+    @ko_move = hash["ko_move"]
+    @nb_captured = hash["nb_captured"]
+    @not_border = hash["not_border"]
+    @move_history = hash["move_history"]
+    @board_history = hash["board_history"]
   end
 
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
@@ -326,7 +338,7 @@ class Board
 
     # save old board, and save move
     @board_history << b = Marshal.load(Marshal.dump(@board_of_stone))
-    @move_history << [i, j, color]
+    @move_history << [i, j]
 
     if [i,j] == [-1,-1]                     # player passes
       #add one captured stone to its opponent (AGA rules)

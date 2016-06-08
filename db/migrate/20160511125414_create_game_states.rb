@@ -3,10 +3,7 @@ class CreateGameStates < ActiveRecord::Migration
     create_table :game_states do |t|
       t.integer :player_color
       t.integer :ia_color
-      t.text :board_history
-      t.text :move_history
-      t.integer :width
-      t.integer :height
+      t.text :json_board
       t.integer :problem_id
 
       t.timestamps null: false
