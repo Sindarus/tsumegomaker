@@ -92,11 +92,13 @@ function update_board(){
 
     var req = $.get({url : "/get_board",
                      complete : after_get_board,
+                     error : request_error,
                      async : false});
-    req.fail(function(jqXHR){
+
+    function request_error(jqXHR){
         console.log("update_board() : Get request to get board failed.");
         display_rails_error(jqXHR);
-    });
+    }
 
     function after_get_board(jqXHR){
         var data = jqXHR.responseText;
@@ -224,11 +226,13 @@ function create_gamestate(problem_id){
 
     var req = $.get({url: "/create_game?problem_id=" + problem_id.toString(),
                      complete: after_create_game,
+                     error: request_error,
                      async: false});
-    req.fail(function(jqXHR){
+
+    function request_error(jqXHR){
         console.log("Get request to create gamestate failed.");
         display_rails_error(jqXHR);
-    });
+    }
 }
 
 /**
@@ -238,11 +242,12 @@ function update_legal_moves(){
     console.log("Updating legal moves.");
     var req = $.get({url : "/get_legal",
                      complete : after_get_legal,
+                     error: request_error,
                      async : false});
-    req.fail(function(jqXHR){
+    function request_error(jqXHR){
         console.log("update_legal_moves() : Get request to get legal moves failed.");
         display_rails_error(jqXHR);
-    });
+    }
 
     //FUNCTION CALLED AFTER THE GET REQUEST
     function after_get_legal(jqXHR){
@@ -351,27 +356,27 @@ function filter_error(data){
 
     if(data.search("E00") >= 0){
         console.log("E00 recieved");
-        $("#error").append("<p>Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
+        $("#error").append("<p>E00 : Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
     }
     else if(data.search("E01") >= 0){
         console.log("E01 recieved");
-        $("#error").append("<p>L'IA n'a pas réussi a retrouver l'état de la partie</p>");
+        $("#error").append("<p>E01 : L'IA n'a pas réussi a retrouver l'état de la partie</p>");
     }
     else if(data.search("E02") >= 0){
         console.log("E02 recieved");
-        $("#error").append("<p>Erreur IA move</p>");
+        $("#error").append("<p>E02 : Erreur IA move</p>");
     }
     else if(data.search("E03") >= 0){
         console.log("E03 recieved");
-        $("#error").append("<p>Vous n'avez pas de game_state_id.</p>");
+        $("#error").append("<p>E03 : Vous n'avez pas de game_state_id.</p>");
     }
     else if(data.search("E04") >= 0){
         console.log("E04 recieved");
-        $("#error").append("<p>Le serveur n'a pas pu trouver de problème avec cet id.</p>");
+        $("#error").append("<p>E04 : Le serveur n'a pas pu trouver de problème avec cet id.</p>");
     }
     else if(data.search("E10") >= 0){
         console.log("E10 recieved");
-        $("#error").append("<p>Le coup que vous avez joué est illégal.</p>");
+        $("#error").append("<p>E10 : Le coup que vous avez joué est illégal.</p>");
     }
     else {
         console.log("Unknown error recieved");
