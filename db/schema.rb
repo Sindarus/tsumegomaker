@@ -39,12 +39,12 @@ ActiveRecord::Schema.define(version: 20160518231308) do
   create_table "problems", force: :cascade do |t|
     t.integer  "player_color"
     t.integer  "ia_color"
-    t.integer  "width"
     t.integer  "height"
-    t.text     "initial_board"
+    t.integer  "width"
+    t.text     "yaml_initial_board"
     t.string   "problem_file"
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at",         null: false
+    t.datetime "updated_at",         null: false
   end
 
   create_table "users", force: :cascade do |t|

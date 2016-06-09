@@ -1,3 +1,5 @@
+require 'board.rb'
+
 class GamesStateController < ApplicationController
 
   def initialize
@@ -22,7 +24,7 @@ class GamesStateController < ApplicationController
     end
     begin
       @ia_player.catch_up(@board.move_history)
-    rescue MyError::MoveError => e
+    rescue MyError::IaError => e
       puts "ERREUR ==============================================="
       puts e.message
       puts e.backtrace
@@ -68,7 +70,11 @@ class GamesStateController < ApplicationController
       ia_move, ia_msg = @ia_player.play(@board.get_board,
                                    @board.get_legal(@ia_player.get_color),
                                    [i,j])
-    rescue
+    rescue MyError::IaError => e
+      puts "ERREUR ==============================================="
+      puts e.message
+      puts e.backtrace
+      puts "======================================================"
       send_code("E02")
       return
     end
@@ -138,8 +144,7 @@ class GamesStateController < ApplicationController
     end
     @game_state = GameState.new
     @game_state.problem_id = problem_id
-    @board = Board.new(@problem.height, @problem.width)
-    @board.load_board(@problem.initial_board)
+    @board = YAML.load(@problem.yaml_initial_board)
     save_state
     session[:game_state_id] = @game_state.id
     if not @rendered
