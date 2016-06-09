@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20160518231308) do
   create_table "game_states", force: :cascade do |t|
     t.integer  "player_color"
     t.integer  "ia_color"
-    t.text     "json_board"
+    t.text     "yaml_board"
     t.integer  "problem_id"
     t.datetime "created_at",   null: false
     t.datetime "updated_at",   null: false
