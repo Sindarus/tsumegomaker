@@ -62,18 +62,6 @@ class Board
     return @board_of_stone
   end
 
-  def load_from_hash(hash)
-    @board_of_stone = hash["board_of_stone"]
-    @height = hash["height"]
-    @width = hash["width"]
-    @d4adj = hash["d4adj"]
-    @ko_move = hash["ko_move"]
-    @nb_captured = hash["nb_captured"]
-    @not_border = hash["not_border"]
-    @move_history = hash["move_history"]
-    @board_history = hash["board_history"]
-  end
-
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
   # avoid get_adj to loop forever

@@ -12,8 +12,7 @@ class GamesStateController < ApplicationController
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
     @problem = Problem.find_by(id: @game_state.problem_id)
-    @board = Board.new
-    @board.load_from_hash(JSON.parse(@game_state.json_board))
+    @board = YAML.load(@game_state.yaml_board)
     problem_file = @problem.problem_file
     begin
       @ia_player = IaSgf.new(@problem.ia_color, problem_file)
@@ -52,7 +51,7 @@ class GamesStateController < ApplicationController
   end
 
   def save_state
-    @game_state.json_board = @board.to_json
+    @game_state.yaml_board = YAML.dump(@board)
     @game_state.save
   end
 
