@@ -162,39 +162,67 @@ function create_html_board(){
         }
     }
 
-    //drawing corners
+    //drawing corner squares
     var up_left_square = $("#0-0");
     var up_right_square = $("#0-" + (b.width-1).toString());
     var down_left_square = $("#" + (b.height-1).toString() + "-0");
     var down_right_square = $("#" + (b.height-1).toString() + "-" + (b.width-1).toString());
 
-    if(!b.not_border[0] && !b.not_border[1])
-        up_left_square.attr("class", "board_square up_left_corner");
-    else if(!b.not_border[0])
-        up_left_square.attr("class", "board_square up_border");
-    else
-        up_left_square.attr("class", "board_square left_border");
+    //up_left_square
+    if(b.not_border[0]){
+        if(b.not_border[1])
+            up_left_square.attr("class", "board_square middle");
+        else
+            up_left_square.attr("class", "board_square left_border");
+    }
+    else{
+        if(b.not_border[1])
+            up_left_square.attr("class", "board_square up_border");
+        else
+            up_left_square.attr("class", "board_square up_left_corner");
+    }
 
-    if(!b.not_border[0] && !b.not_border[2])
-        up_right_square.attr("class", "board_square up_right_corner");
-    else if(!b.not_border[0])
-        up_right_square.attr("class", "board_square up_border");
-    else
-        up_right_square.attr("class", "board_square right_border");
+    //up_right_square
+    if(b.not_border[0]){
+        if(b.not_border[2])
+            up_right_square.attr("class", "board_square middle");
+        else
+            up_right_square.attr("class", "board_square right_border");
+    }
+    else{
+        if(b.not_border[2])
+            up_right_square.attr("class", "board_square up_border");
+        else
+            up_right_square.attr("class", "board_square up_right_corner");
+    }
 
-    if(!b.not_border[1] && !b.not_border[3])
-        down_left_square.attr("class", "board_square down_left_corner");
-    else if(!b.not_border[1])
-        down_left_square.attr("class", "board_square down_border");
-    else
-        down_left_square.attr("class", "board_square left_border");
+    //down_left_square
+    if(b.not_border[3]){
+        if(b.not_border[1])
+            down_left_square.attr("class", "board_square middle");
+        else
+            down_left_square.attr("class", "board_square left_border");
+    }
+    else{
+        if(b.not_border[1])
+            down_left_square.attr("class", "board_square down_border");
+        else
+            down_left_square.attr("class", "board_square down_left_corner");
+    }
 
-    if(!b.not_border[2] && !b.not_border[3])
-        down_right_square.attr("class", "board_square down_right_corner");
-    else if(!b.not_border[1])
-        down_right_square.attr("class", "board_square down_border");
-    else
-        down_right_square.attr("class", "board_square right_border");
+    //down_right_square
+    if(b.not_border[3]){
+        if(b.not_border[2])
+            down_right_square.attr("class", "board_square middle");
+        else
+            down_right_square.attr("class", "board_square right_border");
+    }
+    else{
+        if(b.not_border[2])
+            down_right_square.attr("class", "board_square down_border");
+        else
+            down_right_square.attr("class", "board_square down_right_corner");
+    }
 
     //drawing borders
     if(! b.not_border[0]){
@@ -218,15 +246,13 @@ function create_html_board(){
             elt.attr('class', 'board_square left_border');
         }
     }
-    if(! b.not_border[1]){
+    if(! b.not_border[2]){
         j = b.width-1
         for(i = 1; i<b.height-1; i++){
             var elt = $("#" + i + "-" + j);
             elt.attr('class', 'board_square right_border');
         }
     }
-
-    //drawing corners
 
     //adding events on every square
     for(i = 0; i<b.height; i++){
