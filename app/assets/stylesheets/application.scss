@@ -16,25 +16,48 @@
 
 @import "materialize";
 
-table {
-    border-spacing: 0 0;
-}
-
-.win_msg {
-    color: green;
-}
-
-.loose_msg {
-    color: red;
-}
-
-.board_square {
+.board_square{
     border-radius: 0px;
     display: inline-block;
     padding: 0px;
     height: 59px;
     width: 59px;
+}
+
+.board_square.middle {
     background-image: url("empty.png");
+}
+
+.board_square.left_border {
+    background-image: url("left_border.png");
+}
+
+.board_square.right_border {
+    background-image: url("right_border.png");
+}
+
+.board_square.up_border {
+    background-image: url("up_border.png");
+}
+
+.board_square.down_border {
+    background-image: url("down_border.png");
+}
+
+.board_square.down_left_corner {
+    background-image: url("down_left_corner.png");
+}
+
+.board_square.down_right_corner {
+    background-image: url("down_right_corner.png");
+}
+
+.board_square.up_left_corner {
+    background-image: url("up_left_corner.png");
+}
+
+.board_square.up_right_corner {
+    background-image: url("up_right_corner.png");
 }
 
 .board_square div {
@@ -60,6 +83,21 @@ table {
 .black_stone {
     background-image: url("black.png");
     opacity: 1;
+}
+
+
+
+
+table {
+    border-spacing: 0 0;
+}
+
+.win_msg {
+    color: green;
+}
+
+.loose_msg {
+    color: red;
 }
 
 body {

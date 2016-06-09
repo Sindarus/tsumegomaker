@@ -144,15 +144,89 @@ function create_html_board(){
     var i, j;
     board_tag.append("<table/>");
     for(i = 0; i<b.height; i++){
+        //creating 'tr' tag inside 'table'
         var table_row = $("<tr>", {id: i});
         table_row.appendTo("table");
 
         for(j = 0; j<b.width; j++){
-            var table_data = $("<td/>", {id: i + "-" + j, text: "", class: "board_square"});
-            table_data.append("<div>");
-            table_data.appendTo("tr#" + i);
+            //creating 'td' tag inside 'tr'
+            //class 'board_square' is to indicate that this tag is a board square,
+            //'middle' is to indicate that this square is in a middle square. Could be
+            //'down_border' or 'left_border' or 'down_right_corner' ... etc
+            var table_data = $("<td/>", {id: i + "-" + j, class: "board_square middle"});
+            table_data.appendTo(table_row);
+            //creating 'div' tag inside 'td', used for holding the class indicating
+            //the color of the stone, can be 'empty', 'legal_move', 'white', 'black'
+            var div = $("<div/>", {class: "empty"});
+            div.appendTo(table_data);
         }
     }
+
+    //drawing corners
+    var up_left_square = $("#0-0");
+    var up_right_square = $("#0-" + (b.width-1).toString());
+    var down_left_square = $("#" + (b.height-1).toString() + "-0");
+    var down_right_square = $("#" + (b.height-1).toString() + "-" + (b.width-1).toString());
+
+    if(!b.not_border[0] && !b.not_border[1])
+        up_left_square.attr("class", "board_square up_left_corner");
+    else if(!b.not_border[0])
+        up_left_square.attr("class", "board_square up_border");
+    else
+        up_left_square.attr("class", "board_square left_border");
+
+    if(!b.not_border[0] && !b.not_border[2])
+        up_right_square.attr("class", "board_square up_right_corner");
+    else if(!b.not_border[0])
+        up_right_square.attr("class", "board_square up_border");
+    else
+        up_right_square.attr("class", "board_square right_border");
+
+    if(!b.not_border[1] && !b.not_border[3])
+        down_left_square.attr("class", "board_square down_left_corner");
+    else if(!b.not_border[1])
+        down_left_square.attr("class", "board_square down_border");
+    else
+        down_left_square.attr("class", "board_square left_border");
+
+    if(!b.not_border[2] && !b.not_border[3])
+        down_right_square.attr("class", "board_square down_right_corner");
+    else if(!b.not_border[1])
+        down_right_square.attr("class", "board_square down_border");
+    else
+        down_right_square.attr("class", "board_square right_border");
+
+    //drawing borders
+    if(! b.not_border[0]){
+        i = 0;
+        for(j = 1; j<b.width-1; j++){
+            var elt = $("#" + i + "-" + j);
+            elt.attr('class', 'board_square up_border');
+        }
+    }
+    if(! b.not_border[3]){
+        i = b.height-1;
+        for(j = 1; j<b.width-1; j++){
+            var elt = $("#" + i + "-" + j);
+            elt.attr('class', 'board_square down_border');
+        }
+    }
+    if(! b.not_border[1]){
+        j = 0
+        for(i = 1; i<b.height-1; i++){
+            var elt = $("#" + i + "-" + j);
+            elt.attr('class', 'board_square left_border');
+        }
+    }
+    if(! b.not_border[1]){
+        j = b.width-1
+        for(i = 1; i<b.height-1; i++){
+            var elt = $("#" + i + "-" + j);
+            elt.attr('class', 'board_square right_border');
+        }
+    }
+
+    //drawing corners
 
     //adding events on every square
     for(i = 0; i<b.height; i++){
