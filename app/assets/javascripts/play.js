@@ -163,10 +163,10 @@ function create_html_board(){
     }
 
     //drawing corner squares
-    var up_left_square = $("#0-0");
-    var up_right_square = $("#0-" + (b.width-1).toString());
-    var down_left_square = $("#" + (b.height-1).toString() + "-0");
-    var down_right_square = $("#" + (b.height-1).toString() + "-" + (b.width-1).toString());
+    var up_left_square = select_square(0, 0);
+    var up_right_square = select_square(0, b.width-1);
+    var down_left_square = select_square(b.height-1, 0);
+    var down_right_square = select_square(b.height-1, b.width-1);
 
     //up_left_square
     if(b.not_border[0]){
@@ -228,37 +228,39 @@ function create_html_board(){
     if(! b.not_border[0]){
         i = 0;
         for(j = 1; j<b.width-1; j++){
-            var elt = $("#" + i + "-" + j);
-            elt.attr('class', 'board_square up_border');
+            select_square(i, j).attr('class', 'board_square up_border');
         }
     }
     if(! b.not_border[3]){
         i = b.height-1;
         for(j = 1; j<b.width-1; j++){
-            var elt = $("#" + i + "-" + j);
-            elt.attr('class', 'board_square down_border');
+            select_square(i, j).attr('class', 'board_square down_border');
         }
     }
     if(! b.not_border[1]){
         j = 0
         for(i = 1; i<b.height-1; i++){
-            var elt = $("#" + i + "-" + j);
-            elt.attr('class', 'board_square left_border');
+            select_square(i, j).attr('class', 'board_square left_border');
         }
     }
     if(! b.not_border[2]){
         j = b.width-1
         for(i = 1; i<b.height-1; i++){
-            var elt = $("#" + i + "-" + j);
-            elt.attr('class', 'board_square right_border');
+            select_square(i, j).attr('class', 'board_square right_border');
         }
     }
+
+    //drawing external borders
+    // if(not_border[0]){
+    //     for(var j = 0; j < b.width - 1; j++){
+    //         var cur_class = $()
+    //     }
+    // }
 
     //adding events on every square
     for(i = 0; i<b.height; i++){
         for(j = 0; j<b.width; j++){
-            var elt = $("#" + i + "-" + j);
-            elt.on("click", function(){ clicked(this); });
+            select_square(i, j).on("click", function(){ clicked(this); });
         }
     }
 
@@ -295,7 +297,7 @@ function update_display_board(){
     //updating display
     for(var i = 0; i < b.height; i++){
         for(var j = 0; j < b.width; j++){
-            var elt = $("#" + i + "-" + j + " div");
+            var elt = select_stone(i, j);
             switch(b.board_of_stone[i][j]){
                 case 0:
                     elt.attr('class', '');
@@ -392,10 +394,10 @@ function update_hover_moves(){
     for(var i = 0; i<b.height; i++){
         for(var j = 0; j<b.width; j++){
             if(legal_moves[i][j] == 1){
-                $("#" + i + "-" + j + " div").addClass("legal_move");
+                select_stone(i, j).addClass("legal_move");
             }
             else{
-                $("#" + i + "-" + j + " div").removeClass("legal_move");
+                select_stone(i, j).removeClass("legal_move");
             }
         }
     }
@@ -511,4 +513,14 @@ function filter_message(data){
 
 function display_error(error_string){
     $("#error").append("<p>" + error_string + "</p>");
+}
+
+//html tag that has the class "board_square" and the class "middle" or "left_border" or ...
+function select_square(i, j){
+    return $("#" + i.toString() + "-" + j.toString());
+}
+
+//html tag that has the class "white_stone", "black_stone", "empty" or "legal_move"
+function select_stone(i, j){
+    return $("#" + i.toString() + "-" + j.toString() + " div");
 }
