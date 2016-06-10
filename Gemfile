@@ -51,3 +51,5 @@ end
 gem 'haml'
 gem 'SgfParser'
 gem 'pry-rails'
+gem 'capistrano-rails'
+gem 'capistrano-passenger'
