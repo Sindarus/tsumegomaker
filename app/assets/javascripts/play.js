@@ -162,12 +162,18 @@ function create_html_board(){
         }
     }
 
+    //adding events on every square
+    for(i = 0; i<b.height; i++){
+        for(j = 0; j<b.width; j++){
+            select_square(i, j).on("click", function(){ clicked(this); });
+        }
+    }
+
     //drawing corner squares
     var up_left_square = select_square(0, 0);
     var up_right_square = select_square(0, b.width-1);
     var down_left_square = select_square(b.height-1, 0);
     var down_right_square = select_square(b.height-1, b.width-1);
-
     //up_left_square
     if(b.not_border[0]){
         if(b.not_border[1])
@@ -181,7 +187,6 @@ function create_html_board(){
         else
             up_left_square.attr("class", "board_square up_left_corner");
     }
-
     //up_right_square
     if(b.not_border[0]){
         if(b.not_border[2])
@@ -195,7 +200,6 @@ function create_html_board(){
         else
             up_right_square.attr("class", "board_square up_right_corner");
     }
-
     //down_left_square
     if(b.not_border[3]){
         if(b.not_border[1])
@@ -209,7 +213,6 @@ function create_html_board(){
         else
             down_left_square.attr("class", "board_square down_left_corner");
     }
-
     //down_right_square
     if(b.not_border[3]){
         if(b.not_border[2])
@@ -250,17 +253,60 @@ function create_html_board(){
         }
     }
 
-    //drawing external borders
-    // if(not_border[0]){
-    //     for(var j = 0; j < b.width - 1; j++){
-    //         var cur_class = $()
-    //     }
-    // }
+    //drawing not borders
+    //up
+    if(b.not_border[0]){
+        var my_tr = $("<tr>", {id: "up_not_border"});
+        my_tr.prependTo("table");       //add a tr at the top
+        for(var j = 0; j < b.width; j++){
+            //for each square of the first row, copy its class and create a td
+            //with the same class above it
+            var cur_class = select_square(0, j).attr('class');
+            $("<td>", {class: cur_class + " not_border fade_up"}).appendTo(my_tr);
+        }
+    }
+    //down
+    if(b.not_border[3]){
+        var my_tr = $("<tr>", {id: "down_not_border"});
+        my_tr.appendTo("table");
+        for(var j = 0; j < b.width; j++){
+            //for each square of the last row, copy its class and create a td
+            //with the same class under it
+            var cur_class = select_square(b.height-1, j).attr('class');
+            $("<td>", {class: cur_class + " not_border fade_down"}).appendTo(my_tr);
+        }
+    }
+    //left
+    if(b.not_border[1]){
+        for(var i = 0; i < b.height; i++){
+            var cur_class = select_square(i, 0).attr('class');
+            $("<td>", {class: cur_class + " not_border fade_left"}).prependTo("tr#" + i.toString());
+        }
+    }
+    //right
+    if(b.not_border[2]){
+        for(var i = 0; i < b.height; i++){
+            var cur_class = select_square(i, b.width-1).attr('class');
+            $("<td>", {class: cur_class + " not_border fade_right"}).appendTo("tr#" + i.toString());
+        }
+    }
 
-    //adding events on every square
-    for(i = 0; i<b.height; i++){
-        for(j = 0; j<b.width; j++){
-            select_square(i, j).on("click", function(){ clicked(this); });
+    //drawing corner of not_borders
+    //upleft
+    if(b.not_border[0]){
+        if(b.not_border[1]){
+            $("<td>", {class: "board_square middle not_border fade_up_left"}).prependTo("tr#up_not_border");
+        }
+        if(b.not_border[2]){
+            $("<td>", {class: "board_square middle not_border fade_up_right"}).appendTo("tr#up_not_border");
+        }
+    }
+    if(b.not_border[3]){
+        if(b.not_border[1]){
+            $("<td>", {class: "board_square middle not_border fade_down_left"}).prependTo("tr#down_not_border");
+        }
+        if(b.not_border[2]){
+            $("<td>", {class: "board_square middle not_border fade_down_right"}).appendTo("tr#down_not_border");
         }
     }
 

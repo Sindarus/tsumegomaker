@@ -24,6 +24,10 @@
     width: 59px;
 }
 
+.not_border {
+    opacity : 0.75;
+}
+
 .board_square.middle {
     background-image: url("empty.png");
 }
@@ -84,8 +88,6 @@
     background-image: url("black.png");
     opacity: 1;
 }
-
-
 
 
 table {
