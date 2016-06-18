@@ -28,12 +28,10 @@ ActiveRecord::Schema.define(version: 20160518231308) do
   add_index "game_histories", ["user_id"], name: "index_game_histories_on_user_id", using: :btree
 
   create_table "game_states", force: :cascade do |t|
-    t.integer  "player_color"
-    t.integer  "ia_color"
-    t.text     "yaml_board"
     t.integer  "problem_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.text     "board"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "problems", force: :cascade do |t|

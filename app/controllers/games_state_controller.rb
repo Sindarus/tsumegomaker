@@ -1,29 +1,29 @@
 require 'board.rb'
 
 class GamesStateController < ApplicationController
+  # Properties:
+  # rendered    : true if we have already rendered the response to the http get request
+  # game_state  : Object retrieved from DB that holds the state of the current game
+  # ia_player   : IaSgf object un-yamled from game_state, that holds the current ia player
 
   def initialize
-    # please set this to true when you use "render", and when you "render", wheck this
-    # variable, because if you use "render" twice in a single request response cycle,
-    # it will cause a rails error.
+    # please set 'rendered' to true when you use "render". And when you "render",
+    # check this variable, because if you use "render" twice in a single request
+    # response cycle, it will cause a rails error.
     @rendered = false
-    @board = nil
-    @ia_player = nil
   end
 
   def load_state(game_state_id)
     @game_state = GameState.find_by(id: game_state_id)
     @problem = Problem.find_by(id: @game_state.problem_id)
-    @board = YAML.load(@game_state.yaml_board)
-    problem_file = @problem.problem_file
     begin
-      @ia_player = IaSgf.new(@problem.ia_color, problem_file)
+      @ia_player = IaSgf.new(@problem.ia_color, @problem.problem_file)
     rescue MyError::IaInitError
       send_code("E00")
       return
     end
     begin
-      @ia_player.catch_up(@board.move_history)
+      @ia_player.catch_up(@game_state.board.move_history)
     rescue MyError::IaError => e
       puts "ERREUR ==============================================="
       puts e.message
@@ -45,15 +45,14 @@ class GamesStateController < ApplicationController
     if [i,j] == [-1,-1]
       return
     end
-    if ! @board.is_legal?(i,j,@problem.player_color)
+    if ! @game_state.board.is_legal?(i, j, @problem.player_color)
       send_code("E10")
       return
     end
-    @board.add_stone(i, j, @problem.player_color)
+    @game_state.board.add_stone(i, j, @problem.player_color)
   end
 
   def save_state
-    @game_state.yaml_board = YAML.dump(@board)
     @game_state.save
   end
 
@@ -67,8 +66,8 @@ class GamesStateController < ApplicationController
     j = params[:j].to_i
     player_move(i, j)
     begin
-      ia_move, ia_msg = @ia_player.play(@board.get_board,
-                                   @board.get_legal(@ia_player.get_color),
+      ia_move, ia_msg = @ia_player.play(@game_state.board.get_board,
+                                   @game_state.board.get_legal(@ia_player.get_color),
                                    [i,j])
     rescue MyError::IaError => e
       puts "ERREUR ==============================================="
@@ -90,7 +89,7 @@ class GamesStateController < ApplicationController
       end
     end
     ia_i, ia_j = ia_move
-    @board.add_stone(ia_i, ia_j, @problem.ia_color)
+    @game_state.board.add_stone(ia_i, ia_j, @problem.ia_color)
     save_state
     if not @rendered
       render plain: ia_msg
@@ -105,7 +104,7 @@ class GamesStateController < ApplicationController
     end
     load_state(session[:game_state_id])
     if not @rendered
-      render json: @board
+      render json: @game_state.board
       @rendered = true
     end
   end
@@ -117,7 +116,7 @@ class GamesStateController < ApplicationController
     end
     load_state(session[:game_state_id])
     if not @rendered
-      render json: @board.get_legal(@problem.player_color)
+      render json: @game_state.board.get_legal(@problem.player_color)
       @rendered = true
     end
   end
@@ -135,6 +134,7 @@ class GamesStateController < ApplicationController
   end
 
   def create_game
+    # retrieve problem
     problem_id = params[:problem_id]
     @problem = Problem.find_by(id: problem_id)
     if @problem == nil
@@ -142,11 +142,17 @@ class GamesStateController < ApplicationController
       send_code("E04")
       return
     end
+
+    # create game_state
     @game_state = GameState.new
     @game_state.problem_id = problem_id
-    @board = YAML.load(@problem.yaml_initial_board)
-    save_state
+    @game_state.board = YAML.load(@problem.yaml_initial_board)
+    save_state  # save gamestate in database
+
+    # store game_state_id in session
     session[:game_state_id] = @game_state.id
+
+    # respond to http request
     if not @rendered
       render nothing: true
       @rendered = true
