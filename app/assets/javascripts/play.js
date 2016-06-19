@@ -414,6 +414,7 @@ function update_legal_moves(){
         }
     }
 }
+
 /**
 * \brief Updates html tags according to 'legal_moves', so that every legal moves has
 *        the class "legal_move".

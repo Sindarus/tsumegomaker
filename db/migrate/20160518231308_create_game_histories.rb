@@ -6,5 +6,5 @@ class CreateGameHistories < ActiveRecord::Migration
       t.boolean :success
       t.timestamps null: false
     end
-  end   
+  end
 end
