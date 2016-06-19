@@ -115,7 +115,7 @@ function update_board(){
             console.log(e.message);
         }
 
-        console.log("Updated board into array. height : " + b.height.toString() + " width : " + b.width.toString());
+        console.log("Updated board. height : " + b.height.toString() + " width : " + b.width.toString());
     }
 }
 
