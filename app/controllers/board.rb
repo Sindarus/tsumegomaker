@@ -67,41 +67,23 @@ class Board
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
   # avoid get_adj to loop forever
-  def access_board(i, j)
-    ret_zero = false  # should we return 0 because (i, j) is out of bounds but not too far ?
+  def access_board(i, j, not_border_value=-1)
     if i < 0
-      if ! @not_border[0] || i < -1
-        return -1
-      end
-      ret_zero = true
+      return ( @not_border[0] ? not_border_value : -1)
     end
 
     if i >= @height
-      if ! @not_border[3] || i >= @height + 1
-        return -1
-      end
-      ret_zero = true
+      return ( @not_border[3] ? not_border_value : -1)
     end
 
     if j < 0
-      if ! @not_border[1] || j < -1
-        return -1
-      end
-      ret_zero = true
+      return ( @not_border[1] ? not_border_value : -1)
     end
 
     if j >= @width
-      if ! @not_border[2] || j >= @width + 1
-        return -1
-      end
-      ret_zero = true
+      return ( @not_border[2] ? not_border_value : -1)
     end
-
-    # we return zero after all the previous check because returning -1 has priority
-    if ret_zero
-      return 0
-    end
-
+ 
     # at this point, we know that (i, j) is inside all borders,
     # i.e. @board_of_stone[i][j] is set
     return @board_of_stone[i][j]
@@ -109,48 +91,12 @@ class Board
 
   def set_stone_at(i, j, color)
     if ! [0, 1, 2].include?(color)
-      raise "In set_stone_at() : unvalid color color " + color.to_s
-    end
-    if i < 0
-      if ! @not_border[0]
-        raise "In set_stone_at() : this spot is out of the board upwards."
-      end
-      if color != 0
-        raise "In set_stone_at() : this spot is behind a not-border upwards, you can only set it to 'empty spot'"
-      end
-      return # do nothing
+      raise "In set_stone_at() : unvalid color  " + color.to_s
     end
 
-    if i >= @height
-      if ! @not_border[3]
-        raise "In set_stone_at() : this spot is out of the board downwards."
-      end
-      if color != 0
-        raise "In set_stone_at() : this spot is behind a not-border downwards, you can only set it to 'empty spot'"
-      end
-      return # do nothing
+    if access_board(i,j) < 0
+      raise "In set_stone_at : unvalid position (#{i},#{j})"
     end
-
-    if j < 0
-      if ! @not_border[1]
-        raise "In set_stone_at() : this spot is out of the board leftwards."
-      end
-      if color != 0
-        raise "In set_stone_at() : this spot is behind a not-border leftwards, you can only set it to 'empty spot'"
-      end
-      return # do nothing
-    end
-
-    if j >= @width
-      if ! @not_border[2]
-        raise "In set_stone_at() : this spot is out of the board rightwards."
-      end
-      if color != 0
-        raise "In set_stone_at() : this spot is behind a not-border rightwards, you can only set it to 'empty spot'"
-      end
-      return # do nothing
-    end
-
     @board_of_stone[i][j] = color
   end
 
@@ -197,15 +143,15 @@ class Board
   # belong to the same "group" as the stone at (i, j).
   # The second contains the pos of the stones adjacent to that "group".
   # (i, j) can be empty, 'empty' is then considered as a color.
-  def get_adj(i,j)
+  def get_adj(i,j,not_border_value)
     same_group = [[i,j]]
     adj_group = []
     stone_file = [[i,j]]
-    first_stone = access_board(i,j)
+    first_stone = access_board(i,j,not_border_value)
     while ! stone_file.empty?
       i, j = stone_file.pop
       @d4adj.each{|di,dj|
-        current_stone = access_board(i+di,j+dj)
+        current_stone = access_board(i+di,j+dj,not_border_value)
         current_pos = [i+di,j+dj]
         if current_stone == first_stone and
              ! same_group.include?(current_pos)
@@ -223,7 +169,7 @@ class Board
   # returns true if the stone or "group" at (i, j) has no 'liberty' and should
   # be removed from the board
   def is_dead?(i, j)
-    group, adj = get_adj(i,j)
+    group, adj = get_adj(i,j,0)
     adj.each{|i,j|
       if access_board(i,j) == 0
         return false
@@ -238,9 +184,6 @@ class Board
       return true     # passing is always legal
     end
 
-    if i<0 or i>=@height or j<0 or j>=@width
-      return false    # spot is not inside the (not-)borders
-    end
     if access_board(i,j) != 0
       return false    # spot is not free
     end
@@ -455,8 +398,9 @@ class Board
         # if the spot is empty and we've not counted it yet
         if stone == 0 && !empty_squares.include?([i, j])
           # get the group of empty spots and its adjacents
-          group, adj = get_adj(i, j)
+          group, adj = get_adj(i, j, 3)
           # the player who gets the points depend on the color of the adjacents
+          # We consider not-borders as another players, so nobody gets any point
           cur_adj_color = group_color(adj)
           # if the group of adj is all black or all white
           if(cur_adj_color > 0)
@@ -482,11 +426,11 @@ class Board
   # returns -2 if no valid color was found
   #group should be [[i, j], [i, j], ...]
   def group_color(group)
-    found = [0, 0, 0]   # found[0] = 1 if empty spot was found
+    found = [0, 0, 0, 0]   # found[0] = 1 if empty spot was found
 
     # for each pos in the group
     group.each do |i, j|
-      cur_color = access_board(i, j)
+      cur_color = access_board(i, j, 3)
       if cur_color != -1
         found[cur_color] = 1
         if found.reduce(:+) > 1      # if the sum of "found" > 1
