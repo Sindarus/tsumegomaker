@@ -2,16 +2,14 @@ require 'sgf'
 load("my_error.rb")
 load("board.rb")
 class Minimax
-  def initialize(initial_board, height, width)
+  def initialize(initial_board, nb_max_move)
     @initial_board = initial_board
-    @board_width = width
-    @board_height = height
+    @nb_max_move = nb_max_move
     @ia_color = 2
     @player_color = 1
     @color_s = [nil, 'B', 'W']
     @collection = SGF::Collection.new
     @first_node = SGF::Node.new(:parent => @collection.current_node) 
-    @first_node[@color_s[@ia_color]] = ""
   end
   def launch_minimax
     minimax(@first_node, @initial_board, @ia_color)
@@ -19,13 +17,16 @@ class Minimax
 
   def minimax(node, prev_board, color)
     board = prev_board.clone
-    i,j = extract_move(node,color)
-    board.add_stone(i,j,color)
-    puts "Profondeur #{node.depth}\nCoup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
+    if node.depth != 1
+      i,j = extract_move(node,color)
+      board.add_stone(i,j,color)
+      puts "Profondeur #{node.depth}\nCoup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
+    end
     board.display
-    puts "\n"
     if final_node(node)
-      return count_score(board),[node]
+      s = count_score(board)
+      puts s,"\n"
+      return s,[node]
     end
     final_nodes = []
     if color == @player_color
@@ -43,7 +44,7 @@ class Minimax
       return max,final_nodes
     else
       create_children(node, board, @player_color)
-      min = @board_width * @board_height
+      min = board.width * board.height
       min_node = nil
       node.children.each do |node_children|
         t,f = minimax(node_children, board, @player_color)
@@ -98,11 +99,13 @@ class Minimax
   end
 
   def final_node(node)
-    return ((node["B"] == "" or node["W"] == "" ) and
-           (node.parent["B"] == "" or node.parent["W"] == ""))
+    return (((node["B"] == "" or node["W"] == "" ) and
+             (node.parent["B"] == "" or node.parent["W"] == "")) or
+           (node.depth >= @nb_max_move))
   end
 
-  def count_score(node)
-    return 0
+  def count_score(board)
+    scores = board.get_score()
+    return scores[0]-scores[1]
   end
 end
