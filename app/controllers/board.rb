@@ -32,7 +32,8 @@ class Board
   attr_reader :nb_captured
   attr_reader :move_history
   attr_reader :board_history
-
+  attr_reader :height
+  attr_reader :width
   def initialize(height = 5, width = 5, not_border = [false, false, false, false])
     # checking parameter's integrity
     if(height <= 1 || width <= 1)
@@ -58,6 +59,7 @@ class Board
     @board_history = []
   end
 
+  # TODO: remove the function, we now have the attr_reader
   def get_board
     return @board_of_stone
   end
@@ -71,7 +73,7 @@ class Board
       if ! @not_border[0] || i < -1
         return -1
       end
-      rret_zero = true
+      ret_zero = true
     end
 
     if i >= @height
