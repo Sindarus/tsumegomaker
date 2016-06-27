@@ -99,6 +99,7 @@ class Board
     end
     @board_of_stone[i][j] = color
   end
+  protected :set_stone_at
 
   # loads into the instance a board described by the string "text_board"
   # TODO delete this -dangerous- method after we've changed the way we save

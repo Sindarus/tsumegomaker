@@ -1,6 +1,4 @@
-var board;              //2D array
-var width;              //of board
-var height;             //of board
+var b;                  //board object (board_of_stones, height, width, not_borders)
 var paint;              //color of the stone to add when you click
 
 $(document).ready(function(){
@@ -12,6 +10,36 @@ $(document).ready(function(){
     $("#empty_paint").on("click", function(){ paint = 0; update_hover(); });
     $("#clear_board").on("click", function(){ clear_board(); update_display_board(); })
 });
+
+/**
+* This function retrives the info needed to create a board from the form on the page,
+* then it calls create_html_board.
+*/
+function create_board(){
+    console.log("Retrieving info of board");
+
+    b = new Object;
+    b.width = parseInt($("#board_width").val());
+    b.height = parseInt($("#board_height").val());
+    if(b.width == undefined || isNaN(b.width) || b.height == undefined || isNaN(b.height)){
+        console.log("Could not parse width and height from html form.");
+        return;
+    }
+
+    b.not_borders = [$("#not_border_up").prop("checked"),
+                     $("#not_border_left").prop("checked"),
+                     $("#not_border_right").prop("checked"),
+                     $("#not_border_down").prop("checked")];
+
+    console.log("Will be creating a board " + height.toString() + "x" + width.toString() " not_borders: " + not_borders.toString());
+
+    paint = 1;
+    create_html_board(b);
+    init_hover();
+    update_hover();
+
+    $("#board_size_form").remove();
+}
 
 function init_hover(){
     console.log("Init hover. height : " + height);
@@ -80,77 +108,6 @@ function update_display_board(){
         }
     }
     console.log("Updated html according to the board global variable.");
-}
-
-function create_board(){
-    console.log("Retrieving size of board");
-    width = parseInt($("#board_width").val());
-    height = parseInt($("#board_height").val());
-    if(width == undefined || isNaN(width) || height == undefined || isNaN(height)){
-        console.log("Could not parse width and height from html form.");
-        return;
-    }
-    console.log("will be creating a board " + height.toString() + "x" + width.toString());
-
-    paint = 1;
-    init_board();
-    create_html_board(width, height);
-    init_hover();
-    update_hover();
-
-    $("#board_size_form").remove();
-}
-
-function init_board(){
-    console.log("Initing board");
-    board = [];
-    for(var i = 0; i<height; i++){
-        board[i] = [];
-        for(var j = 0; j<width; j++){
-            board[i][j] = 0;
-        }
-    }
-}
-
-/**
-* \brief Builds the HTML code needed to display the board given in the global variable
-*/
-function create_html_board(width, height){
-    console.log("Building html board");
-    if(width == undefined || height == undefined){
-        console.log("create_html_board() : cannot build html because I do not know the width or height.");
-        return;
-    }
-
-    var board_tag = $("#board");
-    if(board_tag.html() != undefined){
-        if(board_tag.html().search("<table>") >= 0) {   //if there is "<table>" in board_tag
-            console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
-            return;
-        }
-    }
-
-    var i, j;
-    board_tag.append("<table/>");
-    for(i = 0; i<height; i++){
-        var table_row = $("<tr>", {id: i});
-        table_row.appendTo("table");
-
-        for(j = 0; j<width; j++){
-            var table_data = $("<td/>", {id: i + "-" + j, text: ""});
-            table_data.append("<div>");
-            table_data.appendTo("tr#" + i);
-        }
-    }
-
-    for(i = 0; i<height; i++){
-        for(j = 0; j<width; j++){
-            var elt = $("#" + i + "-" + j);
-            elt.on("click", function(){ clicked(this); });
-            elt.attr('class', 'board_square');
-        }
-    }
-    console.log("Created html tags.");
 }
 
 function clicked(obj){

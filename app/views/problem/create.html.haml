@@ -3,17 +3,32 @@
   %h1 Sur cette page, vous pouvez déposer un problème sur le site
 
   .row#board_size_form
-    %form.col
-      .row
-        .input-field.col.s4
+    %form
+      .col.s3
+        .input-field.row
           %input.validate#board_width{:value => 9, :name => "board_width", :type => "number"}
           %label{:for => "board_width"} largeur du plateau
-        .input-field.col.s4
+        .input-field.row
           %input.validate#board_height{:value => 9, :name => "board_height", :type => "number"}
           %label{:for => "board_height"} hauteur du plateau
-        .input-field.col.s4
+      .col.s3
+        .row
+          %input.filled-in#not_border_up{:type => "checkbox"}
+          %label{:for => "not_border_up"} partie haute cachée
+        .row
+          %input.filled-in#not_border_left{:type => "checkbox"}
+          %label{:for => "not_border_left"} partie gauche cachée
+        .row
+          %input.filled-in#not_border_right{:type => "checkbox"}
+          %label{:for => "not_border_right"} partie droite cachée
+        .row
+          %input.filled-in#not_border_down{:type => "checkbox"}
+          %label{:for => "not_border_down"} partie basse cachée
+      .col.s3
+        .input-field.row
           %a.waves-effect.waves-light.btn#create_board
             create board
+
 
   .row#editing_zone
     .col#board
