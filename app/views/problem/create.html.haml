@@ -1,3 +1,4 @@
+= javascript_include_tag 'shared.js'
 = javascript_include_tag 'create.js'
 .container#main_container
   %h1 Sur cette page, vous pouvez déposer un problème sur le site
@@ -41,5 +42,10 @@
             %img.responsive-img{:src =>image_path('black.png')}
           %li.btn-floating.white#white_paint
             %img.responsive-img{:src =>image_path('white.png')}
-          %li.btn-floating.grey#empty_paint
           %li.btn-floating.red#clear_board
+
+  .row
+    .col.s3
+      .input-field.row
+        %a.waves-effect.waves-light.btn#validate
+          Poster

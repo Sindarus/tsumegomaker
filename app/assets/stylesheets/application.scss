@@ -16,6 +16,11 @@
 
 @import "materialize";
 
+/* general board display ============================================================== */
+table {
+    border-spacing: 0 0;
+}
+
 .board_square{
     border-radius: 0px;
     display: inline-block;
@@ -69,16 +74,7 @@
     width: 59px;
 }
 
-.player_black .legal_move:hover {
-  background-image : url("black.png");
-  opacity: 0.5;
-}
-
-.player_white .legal_move:hover {
-  background-image : url("white.png");
-  opacity: 0.5;
-}
-
+/* stones ================================================================== */
 .white_stone {
     background-image: url("white.png");
     opacity: 1;
@@ -90,10 +86,18 @@
 }
 
 
-table {
-    border-spacing: 0 0;
+/* Legal moves ============================================================== */
+.player_black .legal_move:hover {
+  background-image : url("black.png");
+  opacity: 0.5;
 }
 
+.player_white .legal_move:hover {
+  background-image : url("white.png");
+  opacity: 0.5;
+}
+
+/* messages =================================================================== */
 .win_msg {
     color: green;
 }
@@ -102,6 +106,7 @@ table {
     color: red;
 }
 
+/* other ========================================================================= */
 body {
   display: flex;
   min-height: 100vh;

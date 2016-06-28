@@ -109,8 +109,6 @@ function update_board(){
     }
 }
 
-
-
 /**
 * \brief updates the display of the board according to 'b'. The global variable 'b'
 *        has to be set, and the html tags have to be there.
@@ -355,14 +353,4 @@ function filter_message(data){
 
 function display_error(error_string){
     $("#error").append("<p>" + error_string + "</p>");
-}
-
-//html tag that has the class "board_square" and the class "middle" or "left_border" or ...
-function select_square(i, j){
-    return $("#" + i.toString() + "-" + j.toString());
-}
-
-//html tag that has the class "white_stone", "black_stone", "empty" or "legal_move"
-function select_stone(i, j){
-    return $("#" + i.toString() + "-" + j.toString() + " div");
 }

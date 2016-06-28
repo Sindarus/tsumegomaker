@@ -195,3 +195,13 @@ function create_html_board(b){
         console.log("something went wrong creating html tags, because board_tag.html() is undefined");
     }
 }
+
+//html tag that has the class "board_square" and the class "middle" or "left_border" or ...
+function select_square(i, j){
+    return $("#" + i.toString() + "-" + j.toString());
+}
+
+//html tag that has the class "white_stone", "black_stone", "empty" or "legal_move"
+function select_stone(i, j){
+    return $("#" + i.toString() + "-" + j.toString() + " div");
+}
