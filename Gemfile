@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby '3.2.0'
+
 gem 'pg'
 gem 'materialize-sass'
 gem 'bcrypt-ruby', :require => 'bcrypt'
@@ -53,3 +55,4 @@ gem 'SgfParser'
 gem 'pry-rails'
 gem 'capistrano-rails'
 gem 'capistrano-passenger'
+gem 'rails_12factor'
