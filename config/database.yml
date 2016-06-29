@@ -17,13 +17,7 @@ test: &TEST
   password: rubypg
 
 production:
-  adapter: postgresql
-  encoding: utf8
-  database: project_production
-  host: localhost
-  pool: 5
-  username: rubypg
-  password: rubypg
+  url: <%= ENV['DATABASE_URL'] %>
 
 cucumber:
   <<: *TEST
