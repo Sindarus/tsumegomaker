@@ -71,7 +71,7 @@ class Minimax
     n[color_s] = ""
     legal_board = board.get_legal(color)
     legal_board.each_index do |i|
-      legal_board.each_index do |j|
+      legal_board[i].each_index do |j|
         if legal_board[i][j]
           n =SGF::Node.new(:parent => node)
           n[color_s] = move_to_s(i,j)
