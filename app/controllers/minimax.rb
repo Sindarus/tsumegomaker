@@ -31,7 +31,7 @@ class Minimax
     final_nodes = []
     if color == @player_color
       create_children(node, board, @ia_color)
-      max = -1
+      max = -9999999
       node.children.each do |node_children|
         t,f = minimax(node_children, board, @ia_color)
         if t > max
@@ -44,7 +44,7 @@ class Minimax
       return max,final_nodes
     else
       create_children(node, board, @player_color)
-      min = board.width * board.height
+      min = 9999999
       min_node = nil
       node.children.each do |node_children|
         t,f = minimax(node_children, board, @player_color)
