@@ -305,22 +305,28 @@ class Board
   end
 
   # displays the board in the console.
-  def display(board = @board_of_stone)
+  # The indent is to tabulate the board
+  def display(board = @board_of_stone, indent = 0)
     #first line
     if @not_border[1]
       print("--")
+      print("\n")
     end
     if @not_border[0]
       @width.times do
         print("|")
       end
+      print("\n")
     end
     if @not_border[2]
       print("--")
+      print("\n")
     end
-    print("\n")
 
     board.each{|row|
+      indent.times do
+        print " "
+      end
       if @not_border[1]
         print("--")
       end
@@ -332,7 +338,7 @@ class Board
         elsif stone == 2
           print("O")
         else
-          raise "Stone type not supported for display."
+          raise "Stone type not supported for display :#{stone}."
         end
       }
       if @not_border[2]
