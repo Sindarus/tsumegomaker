@@ -11,18 +11,52 @@ class Minimax
     @collection = SGF::Collection.new
     @first_node = SGF::Node.new(:parent => @collection.current_node) 
   end
+
   def launch_minimax
-    minimax(@first_node, @initial_board, @ia_color)
+    max_score, win_nodes = minimax(@first_node, @initial_board, @ia_color)
+    add_win_msg(win_nodes)
   end
 
-  def minimax(node, prev_board, color)
+  def add_win_msg(nodes)
+    nodes.each do |node|
+      node['N'] = "M20"
+    end
+  end
+
+  def show_tree
+    show_tree_aux(@first_node, @initial_board, @ia_color)
+  end
+
+  def show_tree_aux(node, prev_board, color)
     board = prev_board.clone
     if node.depth != 1
       i,j = extract_move(node,color)
       board.add_stone(i,j,color)
-      puts "Profondeur #{node.depth}\nCoup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
+    end
+    node.depth.times do print " " end
+    puts "Profondeur #{node.depth}"
+    node.depth.times do print " " end
+    puts "Coup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
+    if node["N"] == "M20"
+      node.depth.times do print " " end
+      puts "WIN"
+    elsif node.children.empty?
+      node.depth.times do print " " end
+      puts "LOSE"
     end
     board.display
+    sleep 2
+    node.children.each do |child_node|
+      show_tree_aux(child_node, board, (color == 1 ? 2 : 1))
+    end
+  end
+
+  def minimax(node, prev_board, prev_color)
+    board = prev_board.clone
+    if node.depth != 1
+      i,j = extract_move(node,prev_color)
+      board.add_stone(i,j,prev_color)
+    end
     if final_node(node)
       s = count_score(board)
       puts s,"\n"
