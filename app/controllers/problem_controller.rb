@@ -13,4 +13,8 @@ class ProblemController < ApplicationController
 
   end
 
+  def submit
+    render plain: "coucou"
+  end
+
 end

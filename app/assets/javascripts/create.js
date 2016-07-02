@@ -1,56 +1,112 @@
-var board;              //2D array
-var width;              //of board
-var height;             //of board
+var b;                  //board object (board_of_stone, height, width, not_border)
 var paint;              //color of the stone to add when you click
 
 $(document).ready(function(){
     console.log("Started create.js");
 
-    $("#create_board").on("click", create_board);
-    $("#black_paint").on("click", function(){ paint = 1; update_hover(); });
-    $("#white_paint").on("click", function(){ paint = 2; update_hover(); });
-    $("#empty_paint").on("click", function(){ paint = 0; update_hover(); });
-    $("#clear_board").on("click", function(){ clear_board(); update_display_board(); })
+    //hide validate button
+    $("#validate").attr("style", "display: none;");
+
+    //select a default color
+    choose_paint(1);
+
+    $("#create_board").on("click", function(){
+        create_board();
+        $("#validate").attr("style", "display: auto;");
+    });
+    $("#black_paint").on("click", function(){ choose_paint(1); });
+    $("#white_paint").on("click", function(){ choose_paint(2); });
+    $("#clear_board").on("click", function(){ clear_board(); });
+    $("#validate").on("click", send_problem);
 });
 
-function init_hover(){
-    console.log("Init hover. height : " + height);
-    for(var i = 0; i<height; i++){
-        for(var j = 0; j<width; j++){
-            $("#" + i + "-" + j + " div").addClass("legal_move");
+/**
+* This function retrives the info needed to create a board from the form on the page,
+* then it calls create_html_board.
+*/
+function create_board(){
+    console.log("Retrieving info of board");
+
+    b = new Object;
+
+    // retrieve dimentions
+    b.width = parseInt($("#board_width").val());
+    b.height = parseInt($("#board_height").val());
+    if(b.width == undefined || isNaN(b.width) || b.height == undefined || isNaN(b.height)){
+        console.log("Could not parse width and height from html form.");
+        return;
+    }
+
+    //retrieve not_border
+    b.not_border = [$("#not_border_up").prop("checked"),
+                     $("#not_border_left").prop("checked"),
+                     $("#not_border_right").prop("checked"),
+                     $("#not_border_down").prop("checked")];
+
+    console.log("Will be creating a board " + b.height.toString() + "x" + b.width.toString() + " not_border: " + b.not_border.toString());
+
+    //remove form
+    $("#board_size_form").remove();
+
+    //handle html modifications
+    create_html_board(b);
+    init_hover();
+
+    //handle "b.board_of_stone" global variable creation
+    b.board_of_stone = new Array();
+    for (var i = 0; i < b.height; i++) {
+        b.board_of_stone[i] = new Array(b.width);
+        for(var j = 0; j < b.width; j++){
+            b.board_of_stone[i][j] = 0;
         }
     }
 }
 
-function update_hover(){
-    console.log("Update hover");
-    var board_tag = $("#board");
-    board_tag.removeClass("player_black player_white player_empty");
-    if(paint == 1){
-        board_tag.addClass("player_black");
-    }
-    else if(paint == 2){
-        board_tag.addClass("player_white");
-    }
-    else if(paint == 0){
-        board_tag.addClass("player_empty");
+/*
+* Adds "legal_move" class to every square of the board. The class is then changed by the function that adds the stone.
+*/
+function init_hover(){
+    console.log("Init hover. height : " + b.height);
+    for(var i = 0; i<b.height; i++){
+        for(var j = 0; j<b.width; j++){
+            select_stone(i, j).addClass("legal_move");
+        }
     }
 }
 
+/*
+* changes the global variable paint, and updates the board's class accordingly.
+*/
+function choose_paint(color){
+    paint = color;
+    var board_tag = $("#board");
+    if(paint == 1){
+        board_tag.attr("class", "player_black");
+    }
+    else if(paint == 2){
+        board_tag.attr("class", "player_white");
+    }
+    else {
+        console.log("choose_paint() : unknown color.");
+    }
+}
+
+/* Clears the board global variable */
 function clear_board(){
     console.log("clearing board");
-    for(var i = 0; i<height; i++){
-        for(var j = 0; j<width; j++){
-            board[i][j] = 0;
+    for(var i = 0; i<b.height; i++){
+        for(var j = 0; j<b.width; j++){
+            b.board_of_stone[i][j] = 0;
+            select_stone(i, j).attr("class", "legal_move");
         }
     }
 }
 
 /**
- * \brief updates the display of the board. The global variable 'board' has to be set, and the html tags have to be there.
+ * \brief updates the display of the board. The global variable 'b' has to be set, and the html tags have to be there.
  */
 function update_display_board(){
-    if(board == undefined || width == undefined || height == undefined){
+    if(b == undefined || b.width == undefined || b.height == undefined){
         console.log("update_display_board() : cannot build html because board was not initialized");
         return;
     }
@@ -67,14 +123,14 @@ function update_display_board(){
 
     for(var i = 0; i < height; i++){
         for(var j = 0; j < width; j++){
-            var elt = $("#" + i + "-" + j + " div");
-            if(board[i][j] == 0){
+            var elt = select_stone(i, j);
+            if(b.board_of_stone[i][j] == 0){
                 elt.attr('class', 'legal_move');
             }
-            else if(board[i][j] == 1){
+            else if(b.board_of_stone[i][j] == 1){
                 elt.attr('class', 'black_stone');
             }
-            else if(board[i][j] == 2){
+            else if(b.board_of_stone[i][j] == 2){
                 elt.attr('class', 'white_stone');
             }
         }
@@ -82,100 +138,42 @@ function update_display_board(){
     console.log("Updated html according to the board global variable.");
 }
 
-function create_board(){
-    console.log("Retrieving size of board");
-    width = parseInt($("#board_width").val());
-    height = parseInt($("#board_height").val());
-    if(width == undefined || isNaN(width) || height == undefined || isNaN(height)){
-        console.log("Could not parse width and height from html form.");
-        return;
-    }
-    console.log("will be creating a board " + height.toString() + "x" + width.toString());
-
-    paint = 1;
-    init_board();
-    create_html_board(width, height);
-    init_hover();
-    update_hover();
-
-    $("#board_size_form").remove();
-}
-
-function init_board(){
-    console.log("Initing board");
-    board = [];
-    for(var i = 0; i<height; i++){
-        board[i] = [];
-        for(var j = 0; j<width; j++){
-            board[i][j] = 0;
-        }
-    }
-}
-
-/**
-* \brief Builds the HTML code needed to display the board given in the global variable
-*/
-function create_html_board(width, height){
-    console.log("Building html board");
-    if(width == undefined || height == undefined){
-        console.log("create_html_board() : cannot build html because I do not know the width or height.");
-        return;
-    }
-
-    var board_tag = $("#board");
-    if(board_tag.html() != undefined){
-        if(board_tag.html().search("<table>") >= 0) {   //if there is "<table>" in board_tag
-            console.log("create_html_board() : html for board has already been build. See #board : " + $("#board").html());
-            return;
-        }
-    }
-
-    var i, j;
-    board_tag.append("<table/>");
-    for(i = 0; i<height; i++){
-        var table_row = $("<tr>", {id: i});
-        table_row.appendTo("table");
-
-        for(j = 0; j<width; j++){
-            var table_data = $("<td/>", {id: i + "-" + j, text: ""});
-            table_data.append("<div>");
-            table_data.appendTo("tr#" + i);
-        }
-    }
-
-    for(i = 0; i<height; i++){
-        for(j = 0; j<width; j++){
-            var elt = $("#" + i + "-" + j);
-            elt.on("click", function(){ clicked(this); });
-            elt.attr('class', 'board_square');
-        }
-    }
-    console.log("Created html tags.");
-}
-
 function clicked(obj){
     //alert("clicked : " + obj.toString());
     var i = parseInt(obj.id[0]);
     var j = parseInt(obj.id[2]);
 
-    board[i][j] = paint;
+    if(b.board_of_stone[i][j] == 1 || b.board_of_stone[i][j] == 2){
+        //if there is already a stone there, delete it and return.
+        b.board_of_stone[i][j] = 0;
+        select_stone(i, j).attr("class", "legal_move");
+        console.log("Removed a stone at (" + i.toString() + ", " + j.toString() + ")");
+        return;
+    }
 
-    var elt = $("#" + i + "-" + j + " div");
+    //from there on, we know (i, j) is already empty
+    b.board_of_stone[i][j] = paint;
+
+    var elt = select_stone(i, j);
     if(paint == 1){
         elt.attr("class", "black_stone");
-        elt.removeClass("legal_move");
     }
     else if(paint == 2){
         elt.attr("class", "white_stone");
-        elt.removeClass("legal_move");
     }
     else if(paint == 0){
-        elt.attr("class", "empty_stone");
-        elt.addClass("legal_move");
+        elt.attr("class", "legal_move");
     }
     else{
         console.log("User clicked to add a stone but 'paint' is wrong.");
     }
 
     console.log("Painted (" + i.toString() + ", " + j.toString() + ") to " + paint.toString());
+}
+
+function send_problem(){
+    console.log("sending problem");
+    $.post("/problem/submit", { board:JSON.stringify(b) }, function(data) {
+        alert("server responded : " + data);
+    });
 }

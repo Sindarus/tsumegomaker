@@ -51,7 +51,7 @@ class Board
     @board_of_stone = Array.new(height) {Array.new(width){0}}
     @height = height
     @width = width
-    @d4adj = [[1,0],[-1,0],[0,1],[0,-1]]
+    @d4adj = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     @ko_move = []
     @nb_captured = [0, 0]
     @not_border = not_border
@@ -83,7 +83,7 @@ class Board
     if j >= @width
       return ( @not_border[2] ? not_border_value : -1)
     end
- 
+
     # at this point, we know that (i, j) is inside all borders,
     # i.e. @board_of_stone[i][j] is set
     return @board_of_stone[i][j]
@@ -94,11 +94,12 @@ class Board
       raise "In set_stone_at() : unvalid color  " + color.to_s
     end
 
-    if access_board(i,j) < 0
-      raise "In set_stone_at : unvalid position (#{i},#{j})"
+    if access_board(i, j) < 0
+      raise "In set_stone_at : unvalid position (#{i}, #{j})"
     end
     @board_of_stone[i][j] = color
   end
+  protected :set_stone_at
 
   # loads into the instance a board described by the string "text_board"
   # TODO delete this -dangerous- method after we've changed the way we save
@@ -143,16 +144,16 @@ class Board
   # belong to the same "group" as the stone at (i, j).
   # The second contains the pos of the stones adjacent to that "group".
   # (i, j) can be empty, 'empty' is then considered as a color.
-  def get_adj(i,j,not_border_value)
-    same_group = [[i,j]]
+  def get_adj(i, j, not_border_value)
+    same_group = [[i, j]]
     adj_group = []
-    stone_file = [[i,j]]
-    first_stone = access_board(i,j,not_border_value)
+    stone_file = [[i, j]]
+    first_stone = access_board(i, j, not_border_value)
     while ! stone_file.empty?
       i, j = stone_file.pop
-      @d4adj.each{|di,dj|
-        current_stone = access_board(i+di,j+dj,not_border_value)
-        current_pos = [i+di,j+dj]
+      @d4adj.each{|di, dj|
+        current_stone = access_board(i+di, j+dj, not_border_value)
+        current_pos = [i+di, j+dj]
         if current_stone == first_stone and
              ! same_group.include?(current_pos)
           stone_file << current_pos
@@ -169,9 +170,9 @@ class Board
   # returns true if the stone or "group" at (i, j) has no 'liberty' and should
   # be removed from the board
   def is_dead?(i, j)
-    group, adj = get_adj(i,j,0)
-    adj.each{|i,j|
-      if access_board(i,j) == 0
+    group, adj = get_adj(i, j, 0)
+    adj.each{|i, j|
+      if access_board(i, j) == 0
         return false
       end
     }
@@ -179,22 +180,22 @@ class Board
   end
 
   # returns true if the move (i, j) is legal for the player that plays 'color'
-  def is_legal?(i,j,color)
+  def is_legal?(i, j, color)
     if i == -1 && j == -1
       return true     # passing is always legal
     end
 
-    if access_board(i,j) != 0
+    if access_board(i, j) != 0
       return false    # spot is not free
     end
-    if [[i,j],color] == @ko_move
+    if [[i, j], color] == @ko_move
       return false
     end
     set_stone_at(i, j, color)         # put stone
-    if is_dead?(i,j)                  # if the stone we just put is dead
-      @d4adj.each{|di,dj|             # search if the stone allows to kill a group of another color
-        if access_board(i+di,j+dj) == opponent(color)
-          if is_dead?(i+di,j+dj)      # if it does
+    if is_dead?(i, j)                  # if the stone we just put is dead
+      @d4adj.each{|di, dj|             # search if the stone allows to kill a group of another color
+        if access_board(i+di, j+dj) == opponent(color)
+          if is_dead?(i+di, j+dj)      # if it does
             set_stone_at(i, j, 0)     # remove stone
             return true
           end
@@ -215,7 +216,7 @@ class Board
     end
     Array.new(@height){ |i|
       Array.new(@width){ |j|
-        is_legal?(i,j,color)
+        is_legal?(i, j, color)
       }
     }
   end
@@ -235,9 +236,9 @@ class Board
 
   # removes the "group" at (i, j) from the board.
   # Returns the list of coordinates where the removed stones were.
-  def kill_group(i,j)
-    group, adj = get_adj(i,j)
-    group.each{|i,j|
+  def kill_group(i, j)
+    group, adj = get_adj(i, j, -1)
+    group.each{|i, j|
       set_stone_at(i, j, 0)
     }
     return group
@@ -272,7 +273,7 @@ class Board
     @board_history << b = Marshal.load(Marshal.dump(@board_of_stone))
     @move_history << [i, j]
 
-    if [i,j] == [-1,-1]                     # player passes
+    if [i, j] == [-1, -1]                     # player passes
       #add one captured stone to its opponent (AGA rules)
       add_captured_stones(1, opponent(color))
       return
@@ -283,10 +284,10 @@ class Board
 
     # Check if it kills an opponent
     captured = []
-    @d4adj.each{|di,dj|
-      if access_board(i+di,j+dj) > 0 and access_board(i+di,j+dj) != color
-        if is_dead?(i+di,j+dj)
-          captured += kill_group(i+di,j+dj)
+    @d4adj.each{|di, dj|
+      if access_board(i+di, j+dj) > 0 and access_board(i+di, j+dj) != color
+        if is_dead?(i+di, j+dj)
+          captured += kill_group(i+di, j+dj)
         end
       end
     }
@@ -296,9 +297,9 @@ class Board
     # handle simple ko rule
     @ko_move = []
     if captured.size == 1         # if the move allowed to capture 1 stone
-      group, adj = get_adj(i, j)
+      group, adj = get_adj(i, j, -1)
       if(group.size == 1)         # if the move does not form a "group"
-        @ko_move = [captured[0],opponent(color)]
+        @ko_move = [captured[0], opponent(color)]
       end
     end
   end
@@ -365,9 +366,9 @@ class Board
   end
 
   # sets the spot (i, j) at '0'.
-  def rm_stone(i,j)
-    if access_board(i,j) == -1
-      raise "This is not a valid position (#{i},#{j})"
+  def rm_stone(i, j)
+    if access_board(i, j) == -1
+      raise "This is not a valid position (#{i}, #{j})"
     end
     set_stone_at(i, j, 0)
   end

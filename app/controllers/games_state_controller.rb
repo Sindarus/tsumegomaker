@@ -41,8 +41,8 @@ class GamesStateController < ApplicationController
     end
   end
 
-  def player_move(i,j)
-    if [i,j] == [-1,-1]
+  def player_move(i, j)
+    if [i,j] == [-1, -1]
       return
     end
     if ! @game_state.board.is_legal?(i, j, @problem.player_color)
