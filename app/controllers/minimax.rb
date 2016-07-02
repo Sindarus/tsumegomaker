@@ -59,15 +59,14 @@ class Minimax
     end
     if final_node(node)
       s = count_score(board)
-      puts s,"\n"
       return s,[node]
     end
     final_nodes = []
-    if color == @player_color
-      create_children(node, board, @ia_color)
+    if prev_color == @ia_color
+      create_children(node, board, @player_color)
       max = -9999999
       node.children.each do |node_children|
-        t,f = minimax(node_children, board, @ia_color)
+        t,f = minimax(node_children, board, @player_color)
         if t > max
           max = t
           final_nodes = f
@@ -77,24 +76,32 @@ class Minimax
       end
       return max,final_nodes
     else
-      create_children(node, board, @player_color)
+      create_children(node, board, @ia_color)
       min = 9999999
       min_node = nil
       node.children.each do |node_children|
-        t,f = minimax(node_children, board, @player_color)
-        if t < min
+        t,f = minimax(node_children, board, @ia_color)
+        if t <= min
           min = t
           min_node = node_children
           final_nodes = f
-        elsif t == min
-          final_nodes += f
         end
       end
+      print "Children : ",node.children,"\n"
+      print "Min_node : ",[min_node],"\n"
+      children_to_destroy = [] 
       node.children.each do |node_children|
-        if node_children != min_node
-          node_children.remove_parent
+        if ! node_children.equal?  min_node
+          print "Destroy : ",[node_children],"\n"
+          children_to_destroy <<  node_children
+        else
+          print "Not Destroying : ",[node_children],"\n"
         end
       end
+      children_to_destroy.each do |child_node|
+        child_node.remove_parent
+      end
+      print node.children,"\n\n"
       return min,final_nodes
     end
   end
