@@ -121,21 +121,16 @@ class Minimax
           final_nodes = f
         end
       end
-      print "Children : ",node.children,"\n"
-      print "Min_node : ",[min_node],"\n"
       children_to_destroy = [] 
       node.children.each do |node_children|
         if ! node_children.equal?  min_node
-          print "Destroy : ",[node_children],"\n"
           children_to_destroy <<  node_children
         else
-          print "Not Destroying : ",[node_children],"\n"
         end
       end
       children_to_destroy.each do |child_node|
         child_node.remove_parent
       end
-      print node.children,"\n\n"
       return min,final_nodes
     end
   end
