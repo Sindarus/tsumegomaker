@@ -3,8 +3,6 @@ load("my_error.rb")
 load("board.rb")
 class Minimax
 
-  attr_reader :collection
-
   def initialize(initial_board, nb_max_move)
     @initial_board = initial_board
     @nb_max_move = nb_max_move
@@ -85,6 +83,10 @@ class Minimax
     end
     show_node(node, board, color, i, j)
     return [board, (color == 1 ? 2 : 1)]
+  end
+
+  def save_sgf(file)
+    @collection.save(file)
   end
 
   def minimax(node, prev_board, prev_color)
