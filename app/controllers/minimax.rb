@@ -16,11 +16,27 @@ class Minimax
   def launch_minimax
     max_score, win_nodes = minimax(@first_node, @initial_board, @ia_color)
     add_win_msg(win_nodes)
+    add_lose_msg(@first_node)
   end
 
   def add_win_msg(nodes)
     nodes.each do |node|
       node['N'] = "M20"
+    end
+  end
+
+  # Add lose msg to every leaf of the tree starting to 'node'
+  # NB : You should add the win msg before adding the lose msg
+  def add_lose_msg(node)
+    if final_node(node) and ! node['N']
+      if node.depth == @nb_max_move
+        node['N'] = "M22"
+      else
+        node['N'] = "M21"
+      end
+    end
+    node.children.each do |child_node|
+      add_lose_msg(child_node)
     end
   end
 
