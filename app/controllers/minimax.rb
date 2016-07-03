@@ -50,6 +50,14 @@ class Minimax
       i,j = extract_move(node,color)
       board.add_stone(i,j,color)
     end
+    show_node(node, board, color, i, j)
+    sleep 2
+    node.children.each do |child_node|
+      show_tree_aux(child_node, board, (color == 1 ? 2 : 1))
+    end
+  end
+
+  def show_node(node, board, color, i, j)
     node.depth.times do print " " end
     puts "Profondeur #{node.depth}"
     node.depth.times do print " " end
@@ -59,10 +67,22 @@ class Minimax
       puts node["N"]
     end
     board.display
-    sleep 2
-    node.children.each do |child_node|
-      show_tree_aux(child_node, board, (color == 1 ? 2 : 1))
+  end
+
+  # This func show the path to this node
+  # I mean the moves and boards that leads to this node
+  # Really usefull when used on win_nodes
+  def show_path_to(node)
+    if node.depth != 1
+      board, color = show_path_to node.parent
+      i, j = extract_move(node, color)
+      board.add_stone(i, j, color)
+    else
+      board = @initial_board.clone
+      color = @ia_color
     end
+    show_node(node, board, color, i, j)
+    return [board, (color == 1 ? 2 : 1)]
   end
 
   def minimax(node, prev_board, prev_color)
