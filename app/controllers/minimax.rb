@@ -3,6 +3,8 @@ load("my_error.rb")
 load("board.rb")
 class Minimax
 
+  attr_reader :collection
+
   def initialize(initial_board, nb_max_move)
     @initial_board = initial_board
     @nb_max_move = nb_max_move
