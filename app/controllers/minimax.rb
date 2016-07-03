@@ -2,6 +2,7 @@ require 'sgf'
 load("my_error.rb")
 load("board.rb")
 class Minimax
+
   def initialize(initial_board, nb_max_move)
     @initial_board = initial_board
     @nb_max_move = nb_max_move
@@ -37,12 +38,9 @@ class Minimax
     puts "Profondeur #{node.depth}"
     node.depth.times do print " " end
     puts "Coup " + (color == 1 ? "X" : "O") + " : #{i}, #{j}"
-    if node["N"] == "M20"
+    if node["N"]
       node.depth.times do print " " end
-      puts "WIN"
-    elsif node.children.empty?
-      node.depth.times do print " " end
-      puts "LOSE"
+      puts node["N"]
     end
     board.display
     sleep 2
