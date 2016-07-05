@@ -90,7 +90,7 @@ class Minimax
     @collection.save(file)
   end
 
-  def minimax(node, prev_board, prev_color)
+  def minimax(node, prev_board, prev_color, alpha=9999999)
     board = prev_board.clone
     if node.depth != 1
       i,j = extract_move(node,prev_color)
@@ -104,12 +104,14 @@ class Minimax
     if prev_color == @ia_color
       create_children(node, board, @player_color)
       max = -9999999
-      node.children.each do |node_children|
-        t,f = minimax(node_children, board, @player_color)
-        if t > max
-          max = t
+      node.children.each do |child_node|
+        node_score, f = minimax(child_node, board, @player_color)
+        if node_score > alpha
+          return node_score, [] # We could return anything bigger than alpha
+        elsif  node_score > max
+          max = node_score
           final_nodes = f
-        elsif t == max
+        elsif  node_score == max
           final_nodes += f
         end
       end
@@ -118,19 +120,18 @@ class Minimax
       create_children(node, board, @ia_color)
       min = 9999999
       min_node = nil
-      node.children.each do |node_children|
-        t,f = minimax(node_children, board, @ia_color)
-        if t <= min
-          min = t
-          min_node = node_children
+      node.children.each do |child_node|
+        node_score, f = minimax(child_node, board, @ia_color, min)
+        if node_score <= min
+          min = node_score
+          min_node = child_node
           final_nodes = f
         end
       end
       children_to_destroy = [] 
-      node.children.each do |node_children|
-        if ! node_children.equal?  min_node
-          children_to_destroy <<  node_children
-        else
+      node.children.each do |child_node|
+        if ! child_node.equal?  min_node
+          children_to_destroy << child_node
         end
       end
       children_to_destroy.each do |child_node|
