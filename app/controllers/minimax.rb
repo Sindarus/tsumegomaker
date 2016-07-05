@@ -17,6 +17,7 @@ class Minimax
     max_score, win_nodes = minimax(@first_node, @initial_board, @ia_color)
     add_win_msg(win_nodes)
     add_lose_msg(@first_node)
+    return max_score, win_nodes
   end
 
   def add_win_msg(nodes)
