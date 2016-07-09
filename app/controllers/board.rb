@@ -117,6 +117,11 @@ class Board
     }
   end
 
+  # This is another *dangerous* method, I live dangerously
+  def load_board_of_stone(bos)
+    @board_of_stone = bos
+  end
+
   # returns a copy (separate instance) of the current instance
   def clone
     # This is an easy fix to ruby's shameful lack of deep_copy.
