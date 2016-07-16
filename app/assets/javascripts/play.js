@@ -18,6 +18,10 @@ $(document).ready(function(){
     update_display_board();
     update_legal_moves();
     update_hover_moves();
+
+    $("#pass_button").on("click", function(){
+        send_move(-1, -1);
+    });
 });
 
 /**
