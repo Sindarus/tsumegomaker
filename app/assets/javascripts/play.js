@@ -278,11 +278,6 @@ function update_player_color(){
 }
 
 
-
-function display_rails_error(jqXHR){
-    $("#error").append(jqXHR.responseText);
-}
-
 function is_error_code(data){
     return data[0] == "E";
 }

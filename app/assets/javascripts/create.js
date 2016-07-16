@@ -173,7 +173,21 @@ function clicked(obj){
 
 function send_problem(){
     console.log("sending problem");
-    $.post("/problem/submit", { board:JSON.stringify(b) }, function(data) {
-        alert("server responded : " + data);
+
+    var request = $.post("/problem/submit", { board:JSON.stringify(b) }, after_submit);
+    request.fail(function(){
+        console.log("Post request to send problem failed.");
+        display_rails_error(jqXHR);
     });
+
+    alert("Votre tsumego est en cours de traitement, vous serez informés dans quelques instant de son résultat.");
+
+    function after_submit(data){
+        if(data != "OK") {
+          alert("Il y a eu un problème avec le traitement de votre tsumego");
+        }
+        else {
+          alert("Votre tsumego a bien été reçu et traité !");
+        }
+    }
 }
