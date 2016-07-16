@@ -26,10 +26,12 @@ class ProblemController < ApplicationController
     problem.player_color = 1 #TODO: Permit to the submitter to choose color
     problem.ia_color = 2
     problem.problem_file = "app/assets/problems/problem"+problem.id.to_s+".sgf"
+    puts "STARTING MINIMAX. THIS MIGHT TAKE A WHILE."
     m = Minimax.new(board, 10) #TODO: Permit to the submitter to choose that
     m.launch_minimax
     m.save_sgf(File.open(problem.problem_file, "w"))
     problem.save
+    render plain: "OK"
   end
 
 end
