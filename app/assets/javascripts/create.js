@@ -5,14 +5,14 @@ $(document).ready(function(){
     console.log("Started create.js");
 
     //hide validate button
-    $("#validate").attr("style", "display: none;");
+    $("#validate_form").attr("style", "display: none;");
 
     //select a default color
     choose_paint(1);
 
     $("#create_board").on("click", function(){
         create_board();
-        $("#validate").attr("style", "display: auto;");
+        $("#validate_form").attr("style", "display: auto;");
     });
     $("#black_paint").on("click", function(){ choose_paint(1); });
     $("#white_paint").on("click", function(){ choose_paint(2); });
@@ -174,7 +174,16 @@ function clicked(obj){
 function send_problem(){
     console.log("sending problem");
 
-    var request = $.post("/problem/submit", { board:JSON.stringify(b) }, after_submit);
+    //retrieving player_color
+    var player_color;
+    if($("#player_is_white").prop("checked")){
+        player_color = 2;
+    }
+    else {
+       player_color = 1;
+    }
+
+    var request = $.post("/problem/submit", { board: JSON.stringify(b), player_color: player_color }, after_submit);
     request.fail(function(){
         console.log("Post request to send problem failed.");
         display_rails_error(jqXHR);

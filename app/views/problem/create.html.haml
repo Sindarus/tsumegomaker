@@ -26,6 +26,7 @@
           %input.filled-in#not_border_down{:type => "checkbox"}
           %label{:for => "not_border_down"} partie basse cachée
       .col.s3
+
         .input-field.row
           %a.waves-effect.waves-light.btn#create_board
             create board
@@ -45,7 +46,13 @@
           %li.btn-floating.red#clear_board
 
   .row
-    .col.s3
+    .col.s3#validate_form
+      .row
+        %input#player_is_white{:name => "player_color", :type => "radio"}
+        %label{:for => "player_is_white"} Blanc joue
+      .row
+        %input#player_is_black{:name => "player_color", :type => "radio"}
+        %label{:for => "player_is_black"} Noir joue
       .input-field.row
         %a.waves-effect.waves-light.btn#validate
           Poster

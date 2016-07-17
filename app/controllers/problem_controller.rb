@@ -23,8 +23,8 @@ class ProblemController < ApplicationController
     problem.yaml_initial_board = YAML.dump board
     problem.height = board_json["height"]
     problem.width = board_json["width"]
-    problem.player_color = 1 #TODO: Permit to the submitter to choose color
-    problem.ia_color = 2
+    problem.player_color = params[:player_color]
+    problem.ia_color = (problem.player_color == 1) ? 2 : 1
     problem.problem_file = "app/assets/problems/problem"+problem.id.to_s+".sgf"
     puts "STARTING MINIMAX. THIS MIGHT TAKE A WHILE."
     m = Minimax.new(board, 10) #TODO: Permit to the submitter to choose that
