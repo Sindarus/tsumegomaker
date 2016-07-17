@@ -8,3 +8,4 @@ E10    Player tried to play an illegal move
 
 M20    The user has resolved the problem
 M21    The user has failed the problem
+M22    The user has played too much moves and the minimax algorithm did not go this far

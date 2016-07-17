@@ -96,7 +96,7 @@ function update_board(){
 
     function after_get_board(jqXHR){
         var data = jqXHR.responseText;
-        console.log("Successfully recieved board data : " + data);
+        console.log("Successfully received board data : " + data);
 
         if(filter_error(data)) return;
 
@@ -296,31 +296,31 @@ function filter_error(data){
     }
 
     if(data.search("E00") >= 0){
-        console.log("E00 recieved");
+        console.log("E00 received");
         $("#error").append("<p>E00 : Le serveur n'a pas pu initialiser le fichier sgf lié a ce problème.</p>");
     }
     else if(data.search("E01") >= 0){
-        console.log("E01 recieved");
+        console.log("E01 received");
         $("#error").append("<p>E01 : L'IA n'a pas réussi a retrouver l'état de la partie</p>");
     }
     else if(data.search("E02") >= 0){
-        console.log("E02 recieved");
+        console.log("E02 received");
         $("#error").append("<p>E02 : Erreur IA move</p>");
     }
     else if(data.search("E03") >= 0){
-        console.log("E03 recieved");
+        console.log("E03 received");
         $("#error").append("<p>E03 : Vous n'avez pas de game_state_id.</p>");
     }
     else if(data.search("E04") >= 0){
-        console.log("E04 recieved");
+        console.log("E04 received");
         $("#error").append("<p>E04 : Le serveur n'a pas pu trouver de problème avec cet id.</p>");
     }
     else if(data.search("E10") >= 0){
-        console.log("E10 recieved");
+        console.log("E10 received");
         $("#error").append("<p>E10 : Le coup que vous avez joué est illégal.</p>");
     }
     else {
-        console.log("Unknown error recieved");
+        console.log("Unknown error received");
         $("#error").append("<p>Une erreur coté serveur est survenue.</p>");
     }
     return true;
@@ -334,17 +334,22 @@ function filter_message(data){
     $("#messages").empty();
 
     if(data.search("M20") >= 0){
-        console.log("M20 recieved");
+        console.log("M20 received");
         $("#messages").append("<h4 class='win_msg'>Vous avez gagné !</h4>");
         end = true;
     }
     else if(data.search("M21") >= 0){
-        console.log("M21 recieved");
+        console.log("M21 received");
         $("#messages").append("<h4 class='loose_msg'>Vous avez perdu.</h4>");
         end = true;
     }
+    else if(data.search("M22") >= 0){
+        console.log("M22 received");
+        $("#messages").append("<h4 class='loose_msg'>Vous pouvez trouver mieux en moins de coup !</h4>");
+        end = true;
+    }
     else{
-        console.log("Unknown message recieved");
+        console.log("Unknown message received");
         $("#messages").append("<h4 class='loose_msg'>Le serveur a envoyé un message inconnu.</h4>");
     }
     return true;
