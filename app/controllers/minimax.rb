@@ -10,7 +10,8 @@ class Minimax
     @player_color = 1
     @color_s = [nil, 'B', 'W']
     @collection = SGF::Collection.new
-    @first_node = SGF::Node.new(:parent => @collection.current_node) 
+    @first_node = SGF::Node.new
+    @collection << SGF::Gametree.new(@first_node)
   end
 
   def launch_minimax
