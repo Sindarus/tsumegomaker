@@ -35,9 +35,6 @@ class IaSgf
   end
 
   def go_to_move(move, color)
-    if move == [-1,-1]
-      return
-    end
     ok = false
     @current_node.children.each{|node|
       if extract_move(node, color) == move
@@ -62,13 +59,14 @@ class IaSgf
       @current_node = @current_node.children[0]
       move = extract_move(@current_node, @color)
     else
-        raise MyError::MoveError.new "There is no way to respond"
+      move = [-1, -1]
     end
     return move,@current_node["N"]
   end
 
   def catch_up(move_history)
     my_turn = false
+    puts move_history
     move_history.each{|move|
       go_to_move(move, (my_turn ? @color : @other_color))
       my_turn = (my_turn ? false : true)
