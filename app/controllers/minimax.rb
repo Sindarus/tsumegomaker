@@ -183,6 +183,6 @@ class Minimax
 
   def count_score(board)
     scores = board.get_score()
-    return scores[0]-scores[1]
+    return scores[@player_color - 1]-scores[@ia_color - 1]
   end
 end
