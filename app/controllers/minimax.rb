@@ -3,11 +3,11 @@ load("my_error.rb")
 load("board.rb")
 class Minimax
 
-  def initialize(initial_board, nb_max_move)
+  def initialize(initial_board, player_color, nb_max_move)
     @initial_board = initial_board
     @nb_max_move = nb_max_move
-    @ia_color = 2
-    @player_color = 1
+    @ia_color = (player_color == 1) ? 2 : 1
+    @player_color = player_color
     @color_s = [nil, 'B', 'W']
     @collection = SGF::Collection.new
     @first_node = SGF::Node.new

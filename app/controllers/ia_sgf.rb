@@ -66,7 +66,6 @@ class IaSgf
 
   def catch_up(move_history)
     my_turn = false
-    puts move_history
     move_history.each{|move|
       go_to_move(move, (my_turn ? @color : @other_color))
       my_turn = (my_turn ? false : true)
