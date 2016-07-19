@@ -123,7 +123,7 @@ class Minimax
       min_node = nil
       node.children.each do |child_node|
         node_score, f = minimax(child_node, board, @ia_color, min)
-        if node_score <= min
+        if node_score < min
           min = node_score
           min_node = child_node
           final_nodes = f
