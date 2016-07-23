@@ -59,7 +59,7 @@ class IaSgf
       @current_node = @current_node.children[0]
       move = extract_move(@current_node, @color)
     else
-      move = [-1, -1]
+      move = nil
     end
     return move,@current_node["N"]
   end

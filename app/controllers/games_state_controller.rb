@@ -97,8 +97,10 @@ class GamesStateController < ApplicationController
         game_history.save
       end
     end
-    ia_i, ia_j = ia_move
-    @game_state.board.add_stone(ia_i, ia_j, @problem.ia_color)
+    if ia_move != nil
+      ia_i, ia_j = ia_move
+      @game_state.board.add_stone(ia_i, ia_j, @problem.ia_color)
+    end
     save_state
     if not @rendered
       render plain: ia_msg
