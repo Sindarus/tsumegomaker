@@ -83,10 +83,10 @@ class PhysicalBoard
 
   # returns true if (i, j) is outside the go board
   def is_behind_border?(i, j)
-    if (i < 0 and not @not_border[0]         or
-       i >= @height and not @not_border[3]   or
-       j < 0 and not @not_border[1]          or
-       j >= @width and not @not_border[2])
+    if ((i < 0 and not @not_border[0])         or
+        (i >= @height and not @not_border[3])  or
+        (j < 0 and not @not_border[1])         or
+        (j >= @width and not @not_border[2]))
       return true
     end
 
