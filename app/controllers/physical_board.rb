@@ -33,6 +33,45 @@ class PhysicalBoard
     @board_of_stone = Array.new(height) { Array.new(width){0} }
   end
 
+  # returns a PhysicalBoard created from a board_of_stone array.
+  # Be mindful that there is no checking of the board_of_stone array
+  def self.new_from_array(board_of_stone:, not_border:)
+    height = board_of_stone.size
+    width = board_of_stone[0].size
+
+    b = PhysicalBoard.new(width: width, height: height, not_border: not_border)
+    board_of_stone.each_with_index do |row, i|
+      row.each_with_index do |stone, j|
+        if stone != 0
+          b.place(i, j, stone)
+        end
+      end
+    end
+
+    return b
+  end
+
+  # returns a PhysicalBoard created from a board_of_stone string with a format
+  # like "111\n010" for example.
+  # Be mindful that there is no checking of the string
+  def self.new_from_string(string:, not_border:)
+    b = []
+
+    i = 0
+    string.each_line{|line|
+      line.delete!("\n")
+      j = 0
+      b.append([])
+      line.each_char{|stone|
+        b[i].append(stone.to_i)
+        j += 1
+      }
+      i += 1
+    }
+
+    return PhysicalBoard.new_from_board_of_stone(board_of_stone: b, not_border: not_border)
+  end
+
   # place a stone at one spot if there is not one already
   def place(i, j, color)
     if not valid_color?(color)
