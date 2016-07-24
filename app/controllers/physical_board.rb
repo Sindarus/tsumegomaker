@@ -7,6 +7,10 @@ class PhysicalBoard
   # for example, you cannot place a stone somewhere there is already one.
 
   def initialize(width:, height:, not_border: [false, false, false, false])
+    if not valid_not_border?(not_border)
+      raise "Provided not_border is invalid. Possible causes are it is not size 4, or you are not using booleans"
+    end
+
     size = (width)*(height)
     if(size < BOARD_MIN_SIZE)
       raise "A board cannot be smaller than #{BOARD_MIN_SIZE} squares. The one you are trying to create has #{size} squares with height: #{height} and width: #{width}."
@@ -81,6 +85,20 @@ class PhysicalBoard
 
   def valid_color?(color)
     return (color == 1 or color == 2)
+  end
+
+  def valid_not_border?(not_border)
+    if not_border.size != 4
+      return false;
+    end
+
+    for i in 0..3
+      if not [false, true].include?(not_border[i])
+        return false;
+      end
+    end
+
+    return true
   end
 
   # this displays the physical board in console mode.
