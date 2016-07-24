@@ -33,11 +33,6 @@ class Board
     @board_history = []
   end
 
-  # TODO: remove the function, we should use an attribute reader
-  def get_board
-    return @board.board_of_stone
-  end
-
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
   # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
   # avoid get_adj to loop forever
@@ -346,5 +341,11 @@ class Board
   def board_history
     return Marshal.load( Marshal.dump(@board_history) )
   end
-  
+
+  # extra attribute reader
+  # returns the 2D array containing the bulk of the board
+  def get_board
+    return Marshal.load( Marshal.dump(@board.board_of_stone) )
+  end
+
 end
