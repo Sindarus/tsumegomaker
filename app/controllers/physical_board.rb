@@ -173,4 +173,22 @@ class PhysicalBoard
     return nil
   end
 
+  # ATTRIBUTE READERS
+  # 'width' and 'height' do not need specific attribute readers because they are
+  # integers, which is a primitive type, and thus when you read 'width' from this
+  # object, you cannot change the value of the instance's 'width' variable.
+  # The arrays however, need to be copied before returned, so that by changing
+  # the returned variable, you do not change the instance's variable.
+  attr_reader :width
+  attr_reader :height
+
+  def not_border
+    # Deep copy
+    return Marshal.load( Marshal.dump(@not_border) )
+  end
+
+  def board
+    # Deep copy
+    return Marshal.load( Marshal.dump(@board) )
+  end
 end
