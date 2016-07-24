@@ -69,7 +69,7 @@ class PhysicalBoard
       i += 1
     }
 
-    return PhysicalBoard.new_from_board_of_stone(board_of_stone: b, not_border: not_border)
+    return PhysicalBoard.new_from_array(board_of_stone: b, not_border: not_border)
   end
 
   # place a stone at one spot if there is not one already
