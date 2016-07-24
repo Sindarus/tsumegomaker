@@ -6,6 +6,14 @@ class PhysicalBoard
   # As a good design, the methods here require accuracy and rigor :
   # for example, you cannot place a stone somewhere there is already one.
 
+  # TERMINOLOGY
+  # A border is one side of the go board boundaries.
+  # A "not-border" is a side of the PhysicalBoard behind which there is the rest
+  # of the board, i.e. empty spots.
+
+  # The space behind a not-border is considered infinite. That's why 'get(i, j)'
+  # will return 0 if (i, j) is behind a not border, however far it is.
+
   def initialize(width:, height:, not_border:)
     if not valid_not_border?(not_border)
       raise "Provided not_border is invalid. Possible causes are it is not size 4, or you are not using booleans"
@@ -25,14 +33,14 @@ class PhysicalBoard
     @board = Array.new(height) { Array.new(width){0} }
   end
 
-  # place a stone at one place if there is not one already
+  # place a stone at one spot if there is not one already
   def place(i, j, color)
     if not valid_color?(color)
       raise "The color #{color} is not a valid color to place."
     end
 
-    if out_of_bounds?(i, j)
-      raise "The spot (#{i}, #{j}) is out of bounds."
+    if out_of_array?(i, j)
+      raise "The spot (#{i}, #{j}) is out of array."
     end
 
     if @board[i][j] != 0
@@ -42,10 +50,10 @@ class PhysicalBoard
     @board[i][j] = color;
   end
 
-  # removes a stone placed
+  # removes a stone that was previously placed
   def remove(i, j)
-    if out_of_bounds?(i, j)
-      raise "The spot (#{i}, #{j}) is out of bounds."
+    if out_of_array?(i, j)
+      raise "The spot (#{i}, #{j}) is out of array."
     end
 
     if @board[i][j] == 0
@@ -55,31 +63,48 @@ class PhysicalBoard
     @board[i][j] = 0
   end
 
-  # returns the color of a spot. If the spot is behind a not_border, this returns
-  # 0, because it is a free spot. If the spot is outside the board, this returns -1.
+  # returns the color of a spot.
+  # If the spot is outside the board, this returns -1.
+  # If the spot is behind a not_border, this returns 0, because it is a free spot.
   def get(i, j)
-    if i < 0
-      return ( @not_border[0] ? 0 : -1)
+    if not out_of_array?(i, j)
+      # most common case: (i, j) is inside the @board array
+      return @board[i][j]
     end
 
-    if i >= @height
-      return ( @not_border[3] ? 0 : -1)
+    if is_behind_border?(i, j)
+      # other case: (i, j) is outside the go board
+      return -1
     end
 
-    if j < 0
-      return ( @not_border[1] ? 0 : -1)
-    end
-
-    if j >= @width
-      return ( @not_border[2] ? 0 : -1)
-    end
-
-    # at this point, we know that (i, j) is inside all borders,
-    # i.e. @board_of_stone[i][j] is set
-    return @board[i][j]
+    # only case left is that (i, j) is behind a not_border
+    return 0
   end
 
-  def out_of_bounds?(i, j)
+  # returns true if (i, j) is outside the go board
+  def is_behind_border?(i, j)
+    if (i < 0 and not @not_border[0]         or
+       i >= @height and not @not_border[3]   or
+       j < 0 and not @not_border[1]          or
+       j >= @width and not @not_border[2])
+      return true
+    end
+
+    return false
+  end
+
+  # returns true if (i, j) is behind a not_border
+  def is_behind_not_border?(i, j)
+    if not out_of_array?(i, j) or is_behind_border?(i, j)
+      return false
+    end
+
+    return true
+  end
+
+  # returns true if @board[i][j] is not defined. I.e. if (i, j) is outside
+  # the inner_board (behind a not border or just non-existant, whatever)
+  def out_of_array?(i, j)
     return (i < 0 or j < 0 or i >= @height or j >= @width)
   end
 
@@ -101,7 +126,7 @@ class PhysicalBoard
     return true
   end
 
-  # this displays the physical board in console mode.
+  # displays the physical board in console mode.
   def show(indent: 0)
     #first line
     if @not_border[1]
