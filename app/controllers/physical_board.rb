@@ -6,7 +6,7 @@ class PhysicalBoard
   # As a good design, the methods here require accuracy and rigor :
   # for example, you cannot place a stone somewhere there is already one.
 
-  def initialize(width:, height:, not_border: [false, false, false, false])
+  def initialize(width:, height:, not_border:)
     if not valid_not_border?(not_border)
       raise "Provided not_border is invalid. Possible causes are it is not size 4, or you are not using booleans"
     end
