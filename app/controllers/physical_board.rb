@@ -30,7 +30,7 @@ class PhysicalBoard
     @width = width
     @height = height
     @not_border = not_border
-    @board = Array.new(height) { Array.new(width){0} }
+    @board_of_stone = Array.new(height) { Array.new(width){0} }
   end
 
   # place a stone at one spot if there is not one already
@@ -43,11 +43,11 @@ class PhysicalBoard
       raise "The spot (#{i}, #{j}) is out of array."
     end
 
-    if @board[i][j] != 0
-      raise "The spot (#{i}, #{j}) already has a stone of color #{@board[i][j]}."
+    if @board_of_stone[i][j] != 0
+      raise "The spot (#{i}, #{j}) already has a stone of color #{@board_of_stone[i][j]}."
     end
 
-    @board[i][j] = color;
+    @board_of_stone[i][j] = color;
   end
 
   # removes a stone that was previously placed
@@ -56,11 +56,11 @@ class PhysicalBoard
       raise "The spot (#{i}, #{j}) is out of array."
     end
 
-    if @board[i][j] == 0
+    if @board_of_stone[i][j] == 0
       raise "The spot (#{i}, #{j}) has no stone to remove."
     end
 
-    @board[i][j] = 0
+    @board_of_stone[i][j] = 0
   end
 
   # returns the color of a spot.
@@ -68,8 +68,8 @@ class PhysicalBoard
   # If the spot is behind a not_border, this returns 0, because it is a free spot.
   def get(i, j)
     if not out_of_array?(i, j)
-      # most common case: (i, j) is inside the @board array
-      return @board[i][j]
+      # most common case: (i, j) is inside the @board_of_stone array
+      return @board_of_stone[i][j]
     end
 
     if is_behind_border?(i, j)
@@ -102,8 +102,8 @@ class PhysicalBoard
     return true
   end
 
-  # returns true if @board[i][j] is not defined. I.e. if (i, j) is outside
-  # the inner_board (behind a not border or just non-existant, whatever)
+  # returns true if @board_of_stone[i][j] is not defined. I.e. if (i, j) is outside
+  # the inner board (behind a not border or just non-existant, whatever)
   def out_of_array?(i, j)
     return (i < 0 or j < 0 or i >= @height or j >= @width)
   end
@@ -148,7 +148,7 @@ class PhysicalBoard
     end
     print("\n")
 
-    @board.each{|row|
+    @board_of_stone.each{|row|
       indent.times do
         print " "
       end
@@ -212,8 +212,8 @@ class PhysicalBoard
     return Marshal.load( Marshal.dump(@not_border) )
   end
 
-  def board
+  def board_of_stone
     # Deep copy
-    return Marshal.load( Marshal.dump(@board) )
+    return Marshal.load( Marshal.dump(@board_of_stone) )
   end
 end
