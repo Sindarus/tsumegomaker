@@ -108,7 +108,10 @@ class GamesStateController < ApplicationController
 
   def get_board
     if not @rendered
-      render json: @game_state.board
+      render json: @game_state.board.board
+      # 1) game_state.board is the Board object
+      # 2) game_state.board.board is the @board attribute of it, which is a
+      # an object of type PhysicalBoard
       @rendered = true
     end
   end
