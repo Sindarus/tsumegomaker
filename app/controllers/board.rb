@@ -23,7 +23,7 @@ class Board
   # |       |
   # |___3___|
 
-  def initialize(height: 5, width: 5, not_border: [false, false, false, false])
+  def initialize(height:, width:, not_border:)
     @board = PhysicalBoard.new(height: height, width: width, not_border: not_border)
 
     @d4adj = [[1, 0], [-1, 0], [0, 1], [0, -1]]
