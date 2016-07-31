@@ -38,13 +38,6 @@ class Board
     return Board.new(initial_physical_board: physical_board)
   end
 
-  # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
-  # if (i, j) is out of not-borders by 2 squares, return -1 too. This is needed to
-  # avoid get_adj to loop forever
-  def access_board(i, j, not_border_value=-1)
-    return @board.get(i, j) == -1 ? not_border_value : @board.get(i, j)
-  end
-
   # returns a copy (separate instance) of the current instance
   def clone
     # This is an easy fix to ruby's shameful lack of deep_copy.
