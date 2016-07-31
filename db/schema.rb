@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160518231308) do
+ActiveRecord::Schema.define(version: 20160731124326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,10 +39,10 @@ ActiveRecord::Schema.define(version: 20160518231308) do
     t.integer  "ia_color"
     t.integer  "height"
     t.integer  "width"
-    t.text     "yaml_initial_board"
+    t.text     "yaml_initial_physical_board"
     t.string   "problem_file"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "users", force: :cascade do |t|
