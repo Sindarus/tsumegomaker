@@ -146,8 +146,7 @@ class GamesStateController < ApplicationController
     @game_state = GameState.new
     @game_state.problem_id = problem_id
     physical_board = YAML.load(@problem.yaml_initial_physical_board)
-    @game_state.board = Board.new(height: 1, width: 1, not_border: [false, false, false, false])
-    @game_state.board.load_physical_board(physical_board)
+    @game_state.board = Board.new(initial_physical_board: physical_board)
     save_state  # save gamestate in database
 
     # store game_state_id in session
