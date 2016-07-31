@@ -23,8 +23,8 @@ class Board
   # |       |
   # |___3___|
 
-  def initialize(height:, width:, not_border:)
-    @board = PhysicalBoard.new(height: height, width: width, not_border: not_border)
+  def initialize(initial_physical_board:)
+    @board = initial_physical_board
 
     @d4adj = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     @ko_move = []
@@ -33,8 +33,9 @@ class Board
     @board_history = []
   end
 
-  def load_physical_board(physical_board)
-    @board = physical_board
+  def self.new_from_scratch(height:, width:, not_border:)
+    physical_board = PhysicalBoard.new(height: height, width: width, not_border: not_border)
+    return Board.new(initial_physical_board: physical_board)
   end
 
   # returns the stone type at (i, j). If (i, j) is out of borders, returns -1.
