@@ -17,9 +17,9 @@ class ProblemController < ApplicationController
     problem = Problem.new
     new_id = Problem.last.id + 1 #This is a quick fix to find the new id.
     board_json = JSON::load params[:board]
-    board = Board.new(board_json["height"],
-                      board_json["width"],
-                      board_json["not_border"])
+    board = Board.new(height: board_json["height"],
+                      width: board_json["width"],
+                      not_border: board_json["not_border"])
     board.load_board_of_stone(board_json["board_of_stone"])
     problem.yaml_initial_board = YAML.dump board
     problem.height = board_json["height"]
