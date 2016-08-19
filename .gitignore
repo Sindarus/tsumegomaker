@@ -39,3 +39,5 @@ bower.json
 .byebug_history
 
 TODO
+
+app/assets/problems/*

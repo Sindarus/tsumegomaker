@@ -205,3 +205,7 @@ function select_square(i, j){
 function select_stone(i, j){
     return $("#" + i.toString() + "-" + j.toString() + " div");
 }
+
+function display_rails_error(jqXHR){
+    $("#error").append(jqXHR.responseText);
+}
