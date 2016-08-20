@@ -46,7 +46,7 @@ class GamesStateController < ApplicationController
       return false
     end
   end
-  before_filter :load_state, :only => [:move, :get_board, :get_legal, :get_color]
+  before_action :load_state, :only => [:move, :get_board, :get_legal, :get_color]
 
   def send_code(string)
     if not @rendered
