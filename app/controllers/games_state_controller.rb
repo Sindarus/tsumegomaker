@@ -45,6 +45,8 @@ class GamesStateController < ApplicationController
       send_code("E01")
       return false
     end
+
+    return true
   end
   before_action :load_state, :only => [:move, :get_board, :get_legal, :get_color]
 

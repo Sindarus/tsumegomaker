@@ -12,4 +12,5 @@
           %label{:for => "password"}
             Mot de passe
           = password_field_tag :password
+          = hidden_field_tag :authenticity_token, form_authenticity_token
         = submit_tag "Se connecter", :class => "btn"
