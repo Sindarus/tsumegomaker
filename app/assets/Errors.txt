@@ -1,0 +1,11 @@
+Code : Mean :
+E00    IA could not init sgf file
+E01    IA could not catch up with the state of the game
+E02    An exception was raised by '@ia_player.play()''
+E03    The game_state_id is needed but was not found in session. Possible causes : session was closed or user has not called create_game.
+E04    Server could not find problem with provided id
+E10    Player tried to play an illegal move
+
+M20    The user has resolved the problem
+M21    The user has failed the problem
+M22    The user has played too much moves and the minimax algorithm did not go this far

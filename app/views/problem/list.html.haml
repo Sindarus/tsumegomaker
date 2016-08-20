@@ -1,0 +1,25 @@
+.container
+  %h1 Liste des problèmes
+  %table.striped
+    %thead
+      %th ID
+      %th Largeur
+      %th Hauteur
+      - if @current_user
+        %th Réussi
+    %tbody
+      - @problem_list.each do |problem, game_history|
+        %tr
+          %td=problem.id
+          %td=problem.width
+          %td=problem.height
+          - if @current_user
+            %td
+              - if game_history
+                - if game_history.success
+                  %i.material-icons done
+                - else
+                  %i.material-icons not_interested
+          %td
+            %a.btn{:href => "/play?problem_id="+problem.id.to_s}
+              Jouer

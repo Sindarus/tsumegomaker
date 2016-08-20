@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+%html
+  %head
+    %title= Tsumegomaker
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true
+    %link{:href=>"https://fonts.googleapis.com/icon?family=Material+Icons", :rel=>"stylesheet"}
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+
+  %body
+    %header
+      %nav
+        .top-nav
+          .container
+            %a.brand-logo{:href =>'/'}
+              TsumegoMaker
+            %a.button-collapse.right{:href=>"#", "data-activates" =>"mobile-demo"}
+              %i.material-icons menu
+            %ul#nav-mobile.right.hide-on-med-and-down
+              %li
+                %a{:href =>'/problem/list'}
+                  Jouer
+              %li
+                %a{:href =>'/problem/create'}
+                  Déposer un problème
+              %li
+                %a{:href =>'#'}
+                  À propos
+              - if @current_user
+                %li
+                  %div{:style => "padding-left : 15px;padding-right : 15px;"}
+                    .chip= @current_user.username
+                %li
+                  %a.btn{:href => '/sessions/logout'}
+                    Se déconnecter
+              - else
+                %li
+                  %a.btn{:href => '/users/new'}
+                    S'inscrire
+                %li
+                  %a.btn{:href =>'/sessions/login'}
+                    Se connecter
+            %ul#mobile-demo.side-nav.right
+              %li
+                %a{:href =>'/problem/list'}
+                  Jouer
+              %li
+                %a{:href =>'/problem/create'}
+                  Déposer un problème
+              %li
+                %a{:href =>'#'}
+                  À propos
+              - if @current_user
+                %li
+                  .container
+                    .chip= @current_user.username
+                %li
+                  %a.btn{:href => '/sessions/logout'}
+                    Se déconnecter
+              - else
+                %li
+                  %a.btn{:href => '/users/new'}
+                    S'inscrire
+                %li
+                  %a.btn{:href =>'/sessions/login'}
+                    Se connecter
+
+      - if flash[:notice]
+        .container
+          //=".notice."+(flash[:color] == "valid" ? "teal-accent-3" : "red-accent-4")
+          .notice.red.lighten-2.white-text
+            .center
+              %b=flash[:notice]
+    %main
+      =yield
+    %footer.page-footer
+      .footer-copyright
+        .container
+          Ce site a été fait en 2016 à l'ENSIIE Strasbourg par Clément Saintier et Stéphane Kastenbaum
+          %a.right.grey-text.text-lighten-4{:href =>'https://github.com/Sindarus/tsumegomaker'}
+            Lien GitHub du projet

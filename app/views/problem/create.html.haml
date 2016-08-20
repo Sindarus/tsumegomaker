@@ -1,0 +1,61 @@
+= javascript_include_tag 'shared.js'
+= javascript_include_tag 'create.js'
+.container#main_container
+  %h1 Sur cette page, vous pouvez déposer un problème sur le site
+
+  .row#board_size_form
+    %form
+      .col.s3
+        .input-field.row
+          %input.validate#board_width{:value => 9, :name => "board_width", :type => "number"}
+          %label{:for => "board_width"} largeur du plateau
+        .input-field.row
+          %input.validate#board_height{:value => 9, :name => "board_height", :type => "number"}
+          %label{:for => "board_height"} hauteur du plateau
+      .col.s3
+        .row
+          %input.filled-in#not_border_up{:type => "checkbox"}
+          %label{:for => "not_border_up"} partie haute cachée
+        .row
+          %input.filled-in#not_border_left{:type => "checkbox"}
+          %label{:for => "not_border_left"} partie gauche cachée
+        .row
+          %input.filled-in#not_border_right{:type => "checkbox"}
+          %label{:for => "not_border_right"} partie droite cachée
+        .row
+          %input.filled-in#not_border_down{:type => "checkbox"}
+          %label{:for => "not_border_down"} partie basse cachée
+      .col.s3
+
+        .input-field.row
+          %a.waves-effect.waves-light.btn#create_board
+            create board
+
+
+  .row#editing_zone
+    .col#board
+    .col#tool_box
+      .fixed-action-btn.horizontal.click-to-toggle
+        %a.btn-floating.btn-large.red
+          %i.material-icons mode_edit
+        %ul
+          %li.btn-floating.transparent#black_paint
+            %img.responsive-img{:src =>image_path('black.png')}
+          %li.btn-floating.white#white_paint
+            %img.responsive-img{:src =>image_path('white.png')}
+          %li.btn-floating.red#clear_board
+
+  .row
+    .col.s3#validate_form
+      .row
+        %input#player_is_white{:name => "player_color", :type => "radio"}
+        %label{:for => "player_is_white"} Blanc joue
+      .row
+        %input#player_is_black{:name => "player_color", :type => "radio"}
+        %label{:for => "player_is_black"} Noir joue
+      .input-field.row
+        %a.waves-effect.waves-light.btn#validate
+          Poster
+
+  .row
+    #error

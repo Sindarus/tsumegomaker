@@ -1,0 +1,128 @@
+/*
+ * This is a manifest file that'll be compiled into application.css, which will include all the files
+ * listed below.
+ *
+ * Any CSS and SCSS file within this directory, lib/assets/stylesheets, vendor/assets/stylesheets,
+ * or any plugin's vendor/assets/stylesheets directory can be referenced here using a relative path.
+ *
+ * You're free to add application-wide styles to this file and they'll appear at the bottom of the
+ * compiled file so the styles you add here take precedence over styles defined in any styles
+ * defined in the other CSS/SCSS files in this directory. It is generally better to create a new
+ * file per style scope.
+ *
+ *= require_tree .
+ *= require_self
+ */
+
+@import "materialize";
+
+/* general board display ============================================================== */
+table {
+    border-spacing: 0 0;
+}
+
+.board_square{
+    border-radius: 0px;
+    display: inline-block;
+    padding: 0px;
+    height: 59px;
+    width: 59px;
+}
+
+.not_border {
+    opacity : 0.75;
+}
+
+.board_square.middle {
+    background-image: url("empty.png");
+}
+
+.board_square.left_border {
+    background-image: url("left_border.png");
+}
+
+.board_square.right_border {
+    background-image: url("right_border.png");
+}
+
+.board_square.up_border {
+    background-image: url("up_border.png");
+}
+
+.board_square.down_border {
+    background-image: url("down_border.png");
+}
+
+.board_square.down_left_corner {
+    background-image: url("down_left_corner.png");
+}
+
+.board_square.down_right_corner {
+    background-image: url("down_right_corner.png");
+}
+
+.board_square.up_left_corner {
+    background-image: url("up_left_corner.png");
+}
+
+.board_square.up_right_corner {
+    background-image: url("up_right_corner.png");
+}
+
+.board_square div {
+    height: 59px;
+    width: 59px;
+}
+
+/* stones ================================================================== */
+.white_stone {
+    background-image: url("white.png");
+    opacity: 1;
+}
+
+.black_stone {
+    background-image: url("black.png");
+    opacity: 1;
+}
+
+
+/* Legal moves ============================================================== */
+.player_black .legal_move:hover {
+  background-image : url("black.png");
+  opacity: 0.5;
+}
+
+.player_white .legal_move:hover {
+  background-image : url("white.png");
+  opacity: 0.5;
+}
+
+/* messages =================================================================== */
+.win_msg {
+    color: green;
+}
+
+.loose_msg {
+    color: red;
+}
+
+/* other ========================================================================= */
+body {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+main {
+  flex: 1 0 auto;
+}
+
+/* CREATE PAGE */
+/*#board_size_form .col {
+  padding-left: 3%;
+  padding-right: 3%;
+}*/
+
+#board_size_form * {
+  margin: 2%;
+}

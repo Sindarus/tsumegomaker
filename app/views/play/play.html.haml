@@ -1,0 +1,21 @@
+= javascript_include_tag 'shared.js'
+= javascript_include_tag 'play.js'
+.container#main_container
+  .row
+    %h1
+      Problème n°
+      %span#problem_id=@problem_id
+    .col.s8
+      #board
+      #board_info
+    .col.s4
+      .input-field.row
+        %a.waves-effect.waves-light.btn#pass_button
+          Passer
+      #messages
+
+  .row
+    #captured_stones
+      #captured_stones_black
+      #captured_stones_white
+    #error
