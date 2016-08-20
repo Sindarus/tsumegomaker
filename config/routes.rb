@@ -9,8 +9,19 @@ Rails.application.routes.draw do
   get 'get_color' => "games_state#get_color"
   get 'move' => "games_state#move"
   get 'create_game' => "games_state#create_game"
-  get ':controller(/:action(/:id))(.:format)'
-  post ':controller(/:action)(.:format)'
+  get 'problem/list' => "problem#list"
+  get 'problem/create' => "problem#create"
+  get 'users/new' => "users#new"
+  get 'users/create' => "users#create"
+  post 'users/create' => "users#create"
+  get 'sessions/login' => "sessions#login"
+  post 'sessions/login_attempt' => "sessions#login_attempt"
+  get 'sessions/logout' => "sessions#logout"
+  post 'problem/submit' => "problem#submit"
+
+  # Using :controller and :action in rails 5 is deprecated
+  # get ':controller(/:action(/:id))(.:format)'
+  # post ':controller(/:action)(.:format)'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
